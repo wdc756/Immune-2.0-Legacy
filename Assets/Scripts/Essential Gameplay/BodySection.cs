@@ -10,14 +10,31 @@ public class BodySection : MonoBehaviour
     The optimization/balancing calculation will be run here
      */
 
+    public bool IsFocused = false;
+    public GameObject FocusedObject;
+    public GameObject MapObject;
 
 
     void Start()
     {
-        
+        Unfocus();
     }
     void Update()
     {
         
+    }
+
+    public void Focus()
+    {
+        IsFocused = true;
+        FocusedObject.SetActive(true);
+        MapObject.SetActive(false);
+    }
+
+    public void Unfocus()
+    {
+        IsFocused = false;
+        FocusedObject.SetActive(false);
+        MapObject.SetActive(true);
     }
 }
