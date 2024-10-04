@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ImmuneSystemResponse
 {
-    public float LevelPercent {  get; private set; }
+    public float LevelPercent {  get; set; }
     public ResponseType Type { get; private set; }
 
     public enum ResponseType

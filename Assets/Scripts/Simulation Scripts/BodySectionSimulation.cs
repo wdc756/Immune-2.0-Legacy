@@ -37,11 +37,13 @@ public class BodySectionSimulation : MonoBehaviour
     float stressratio;
     public void Tick()
     {
+        Debug.Log($"Running tick for bodysection {this.name} pathogen {Infection.name}");
+
         gain = Infection.GainRatePercent;
         loss = Infection.MaxLossRatePercent * (Response.LevelPercent / 100f);
         if (Infection.ResponseWeakness == Response.Type) loss *= Infection.WeaknessFactor;
 
-        InfectionProgressPercent = gain - loss;
+        InfectionProgressPercent += gain - loss;
 
         // Right now stress level response is based on immune response level alone.
         // We can add small penalties for other conditions that factor in
