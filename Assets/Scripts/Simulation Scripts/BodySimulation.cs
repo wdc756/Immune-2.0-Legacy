@@ -14,6 +14,7 @@ public class BodySimulation : Simulated
     public AutoImmuneSystem AIS;
 
     public BodySectionSimulation firstSection;
+
     void Start()
     {
         Sections = new List<BodySectionSimulation>(GetComponentsInChildren<BodySectionSimulation>());
@@ -25,12 +26,18 @@ public class BodySimulation : Simulated
      *  functions of all of the children simulations
      *  
      */
+
+    public BodySectionSimulation GetBodySection(int index)
+    {
+        return Sections[index];
+    }
+
+
     public override void Tick()
     {
         Debug.Log("Tick");
 
         foreach (BodySectionSimulation section in Sections) section.Tick();
-        AIS.Tick();
     }
 
 }

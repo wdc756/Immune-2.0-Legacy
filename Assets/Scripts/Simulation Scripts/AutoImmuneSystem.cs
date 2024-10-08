@@ -15,11 +15,19 @@ public class AutoImmuneSystem : Simulated
     public float ManualScanTime;
 
     public float StressFlagPercentage;
+    public bool StressFlag;
 
-    
+    public float ProgressFlagPercentage;
+    public bool ProgressFlag;
+
+    public float ResponseFlagPercentage;
+    public bool ResponseFlag;
+
 
     public override void Tick()
     {
-
+        StressFlag = Body.firstSection.StressLevelPercent >= StressFlagPercentage;
+        ProgressFlag = Body.firstSection.InfectionProgressPercent >= ProgressFlagPercentage;
+        ResponseFlag = Body.firstSection.Response.LevelPercent >= ResponseFlagPercentage;
     }
 }

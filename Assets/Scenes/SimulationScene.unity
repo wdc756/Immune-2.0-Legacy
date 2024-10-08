@@ -912,7 +912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ResponseDefaultLevelPercent: 10
-  Infection: {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  Infection: {fileID: 11400000, guid: d0a6f447312f52a4e8b416f2092876de, type: 2}
 --- !u!1 &612204993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,10 +1807,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472698ec6ff40cf45b0e5105a32ba4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Body: {fileID: 0}
+  Body: {fileID: 1328707808}
   AutoScanTime: 0
   ManualScanTime: 0
-  StressFlagPercentage: 0
+  StressFlagPercentage: 50
+  StressFlag: 0
+  ProgressFlagPercentage: 50
+  ProgressFlag: 0
+  ResponseFlagPercentage: 50
+  ResponseFlag: 0
 --- !u!114 &1328707810
 MonoBehaviour:
   m_ObjectHideFlags: 0

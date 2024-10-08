@@ -9,7 +9,7 @@ using UnityEngine;
  *  derive from. it takes from base monobehavior (so it gets all the unity functions)
  *  and allows the simulation manager to keep track of all behaviors
  */
-abstract public class Simulated : MonoBehaviour
+public abstract class Simulated : MonoBehaviour
 {
     public abstract void Tick();
 }

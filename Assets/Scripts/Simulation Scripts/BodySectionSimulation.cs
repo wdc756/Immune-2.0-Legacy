@@ -25,10 +25,24 @@ public class BodySectionSimulation : Simulated
 
     void Start()
     {
-        Response = new ImmuneSystemResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, 10f);
+        ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, 10f);
         //Debug.Log($"Min: {StressLevelScalingSigmoid(0f)} Max: {StressLevelScalingSigmoid(1f)}");
     }
 
+    public void Escalate(float delta)
+    {
+        Response.Escalate(delta);
+    }
+
+    public void Deescalate(float delta)
+    {
+        Response.Deescalate(delta);
+    }
+
+    public void ChangeResponse(ImmuneSystemResponse.ResponseType responseType, float responseLevel)
+    {
+        Response = new ImmuneSystemResponse(responseType, responseLevel);
+    }
 
     // Gain and Loss are the percent change per tick that is calculated
     float gain, loss;
@@ -55,10 +69,13 @@ public class BodySectionSimulation : Simulated
         StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
     }
 
+    public float StressFactor = 0.5f;
+
     private float StressLevelBalancingFunc(float ratio)
     {
         // Sigmoid (not good)
-        /*float a = 2.2f;
+        /*
+        float a = 2.2f;
         float b = 3.6f;
         float d = -0.2f;
         float l = -0.5f;
@@ -66,14 +83,15 @@ public class BodySectionSimulation : Simulated
         float c = a * l;
 
         float denominator = 1 + Mathf.Exp(-b * (ratio + d));
-        float result = a / denominator + c;*/
+        float result = a / denominator + c;
+        */
 
         // Quadratic (increasing stress cost delta as response increases)
         float a = 6.4f;
         float c = -0.6f;
 
         float result = a * (ratio * ratio) + c;
-        return result;
+        return result * StressFactor;
     }
 
 }
