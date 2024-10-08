@@ -277,6 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e938a7e35f2905449aa1a948193f9a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Manager: {fileID: 1328707810}
   Body: {fileID: 1328707808}
   ticksInput: {fileID: 2040228335}
   stressSlider: {fileID: 1483192213}
@@ -501,8 +502,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1328707808}
-        m_TargetAssemblyTypeName: BodySimulation, Assembly-CSharp
+      - m_Target: {fileID: 1328707810}
+        m_TargetAssemblyTypeName: SimulationManager, Assembly-CSharp
         m_MethodName: DebugTicks
         m_Mode: 1
         m_Arguments:
@@ -1754,6 +1755,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1328707807}
   - component: {fileID: 1328707808}
+  - component: {fileID: 1328707809}
+  - component: {fileID: 1328707810}
   m_Layer: 0
   m_Name: Body Containter
   m_TagString: Untagged
@@ -1790,9 +1793,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sections: []
-  Running: 0
-  FixedUpdatesPerTick: 2
+  AIS: {fileID: 1328707809}
   firstSection: {fileID: 0}
+--- !u!114 &1328707809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328707806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472698ec6ff40cf45b0e5105a32ba4a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Body: {fileID: 0}
+  AutoScanTime: 0
+  ManualScanTime: 0
+  StressFlagPercentage: 0
+--- !u!114 &1328707810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328707806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4898d209bc3e0b41a1fa297d39b3a81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Simulated: []
+  SimulatedChildren: []
+  ManuallyRunChildren: 0
+  Running: 0
+  FixedUpdatesPerTick: 1
   ticks: 0
   tickTotal: 0
 --- !u!1 &1398188902

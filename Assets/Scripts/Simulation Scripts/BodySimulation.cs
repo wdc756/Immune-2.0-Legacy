@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BodySimulation : MonoBehaviour
+public class BodySimulation : Simulated
 {
+    /*
+     *  Contains important variables for the simulation,
+     *  including a list of all the body parts
+     */
+
     public List<BodySectionSimulation> Sections;
-    public bool Running = false;
-    public int FixedUpdatesPerTick = 1;
-    private int count;
+    public AutoImmuneSystem AIS;
 
     public BodySectionSimulation firstSection;
     void Start()
@@ -17,23 +20,17 @@ public class BodySimulation : MonoBehaviour
         firstSection = Sections[0];
     }
 
-
-    private void FixedUpdate()
+    /*
+     *  Currently this BodySimulation is responsible for calling the tick
+     *  functions of all of the children simulations
+     *  
+     */
+    public override void Tick()
     {
-        if (!Running) return;
-        if (count++ % FixedUpdatesPerTick != 0) return;
         Debug.Log("Tick");
-        foreach (BodySectionSimulation section in Sections) section.Tick();
-        if (--ticks <= 0) Running = false;
-    }
 
-    public int ticks;
-    public int tickTotal;
-    public void DebugTicks()
-    {
-        Debug.Log("running");
-        Running = true;
-        ticks = tickTotal;
+        foreach (BodySectionSimulation section in Sections) section.Tick();
+        AIS.Tick();
     }
 
 }
