@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Virus
   ResponseWeakness: 3
-  WeaknessFactor: 10
+  WeaknessFactor: 50
   GainRatePercent: 0.07
   MaxLossRatePercent: 0.01

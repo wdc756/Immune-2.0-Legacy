@@ -26,8 +26,8 @@ public class BodySectionSimulation : Simulated
     void Start()
     {
         ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, 10f);
-        //Debug.Log($"Min: {StressLevelScalingSigmoid(0f)} Max: {StressLevelScalingSigmoid(1f)}");
     }
+
 
     public void Escalate(float delta)
     {
@@ -51,7 +51,18 @@ public class BodySectionSimulation : Simulated
     float stressratio;
     public override void Tick()
     {
-        Debug.Log($"Running tick for bodysection {this.name} pathogen {Infection.name}");
+
+        // Right now stress level response is based on immune response level alone.
+        // We can add small penalties for other conditions that factor in
+        stressratio = Response.LevelPercent / 100f;
+
+        StressLevelPercent += StressLevelBalancingFunc(stressratio) * StressFactor;
+
+        // Min cap the stress level. can't be less than 0 stress
+        StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
+
+        // If there's no infection don't run the simulation logic
+        if (Infection ==  null) return;
 
         gain = Infection.GainRatePercent;
         loss = Infection.MaxLossRatePercent * (Response.LevelPercent / 100f);
@@ -59,17 +70,10 @@ public class BodySectionSimulation : Simulated
 
         InfectionProgressPercent += gain - loss;
 
-        // Right now stress level response is based on immune response level alone.
-        // We can add small penalties for other conditions that factor in
-        stressratio = Response.LevelPercent / 100f; 
-
-        StressLevelPercent += StressLevelBalancingFunc(stressratio);
-
-        // Min cap the stress level. can't be less than 0 stress
-        StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
+        if (InfectionProgressPercent <= 0f) Infection = null;       // Remove the infection if we win
     }
 
-    public float StressFactor = 0.5f;
+    public float StressFactor;
 
     private float StressLevelBalancingFunc(float ratio)
     {

@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTickNumber()
     {
-        Debug.Log("Updating number");
+        //Debug.Log("Updating number");
         Manager.tickTotal = int.Parse(ticksInput.text);
         Manager.ticks = int.Parse(ticksInput.text);
     }

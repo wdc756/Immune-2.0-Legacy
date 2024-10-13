@@ -14,6 +14,11 @@ public abstract class Simulated : MonoBehaviour
     public abstract void Tick();
 }
 
+/*
+*   SimulationManager is the top-level class that calls all of the tick functions for the body systems.
+*   This script can also call all of the section tick functions if needed
+*   but that responsibility is already delegated to BodySimulation
+*/
 public class SimulationManager : MonoBehaviour
 {
     public List<Simulated> Simulated;
@@ -24,11 +29,19 @@ public class SimulationManager : MonoBehaviour
 
     public bool Running = false;
     public int FixedUpdatesPerTick = 1;
+    public static float TickDelta;
+
     private int count;
+
 
     private void Start()
     {
+        // TickDelta is the seconds per tick used to convert seconds to ticks and vice versa
+        TickDelta = Time.fixedDeltaTime * (float)FixedUpdatesPerTick;
+
+        // All of the scripts who have tick functions on this object
         Simulated = new List<Simulated>(GetComponents<Simulated>());
+
         // Fun times with functional programming
         SimulatedChildren = GetComponentsInChildren<Simulated>().Except(Simulated).ToList<Simulated>();
     }
@@ -38,7 +51,10 @@ public class SimulationManager : MonoBehaviour
         if (!Running) return;
         if (count++ % FixedUpdatesPerTick != 0) return;
 
-        foreach (Simulated s in Simulated) s.Tick();
+        foreach (Simulated s in Simulated)
+        {
+            s.Tick();
+        }
         if (ManuallyRunChildren) foreach (Simulated s in SimulatedChildren) s.Tick();
 
         if (--ticks <= 0) Running = false;

@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,10 +14,14 @@ public class BodySimulation : Simulated
 
     public BodySectionSimulation firstSection;
 
+    public float AllStressFactor;
+
     void Start()
     {
         Sections = new List<BodySectionSimulation>(GetComponentsInChildren<BodySectionSimulation>());
         firstSection = Sections[0];
+
+        foreach (BodySectionSimulation section in Sections) section.StressFactor = AllStressFactor;
     }
 
     /*
@@ -35,7 +38,7 @@ public class BodySimulation : Simulated
 
     public override void Tick()
     {
-        Debug.Log("Tick");
+        //Debug.Log("Tick");
 
         foreach (BodySectionSimulation section in Sections) section.Tick();
     }
