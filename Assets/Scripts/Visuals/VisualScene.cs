@@ -27,13 +27,6 @@ public class VisualScene : MonoBehaviour
     private Color infectedHue;
 
 
-
-    void Start()
-    {
-        
-    }
-
-
     
     //Updates the visuals according to the new stress and infection levels
     public void UpdateColorTints(float stress, float infected)
