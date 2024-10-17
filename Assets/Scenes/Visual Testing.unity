@@ -337,14 +337,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60b13204011ed9f43ac5f32b059434b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   visualScenePrefab: {fileID: 7670203133473028613, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
   visualSceneList: []
-  civilianPool: {fileID: 0}
-  macrophagePool: {fileID: 0}
-  neutrophilePool: {fileID: 0}
-  TCellPool: {fileID: 0}
-  BCellPool: {fileID: 0}
-  bacteriaPool: {fileID: 0}
+  objectPoolingHelpersParent: {fileID: 0}
+  objectPoolingHelperPrefab: {fileID: 0}
+  objectPoolingHelperList: []
+  civilianPoolPre: {fileID: 0}
+  macrophagePoolPre: {fileID: 0}
+  neutrophilePoolPre: {fileID: 0}
+  TCellPoolPre: {fileID: 0}
+  BCellPoolPre: {fileID: 0}
+  bacteriaPoolPre: {fileID: 0}
+  infectedCellPoolPre: {fileID: 0}
   simulationManager: {fileID: 0}
   checkVariables: 1
 --- !u!4 &1675278026
@@ -362,6 +367,50 @@ Transform:
   m_Children:
   - {fileID: 2028455172}
   - {fileID: 1103288199}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1699451515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1699451517}
+  - component: {fileID: 1699451516}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1699451516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699451515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c34c915ef35e1641a3b4f58392b3328, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1699451517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699451515}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2028455171
@@ -462,5 +511,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1699451517}
   - {fileID: 1043378508}
   - {fileID: 1675278026}
