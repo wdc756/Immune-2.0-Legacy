@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BodySectionSimulation : Simulated
@@ -15,32 +16,49 @@ public class BodySectionSimulation : Simulated
      * 
      * i tried to make it readable and comprehesible but i can only do so much
      */
-
+    [Header("Immune Response")]
     public ImmuneSystemResponse Response;
-    public float ResponseDefaultLevelPercent = 10f;
+
+    [Header("Infection")]
     public Pathogen Infection;
+    private BodySimulation parent;
 
     public float InfectionProgressPercent { get; private set; }
     public float StressLevelPercent {  get; private set; }
 
+    [Header("(Debug) Escalation/Deescalation")]
+    public bool ResponseIsChanging;
+    [SerializeField] private float responseChangeTotal; // Total amount of percent change over the whole time period
+    [SerializeField] private float responseChangeDelta; // Change in response level per tick
+    [SerializeField] private int responseChangeTicks;   // Amount of ticks left to change the response
+
+    public float ResourceDemand { get; private set; }
+
     void Start()
     {
-        ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, 10f);
+        parent = GetComponentInParent<BodySimulation>();
+        ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, parent.ResponseDefaultLevelPercent);
     }
 
 
-    public void Escalate(float delta)
+    public void Escalate()
     {
-        Response.Escalate(delta);
+        ResponseIsChanging = true;
+        responseChangeTotal += parent.ReponseChangeDelta;
+        responseChangeTicks += (int) (parent.ReponseChangeTime / SimulationManager.TickDelta);
+        responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
     }
 
-    public void Deescalate(float delta)
+    public void Deescalate()
     {
-        Response.Deescalate(delta);
+        ResponseIsChanging = true;
+        responseChangeTotal -= parent.ReponseChangeDelta;
+        responseChangeTicks += (int)(parent.ReponseChangeTime / SimulationManager.TickDelta);
+        responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
     }
 
     public void ChangeResponse(ImmuneSystemResponse.ResponseType responseType, float responseLevel)
-    {
+    {   
         Response = new ImmuneSystemResponse(responseType, responseLevel);
     }
 
@@ -51,28 +69,15 @@ public class BodySectionSimulation : Simulated
     float stressratio;
     public override void Tick()
     {
+        HandleStress();
+        HandlePathogen();
+        HandleResponse();
 
-        // Right now stress level response is based on immune response level alone.
-        // We can add small penalties for other conditions that factor in
-        stressratio = Response.LevelPercent / 100f;
-
-        StressLevelPercent += StressLevelBalancingFunc(stressratio) * StressFactor;
-
-        // Min cap the stress level. can't be less than 0 stress
-        StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
-
-        // If there's no infection don't run the simulation logic
-        if (Infection ==  null) return;
-
-        gain = Infection.GainRatePercent;
-        loss = Infection.MaxLossRatePercent * (Response.LevelPercent / 100f);
-        if (Infection.ResponseWeakness == Response.Type) loss *= Infection.WeaknessFactor;
-
-        InfectionProgressPercent += gain - loss;
-
-        if (InfectionProgressPercent <= 0f) Infection = null;       // Remove the infection if we win
+        // Calculate the resource demand for this body part
+        ResourceDemand = Response.LevelPercent - parent.ResponseDefaultLevelPercent;
     }
 
+    [Header("Debug and stupid")]
     public float StressFactor;
 
     private float StressLevelBalancingFunc(float ratio)
@@ -98,4 +103,47 @@ public class BodySectionSimulation : Simulated
         return result * StressFactor;
     }
 
+    private void HandlePathogen()
+    {
+        // If there's no infection don't run the simulation logic
+        if (Infection == null) return;
+
+        gain = Infection.GainRatePercent;
+        loss = Infection.MaxLossRatePercent * (Response.LevelPercent / 100f);
+        if (Infection.ResponseWeakness == Response.Type) loss *= Infection.WeaknessFactor;
+
+        InfectionProgressPercent += gain - loss;
+
+        if (InfectionProgressPercent <= 0f) Infection = null;       // Remove the infection if we win
+    }
+
+    private void HandleStress()
+    {
+        // Right now stress level response is based on immune response level alone.
+        // We can add small penalties for other conditions that factor in
+        stressratio = Response.LevelPercent / 100f;
+
+        StressLevelPercent += StressLevelBalancingFunc(stressratio) * StressFactor;
+
+        // Min cap the stress level. can't be less than 0 stress
+        StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
+    }
+
+    private void HandleResponse()
+    {
+        if (!ResponseIsChanging) return;
+
+        Response.UpdateResponse(responseChangeDelta);
+        responseChangeTotal -= responseChangeDelta;
+        responseChangeTicks--;
+
+        // Reset everything
+        if (responseChangeTicks == 0 || responseChangeTotal == 0f)
+        {
+            responseChangeTicks = 0;
+            responseChangeTotal = 0f;
+            responseChangeDelta = 0f;
+            ResponseIsChanging = false;
+        }
+    }
 }

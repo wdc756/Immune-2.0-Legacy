@@ -21,14 +21,19 @@ public abstract class Simulated : MonoBehaviour
 */
 public class SimulationManager : MonoBehaviour
 {
+    [Header("Simulation Objects")]
     public List<Simulated> Simulated;
     public List<Simulated> SimulatedChildren;
 
+    [Header("Infrastructure (please don't touch)")]
     // Don't touch this, it's an infrastructure variable :)
     public bool ManuallyRunChildren = false;
 
-    public bool Running = false;
+    [Header("Simulation Time Settings")]
     public int FixedUpdatesPerTick = 1;
+
+    [Header("(Debug)")]
+    public bool Running = false;
     public static float TickDelta;
 
     private int count;
@@ -63,6 +68,7 @@ public class SimulationManager : MonoBehaviour
     /*  
      *  Debug function for running a set amount of ticks
      */
+    [Header("Debug Ticks")]
     public int ticks;
     public int tickTotal;
     public void DebugTicks()

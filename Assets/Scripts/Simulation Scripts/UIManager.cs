@@ -24,9 +24,9 @@ public class UIManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        stressSlider.value = Body.firstSection.StressLevelPercent;
-        progressSlider.value = Body.firstSection.InfectionProgressPercent;
-        Body.firstSection.Response.LevelPercent = responseSlider.value;
+        stressSlider.value = Body.Sections[0].StressLevelPercent;
+        progressSlider.value = Body.Sections[0].InfectionProgressPercent;
+        responseSlider.value = Body.Sections[0].Response.LevelPercent;
     }
 
 }

@@ -9,19 +9,22 @@ public class AutoImmuneSystem : Simulated
      *  Performs the automatic and manual scans on body parts, either when the stress
      *  flag percentage is reached or by the user's request
      */
-
+    [Header("Other Scripts")]
     public BodySimulation Body;
 
+    [Header("Scan Times")]
     public float AutoScanTime;  // In seconds
     public float ManualScanTime;    // In seconds
 
+    [Header("Automatic Scan Requirements")]
     // When these flags are reach in % automatic scans will trigger
     public float StressFlagPercentage;
     public float ProgressFlagPercentage;
     public float ResponseFlagPercentage;
 
+    [Header("(Debug) Responses")]
     // Contains all of the sections where the AIS is responding to (successfully completed a scan)
-    public List<BodySectionSimulation> Responses = new List<BodySectionSimulation>();
+    [SerializeField] private List<BodySectionSimulation> responses = new List<BodySectionSimulation>();
 
     //
     private Dictionary<BodySectionSimulation, int> scanDictionary = new Dictionary<BodySectionSimulation, int>();
@@ -41,7 +44,7 @@ public class AutoImmuneSystem : Simulated
     public void BeginScan(BodySectionSimulation section, bool auto=true)
     {
         // Don't begin new scans if it's being scanned or has been scanned
-        if (scanDictionary.ContainsKey(section) || Responses.Contains(section)) return;
+        if (scanDictionary.ContainsKey(section) || responses.Contains(section)) return;
 
         // Convert from scan time in seconds to scan time in ticks, this makes it easy to work with
         float scanTime = auto ? AutoScanTime : ManualScanTime;
@@ -82,7 +85,7 @@ public class AutoImmuneSystem : Simulated
                     if (newResponse != ImmuneSystemResponse.ResponseType.MACNEUTRO)
                     {
                         section.ChangeResponse(newResponse, 30f);
-                        Responses.Add(section); // We are actively responding to this threat, don't scan again
+                        responses.Add(section); // We are actively responding to this threat, don't scan again
                     }
 
                     Debug.Log($"Scan complete, new response: {newResponse}");
@@ -97,7 +100,7 @@ public class AutoImmuneSystem : Simulated
 
     public void TrackResponses()
     {
-        foreach (BodySectionSimulation section in Responses)
-            if (section.InfectionProgressPercent == 0) Responses.Remove(section);   // We win, allow part to be scanned again
+        foreach (BodySectionSimulation section in responses)
+            if (section.InfectionProgressPercent == 0) responses.Remove(section);   // We win, allow part to be scanned again
     }
 }

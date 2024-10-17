@@ -11,17 +11,11 @@ public class ImmuneSystemResponse
         ANTIBODIES
     }
 
-    // Escalate increases the immune response level by the specified delta
-    public void Escalate(float delta)
+    public void UpdateResponse(float delta)
     {
-        LevelPercent += delta;
+        this.LevelPercent += delta;
     }
 
-    // Deescalate decreases the immune response level by the specified delta
-    public void Deescalate(float delta)
-    {
-        LevelPercent -= delta;
-    }
 
     public ImmuneSystemResponse(ResponseType type, float level)
     {
