@@ -106,6 +106,8 @@ public class VisualManager : MonoBehaviour
     //Generates objectpools using the objectPoolingHelperPrefab
     private void InstantiateObjectPoolingHelpers()
     {
+        //In the future we can only choose to load in what we need by passing ints through the function
+
         ObjectPoolingHelper civilians = Instantiate(civilianPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
         objectPoolingHelperList.Add(civilians);
 

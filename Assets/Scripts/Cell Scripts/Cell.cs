@@ -5,20 +5,36 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     /*
-    This is one of the most important scripts in the game, responsible for managing every active cell in the game
-    - So without this, the objects will not be able to properly interact with the environment
-
-    This will mostly be an information center, where information is passed around between the specialized cell scripts and the game manager scripts
+    Actually controls the cell gameobject based on cell type commands from other scripts
+    This is also used as a reference for the VisualManger
      */
 
+    /*
+    0: default
+    1: Civilian
+    2: Immune Cell
+    3: Bacteria
+     */
+    [Tooltip("Used to determine the type of cell, which tells this script which scripts to use")]
+    public int type = 0;
+
+    [Tooltip("Determines if the cell has a CellMovement script")]
+    public bool canMove = false;
+    //reference to the CellMovement class
+    private CellMovement cellMovement;
 
 
     void Start()
     {
-        
+        if (canMove)
+        {
+            cellMovement = gameObject.GetComponent<CellMovement>();
+        }
     }
     void Update()
     {
         
     }
+
+    
 }
