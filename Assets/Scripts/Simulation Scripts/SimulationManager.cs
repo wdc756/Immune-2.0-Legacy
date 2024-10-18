@@ -62,13 +62,24 @@ public class SimulationManager : MonoBehaviour
         }
         if (ManuallyRunChildren) foreach (Simulated s in SimulatedChildren) s.Tick();
 
-        if (--ticks <= 0) Running = false;
+        if (debug && --ticks <= 0) Running = false;
+    }
+
+    public void Run()
+    {
+        Running = true;
+    }
+
+    public void Stop()
+    {
+        Running = false;
     }
 
     /*  
      *  Debug function for running a set amount of ticks
      */
     [Header("Debug Ticks")]
+    public bool debug = false;
     public int ticks;
     public int tickTotal;
     public void DebugTicks()

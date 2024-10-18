@@ -22,7 +22,7 @@ public class BodySectionSimulation : Simulated
     [Header("Infection")]
     public Pathogen Infection;
     private BodySimulation parent;
-
+    private AutoImmuneSystem AIS;
     public float InfectionProgressPercent { get; private set; }
     public float StressLevelPercent {  get; private set; }
 
@@ -31,30 +31,64 @@ public class BodySectionSimulation : Simulated
     [SerializeField] private float responseChangeTotal; // Total amount of percent change over the whole time period
     [SerializeField] private float responseChangeDelta; // Change in response level per tick
     [SerializeField] private int responseChangeTicks;   // Amount of ticks left to change the response
+    [SerializeField] private float targetResponsePercent;   // For floating point "correction"
 
     public float ResourceDemand { get; private set; }
 
     void Start()
     {
         parent = GetComponentInParent<BodySimulation>();
+        AIS = GetComponentInParent<AutoImmuneSystem>();
         ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, parent.ResponseDefaultLevelPercent);
     }
 
 
     public void Escalate()
     {
+        if (ResponseIsChanging) return;
         ResponseIsChanging = true;
-        responseChangeTotal += parent.ReponseChangeDelta;
+        responseChangeTotal = parent.ReponseChangeDelta;
         responseChangeTicks += (int) (parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
+
+        targetResponsePercent = Response.LevelPercent + responseChangeTotal;
     }
 
     public void Deescalate()
     {
+        if (ResponseIsChanging) return;
         ResponseIsChanging = true;
-        responseChangeTotal -= parent.ReponseChangeDelta;
+        responseChangeTotal = -parent.ReponseChangeDelta;
         responseChangeTicks += (int)(parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
+
+        targetResponsePercent = Response.LevelPercent + responseChangeTotal;
+        Debug.Log($"Deescalation target {targetResponsePercent}");
+    }
+
+    public void Alarm()
+    {
+        if (ResponseIsChanging) return;
+        // Don't do anything if we don't reach the minimum flag percent or we are already responding more than the alarm level
+        if (InfectionProgressPercent < parent.AlarmFlagPercent || Response.LevelPercent >= parent.AlarmResponsePercent)
+        {
+            Debug.Log("Alarm dismissed, did not meet requirements");
+            return;
+        }
+        ResponseIsChanging = true;
+        
+        responseChangeTotal = parent.AlarmResponsePercent - Response.LevelPercent;
+        float responseTime = (responseChangeTotal / parent.AlarmResponsePercent) * parent.AlarmMaxResponseTime;
+        responseChangeTicks = (int)(responseTime / SimulationManager.TickDelta);
+        responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
+
+        targetResponsePercent = parent.AlarmResponsePercent;
+    }
+
+    public void Scan()
+    {
+        Debug.Log($"Scanning section manually {this.gameObject.name}");
+        AIS.BeginScan(this, false);
     }
 
     public void ChangeResponse(ImmuneSystemResponse.ResponseType responseType, float responseLevel)
@@ -134,16 +168,30 @@ public class BodySectionSimulation : Simulated
         if (!ResponseIsChanging) return;
 
         Response.UpdateResponse(responseChangeDelta);
-        responseChangeTotal -= responseChangeDelta;
         responseChangeTicks--;
 
         // Reset everything
         if (responseChangeTicks == 0 || responseChangeTotal == 0f)
         {
+            Response.LevelPercent = targetResponsePercent;
+
             responseChangeTicks = 0;
             responseChangeTotal = 0f;
             responseChangeDelta = 0f;
             ResponseIsChanging = false;
         }
+    }
+
+    public void HeavyWeaponsResponse(ImmuneSystemResponse.ResponseType newType)
+    {
+        // Reset the response changing stuff
+        Response.LevelPercent = parent.PostscanResponsePercent;
+
+        responseChangeTicks = 0;
+        responseChangeTotal = 0f;
+        responseChangeDelta = 0f;
+        ResponseIsChanging = false;
+
+        ChangeResponse(newType, parent.PostscanResponsePercent);
     }
 }

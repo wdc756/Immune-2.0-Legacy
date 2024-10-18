@@ -22,6 +22,7 @@ public class AutoImmuneSystem : Simulated
     public float ProgressFlagPercentage;
     public float ResponseFlagPercentage;
 
+
     [Header("(Debug) Responses")]
     // Contains all of the sections where the AIS is responding to (successfully completed a scan)
     [SerializeField] private List<BodySectionSimulation> responses = new List<BodySectionSimulation>();
@@ -84,7 +85,7 @@ public class AutoImmuneSystem : Simulated
                     // Might even impose a stress penalty
                     if (newResponse != ImmuneSystemResponse.ResponseType.MACNEUTRO)
                     {
-                        section.ChangeResponse(newResponse, 30f);
+                        section.HeavyWeaponsResponse(newResponse);
                         responses.Add(section); // We are actively responding to this threat, don't scan again
                     }
 
