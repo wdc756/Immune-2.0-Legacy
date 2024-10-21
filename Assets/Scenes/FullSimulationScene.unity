@@ -807,6 +807,7 @@ MonoBehaviour:
   responseChangeDelta: 0
   responseChangeTicks: 0
   targetResponsePercent: 0
+  previousResponse: 0
   StressFactor: 0
 --- !u!1 &73139465
 GameObject:
@@ -1899,6 +1900,7 @@ MonoBehaviour:
   responseChangeDelta: 0
   responseChangeTicks: 0
   targetResponsePercent: 0
+  previousResponse: 0
   StressFactor: 0
 --- !u!1001 &368138024
 PrefabInstance:
@@ -3981,6 +3983,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5533042922200558871, guid: 059b3311bf91e2d4fa153013ff6a3dc8, type: 3}
   m_PrefabInstance: {fileID: 872674483}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &872674485 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3287548976787526119, guid: 059b3311bf91e2d4fa153013ff6a3dc8, type: 3}
+  m_PrefabInstance: {fileID: 872674483}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &874015157
 GameObject:
   m_ObjectHideFlags: 0
@@ -4911,6 +4924,7 @@ MonoBehaviour:
   responseChangeDelta: 0
   responseChangeTicks: 0
   targetResponsePercent: 0
+  previousResponse: 0
   StressFactor: 0
 --- !u!1 &995504155
 GameObject:
@@ -6041,8 +6055,8 @@ MonoBehaviour:
   Body: {fileID: 15361080}
   BaseBacteria: {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
   BaseVirus: {fileID: 11400000, guid: d0a6f447312f52a4e8b416f2092876de, type: 2}
-  ResourceProductionSlider: {fileID: 0}
-  ResourceDemandSlider: {fileID: 0}
+  ResourceProductionSlider: {fileID: 872674485}
+  ResourceDemandSlider: {fileID: 1306114848}
 --- !u!1 &1170847292
 GameObject:
   m_ObjectHideFlags: 0
@@ -6843,6 +6857,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276093370}
   m_CullTransparentMesh: 1
+--- !u!114 &1306114848 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3287548976787526119, guid: 059b3311bf91e2d4fa153013ff6a3dc8, type: 3}
+  m_PrefabInstance: {fileID: 291215484}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1365298310
 GameObject:
   m_ObjectHideFlags: 0
@@ -10534,6 +10559,7 @@ MonoBehaviour:
   responseChangeDelta: 0
   responseChangeTicks: 0
   targetResponsePercent: 0
+  previousResponse: 0
   StressFactor: 0
 --- !u!1 &2083127884
 GameObject:
