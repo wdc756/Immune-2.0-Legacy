@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class BodySimulation : Simulated
@@ -28,13 +29,27 @@ public class BodySimulation : Simulated
     [Header("Resource Usage/Production")]
     public float ResourceDemandPercent;
     public float ResourceProductionPercent;
+    public float MinResourceProductionPercent;
+    public float MaxResourceProductionPercent;
+    public float DefaultResourceProductionPercent;
+    public float ResourceChangeTime;
+
+    private bool resourceChanging;
+    private float resourceChangeTicks;
+    private float resourceChangeDelta;
+    private float resourceTarget;   // for floating point correction
 
     void Start()
     {
         Sections = new List<BodySectionSimulation>(GetComponentsInChildren<BodySectionSimulation>());
         //firstSection = Sections[0];
 
+        ResourceProductionPercent = DefaultResourceProductionPercent;
+
         foreach (BodySectionSimulation section in Sections) section.StressFactor = AllStressFactor;
+
+        resourceChangeTicks = (int) (ResourceChangeTime / SimulationManager.TickDelta);
+        resourceChangeDelta = 10f / (float) resourceChangeTicks;
     }
 
     /*
@@ -48,20 +63,63 @@ public class BodySimulation : Simulated
         return Sections[index];
     }
 
-
+    float sum;
     public override void Tick()
     {
         //Debug.Log("Tick");
-        ResourceDemandPercent = 0;
+        sum = 0;
         foreach (BodySectionSimulation section in Sections)
         {
             section.Tick();
-            ResourceDemandPercent += section.ResourceDemand;
+            sum += section.ResourceDemand;
         }
+        ResourceDemandPercent = sum;
+
+        HandleResources();
+        if (ResourceProductionPercent < ResourceDemandPercent) Kickback();
     }
 
     public void IncreaseProduction()
     {
+        if (resourceChanging) return;
 
+        resourceTarget = ResourceProductionPercent + 10f;
+        resourceChangeDelta = Mathf.Abs(resourceChangeDelta);
+        if (resourceTarget > MaxResourceProductionPercent) return;
+        resourceChanging = true;
+    }
+
+    public void DecreaseProduction()
+    {
+        if (resourceChanging) return;
+
+        resourceTarget = ResourceProductionPercent - 10f;
+        resourceChangeDelta = -Mathf.Abs(resourceChangeDelta);
+        if (resourceTarget < MinResourceProductionPercent) return;
+        resourceChanging = true;
+    }
+
+    private void HandleResources()
+    {
+        if (!resourceChanging) return;
+
+        ResourceProductionPercent += resourceChangeDelta;
+        resourceChangeTicks--;
+
+        // Reset everything
+        if (resourceChangeTicks == 0)
+        {
+            ResourceProductionPercent = resourceTarget;
+
+            resourceChangeTicks = (int)(ResourceChangeTime / SimulationManager.TickDelta);
+            resourceChangeDelta = resourceChangeDelta = 10f / (float)resourceChangeTicks;
+            resourceChanging = false;
+        }
+    }
+
+    private void Kickback()
+    {
+        Debug.Log("Exeeded resource demand, kicking back immune system");
+        foreach (BodySectionSimulation section in Sections) section.Kickback();
     }
 }

@@ -32,6 +32,7 @@ public class BodySectionSimulation : Simulated
     [SerializeField] private float responseChangeDelta; // Change in response level per tick
     [SerializeField] private int responseChangeTicks;   // Amount of ticks left to change the response
     [SerializeField] private float targetResponsePercent;   // For floating point "correction"
+    [SerializeField] private float previousResponse;   // For floating point "correction"
 
     public float ResourceDemand { get; private set; }
 
@@ -45,25 +46,39 @@ public class BodySectionSimulation : Simulated
 
     public void Escalate()
     {
-        if (ResponseIsChanging) return;
+        if (ResponseIsChanging || Response.LevelPercent + parent.ReponseChangeDelta > 100f) return;
         ResponseIsChanging = true;
         responseChangeTotal = parent.ReponseChangeDelta;
         responseChangeTicks += (int) (parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
 
         targetResponsePercent = Response.LevelPercent + responseChangeTotal;
+        previousResponse = Response.LevelPercent;
     }
 
     public void Deescalate()
     {
-        if (ResponseIsChanging) return;
+        if (ResponseIsChanging || Response.LevelPercent - parent.ReponseChangeDelta < 0f) return;
         ResponseIsChanging = true;
         responseChangeTotal = -parent.ReponseChangeDelta;
         responseChangeTicks += (int)(parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
 
         targetResponsePercent = Response.LevelPercent + responseChangeTotal;
-        Debug.Log($"Deescalation target {targetResponsePercent}");
+        previousResponse = Response.LevelPercent;
+    }
+
+    public void Kickback()
+    {
+        // Interrupts any other changes in response
+        Response.LevelPercent = previousResponse;
+
+        responseChangeTicks = 0;
+        responseChangeTotal = 0f;
+        responseChangeDelta = 0f;
+        ResponseIsChanging = false;
+
+        Deescalate();
     }
 
     public void Alarm()
@@ -174,6 +189,7 @@ public class BodySectionSimulation : Simulated
         if (responseChangeTicks == 0 || responseChangeTotal == 0f)
         {
             Response.LevelPercent = targetResponsePercent;
+            previousResponse = Response.LevelPercent;
 
             responseChangeTicks = 0;
             responseChangeTotal = 0f;

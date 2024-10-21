@@ -67,11 +67,13 @@ public class SimulationManager : MonoBehaviour
 
     public void Run()
     {
+        Debug.Log("Simulation Running");
         Running = true;
     }
 
     public void Stop()
     {
+        Debug.Log("Simulation Stopped");
         Running = false;
     }
 
