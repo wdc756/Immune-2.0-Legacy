@@ -170,8 +170,6 @@ public class VisualManager : MonoBehaviour
 
     void Update()
     {
-        
+
     }
-
-
 }
