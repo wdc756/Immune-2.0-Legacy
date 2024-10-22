@@ -6,6 +6,8 @@ public class MovementTest : MonoBehaviour
 {
     public Camera mainCamera; // Reference to the main camera
     public Cell cell;
+    public GameObject bacteria;
+    public bool followMouse = true;
 
     public Vector3 GetMouseWorldPosition()
     {
@@ -29,6 +31,19 @@ public class MovementTest : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             cell.StopMoving();
+            if (followMouse)
+            {
+                followMouse = false;
+            }
+            else
+            {
+                followMouse = true;
+            }
+        }
+
+        if (!followMouse)
+        {
+            cell.SetMove(bacteria.transform.position);
         }
     }
 }

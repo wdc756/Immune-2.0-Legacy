@@ -40,7 +40,7 @@ public class Cell : MonoBehaviour
     [SerializeField, Tooltip("Determines if the cell can attack")]
     private bool canAttack = false;
     //Set if the cell can attack and has an ImmuneCell/Bacteria componet
-    private float attackSpeed = 0.0f;
+    //private float attackSpeed = 0.0f;
 
 
     private void Start()
