@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ *  Contains the UI impl for the full simulation scene. 
+ * Updates the resource demand/prod sliders and has functions
+ * for infecting the body parts with set pathogens
+ * 
+ * todo: add randomly generated pathogens (Trent)
+ */
 public class UIFullSimulation : MonoBehaviour
 {
     public BodySimulation Body;

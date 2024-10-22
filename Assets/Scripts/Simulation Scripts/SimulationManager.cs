@@ -18,6 +18,7 @@ public abstract class Simulated : MonoBehaviour
 *   SimulationManager is the top-level class that calls all of the tick functions for the body systems.
 *   This script can also call all of the section tick functions if needed
 *   but that responsibility is already delegated to BodySimulation
+*   (Trent)
 */
 public class SimulationManager : MonoBehaviour
 {

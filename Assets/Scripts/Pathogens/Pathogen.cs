@@ -7,6 +7,7 @@ public class Pathogen : ScriptableObject
 {
     /*
     This will be an information holder that will store information about how the pathogen, similar to Cell.cs
+    (Trent)
      */
 
     public string Name;

@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class AutoImmuneSystem : Simulated
 {
     /*  
      *  Performs the automatic and manual scans on body parts, either when the stress
      *  flag percentage is reached or by the user's request
+     *  (Trent)
      */
     [Header("Other Scripts")]
     public BodySimulation Body;
 
     [Header("Scan Times")]
-    public float AutoScanTime;  // In seconds
+    public float AutoScanTime;      // In seconds
     public float ManualScanTime;    // In seconds
 
     [Header("Automatic Scan Requirements")]
@@ -27,7 +27,7 @@ public class AutoImmuneSystem : Simulated
     // Contains all of the sections where the AIS is responding to (successfully completed a scan)
     [SerializeField] private List<BodySectionSimulation> responses = new List<BodySectionSimulation>();
 
-    //
+    // contains all of the active scanned body sections and how many ticks are left to scan
     private Dictionary<BodySectionSimulation, int> scanDictionary = new Dictionary<BodySectionSimulation, int>();
     public override void Tick()
     {

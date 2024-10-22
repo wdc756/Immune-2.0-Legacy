@@ -14,7 +14,7 @@ public class BodySectionSimulation : Simulated
      * The BodySimulation (haven't written that yet) will simply dispatch these
      * tick functions and also control the immune responses and whatnot
      * 
-     * i tried to make it readable and comprehesible but i can only do so much
+     * i tried to make it readable and comprehesible but i can only do so much (Trent)
      */
     [Header("Immune Response")]
     public ImmuneSystemResponse Response;
@@ -163,9 +163,13 @@ public class BodySectionSimulation : Simulated
 
         InfectionProgressPercent += gain - loss;
 
-        if (InfectionProgressPercent <= 0f) Infection = null;       // Remove the infection if we win
+        if (InfectionProgressPercent <= 0f)
+        {
+            Infection = null;       // Remove the infection if we win
+            // Set default response
+            ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, parent.ResponseDefaultLevelPercent);
+        }
     }
-
     private void HandleStress()
     {
         // Right now stress level response is based on immune response level alone.
