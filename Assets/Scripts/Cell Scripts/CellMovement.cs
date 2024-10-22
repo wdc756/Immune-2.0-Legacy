@@ -23,8 +23,8 @@ public class CellMovement : MonoBehaviour
     [Tooltip("The maximum speed that the cell can move at")]
     public float maxSpeed = 7.0f;
 
-    [Tooltip("Used by other scripts to set the next movement position")]
-    public Vector3 targetPos;
+    //Used by other scripts to set the next movement position
+    private Vector3 targetPos;
     //used to determine the point that deceleration starts
     private float decelerateDistance;
     private Vector3 movementDirection;
@@ -36,14 +36,10 @@ public class CellMovement : MonoBehaviour
         targetPos = transform.position;
     }
 
-
-
-    //sets the new targetPos for the movement function
     public void UpdateTargetPos(Vector3 newTargetPos)
     {
         newTargetPos.z = gameObject.transform.position.z;
         targetPos = newTargetPos;
-        isAccelerating = true;
         decelerateDistance = Vector3.Distance(gameObject.transform.position, targetPos) / 2.25f;
         movementDirection = (targetPos - transform.position).normalized;
     }
@@ -60,19 +56,24 @@ public class CellMovement : MonoBehaviour
     {
         float distanceToTarget = Vector3.Distance(transform.position, targetPos);
 
-        // If we are close enough to the target, start decelerating
+        // If we are close enough to the target, start decelerating, if not, accelerate
         if (distanceToTarget < decelerateDistance)
         {
             isDeccelerating = true;
             isAccelerating = false;
         }
+        else
+        {
+            isAccelerating = true;
+            isDeccelerating = false;
+        }
 
-        Accelerate();  // Update speed based on acceleration/deceleration
+        Accelerate();
 
-        // Move the cell manually based on speed and direction
+        //moves the cell in the vector3 direction of the target
         transform.position += movementDirection * speed * Time.deltaTime;
 
-        // If we are at the target, return true
+        // If the cell is at the target, and the speed is low return true
         if (distanceToTarget < 0.001f && speed <= 0.01f)
         {
             return true;
