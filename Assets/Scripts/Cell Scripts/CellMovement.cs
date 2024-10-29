@@ -8,73 +8,113 @@ public class CellMovement : MonoBehaviour
     Handles the actual movement of cells
      */
 
+    [Tooltip("The amount of change in momentum per frame when accelerating")]
+    public float accelerationForce = 0.1f;
+    [Tooltip("The mass of the object, or it's resistance to acceleration")]
+    public float mass = 0.1f;
+    public bool isAccelerating = false;
 
+    [Tooltip("The amount of change in momentum per frame when not accelerating")]
+    public float frictionForce = 1.0f;
 
-    //determines if the cell should be speeding up
-    private bool isAccelerating = false;
-    [Tooltip("Determines the rate that the cell accelerates at")]
-    public float acceleration = 0.7f;
-    //determines if the cell should be slowing down
-    private bool isDeccelerating = false;
-    [Tooltip("Determines the rate that the cell deccelerates at")]
-    public float decelerate = 1.0f;
-    //used by the movement functions to determine how fast the cell moves at any given point
-    private float speed = 0.0f;
-    [Tooltip("The maximum speed that the cell can move at")]
-    public float maxSpeed = 7.0f;
+    [Tooltip("The maximum speed the object can reach")]
+    public float maxSpeed = 1.0f;
 
-    //Used by other scripts to set the next movement position
-    private Vector3 targetPos;
-    //used to determine the point that deceleration starts
-    private float decelerateDistance;
-    private Vector3 movementDirection;
+    [Tooltip("Used to determine the stopping distance")]
+    public float tolerance = 0.7f;
 
+    //The direction the cell is moving in
+    public Vector3 momentum;
+    //The target position the cell is trying to reach
+    public Vector3 targetPosition;
+    //The direction of the target from where the cell currently is
+    public Vector3 targetDirection;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        targetPos = transform.position;
+        StopMoving();
     }
 
-    public void UpdateTargetPos(Vector3 newTargetPos)
-    {
-        newTargetPos.z = gameObject.transform.position.z;
-        targetPos = newTargetPos;
-        decelerateDistance = Vector3.Distance(gameObject.transform.position, targetPos) / 2.25f;
-        movementDirection = (targetPos - transform.position).normalized;
-    }
-    //sets the current position as the target and tells the class to slow down
-    public void StopMoving()
-    {
-        targetPos = gameObject.transform.position;
-        isAccelerating = false;
-        isDeccelerating = true;
-    }
 
-    //Calls relevant movement functions and returns a bool for whether or not the cell has reached targetPos and has slowed down
-    public bool HandleMovement()
-    {
-        float distanceToTarget = Vector3.Distance(transform.position, targetPos);
 
-        // If we are close enough to the target, start decelerating, if not, accelerate
-        if (distanceToTarget < decelerateDistance)
+    public void SetMovementTarget(Vector3 position)
+    {
+        position.z = gameObject.transform.position.z;
+        targetPosition = position;
+
+    }
+    public void SlowDown()
+    {
+        if (momentum.magnitude > 0.01f)
         {
-            isDeccelerating = true;
-            isAccelerating = false;
+            momentum *= 0.99f;
         }
         else
         {
-            isAccelerating = true;
-            isDeccelerating = false;
+            StopMoving();
+        }
+    }
+    public void StopMoving()
+    {
+        momentum = Vector3.zero;
+        targetPosition = transform.position;
+        targetDirection = Vector3.zero;
+    }
+
+    //Must be called every frame to actually move the cell
+    public void UpdateCellMovement()
+    {
+        targetDirection = CalculateMovementDirection();
+
+        // if we are close and not moving fast, then we should use SlowDown() to dampen momentum instead of just using friction force because friction
+        // is unreliable at best, this also helps us avoid orbiting and vibrating when close to the cell
+        if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 1.1f * tolerance && momentum.magnitude < 0.7f)
+        {
+            SlowDown();
+        }
+        else
+        {
+            if (ShouldAccelerate())
+            {
+                ApplyForce(accelerationForce);
+                isAccelerating = true;
+            }
+            else
+            {
+                ApplyForce(-frictionForce);
+                isAccelerating = false;
+
+                momentum *= 0.95f;
+            }
         }
 
-        Accelerate();
+        if (momentum.magnitude > 0)
+        {
+            gameObject.transform.position += momentum * Time.deltaTime;
+        }
+    }
 
-        //moves the cell in the vector3 direction of the target
-        transform.position += movementDirection * speed * Time.deltaTime;
+    private Vector3 CalculateMovementDirection()
+    {
+        //By subtracting our current pos from the target, we get the direciton we need to move in, and we normalize it to get a vector with a magnitude of 1
+        return (targetPosition - gameObject.transform.position).normalized;
+    }
 
-        // If the cell is at the target, and the speed is low return true
-        if (distanceToTarget < 0.001f && speed <= 0.01f)
+    private bool ShouldAccelerate()
+    {
+        // Calculate stopping distance based on momentum and friction
+        // dx = -v^2 / 2f
+        float stoppingDistance = (momentum.magnitude * momentum.magnitude) / (2 * frictionForce);
+
+        // Calculate current distance to target
+        float currentDistance = Vector3.Distance(gameObject.transform.position, targetPosition);
+
+        // Only decelerate if moving towards the target and within stopping range; using a dot product here because it calculates the angle between vectors
+        // so if the angle is positive, then it means they both point toward the same direction, and the opposite if negative
+        bool movingTowardsTarget = Vector3.Dot(momentum.normalized, targetDirection) > 0;
+
+        // if we are not moving towards the target or we are far from the target accelerate
+        if (!movingTowardsTarget || currentDistance > stoppingDistance + tolerance)
         {
             return true;
         }
@@ -82,31 +122,32 @@ public class CellMovement : MonoBehaviour
         return false;
     }
 
-    private void Accelerate()
+    private void ApplyForce(float force)
     {
-        // If the cell is accelerating
-        if (isAccelerating)
-        {
-            speed += acceleration * Time.deltaTime;
-        }
-        else if (isDeccelerating)
-        {
-            speed -= decelerate * Time.deltaTime;
-        }
+        //Calculates the amount to change the velocity
+        // a = F / m   targetDirection is to make sure it applies in the correct direction
+        Vector3 acceleration = targetDirection * (force / CalculateMass());
 
-        // Ensure the speed stays within the limits
-        speed = Mathf.Clamp(speed, 0.0f, maxSpeed);
+        //Calculates the new momentum by adding the acceleration with respect to time
+        // v = v[i] + at
+        momentum = momentum + (acceleration * Time.deltaTime);
 
-        // Stop accelerating when max speed is reached
-        if (speed == maxSpeed)
-        {
-            isAccelerating = false;
-        }
+        //keep the momentum(speed) from getting to big
+        momentum = Vector3.ClampMagnitude(momentum, maxSpeed);
+        //stop any movement on the z axis
+        momentum.z = 0.0f;
 
-        // Stop decelerating when speed reaches zero
-        if (speed <= 0.0f)
+
+        // I'm not sure why this works, but it keeps the cell from vibrating endlessly as it approaches the target
+        if (force < 0 && Mathf.Abs(momentum.magnitude) < 0.1f)
         {
-            isDeccelerating = false;
+            SlowDown();
         }
+    }
+
+    //Used to make the cell have more resistance when far from the object and little resistence when close; helps to stop orbiting
+    private float CalculateMass()
+    {
+        return Mathf.Clamp(Vector3.Distance(gameObject.transform.position, targetPosition) / 100, 0.001f, mass);
     }
 }

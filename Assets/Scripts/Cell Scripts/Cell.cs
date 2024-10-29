@@ -60,7 +60,7 @@ public class Cell : MonoBehaviour
     {
         if (canMove)
         {
-            cellMovement.HandleMovement();
+            cellMovement.UpdateCellMovement();
         }
         //UpdateTasks();
     }
@@ -120,14 +120,14 @@ public class Cell : MonoBehaviour
     {
         if (canMove)
         {
-            cellMovement.UpdateTargetPos(target);
+            cellMovement.SetMovementTarget(target);
         }
     }
     public void StopMoving()
     {
         if (canMove)
         {
-            cellMovement.StopMoving();
+            cellMovement.SlowDown();
         }
     }
 }

@@ -260,7 +260,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -810,8 +810,24 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 585289262231978976, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
-      propertyPath: m_SortingOrder
+    - target: {fileID: 1104556089033950944, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      propertyPath: mass
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104556089033950944, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      propertyPath: maxSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104556089033950944, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      propertyPath: tolerance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104556089033950944, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      propertyPath: frictionForce
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104556089033950944, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      propertyPath: accelerationForce
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5509639925671390790, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
