@@ -13,7 +13,7 @@ public class BodySimulation : Simulated
      */
     [Header("Other Scripts")]
     public List<BodySectionSimulation> Sections;
-    public AutoImmuneSystem AIS;
+    public AdaptiveImmuneSystem AIS;
 
     // Oh boy lookie here there's a lot of yapping
     [Header("Global Section Settings")]

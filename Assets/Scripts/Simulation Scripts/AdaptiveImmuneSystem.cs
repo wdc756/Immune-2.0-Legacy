@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoImmuneSystem : Simulated
+public class AdaptiveImmuneSystem : Simulated
 {
     /*  
      *  Performs the automatic and manual scans on body parts, either when the stress

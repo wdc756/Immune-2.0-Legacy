@@ -22,7 +22,7 @@ public class BodySectionSimulation : Simulated
     [Header("Infection")]
     public Pathogen Infection;
     private BodySimulation parent;
-    private AutoImmuneSystem AIS;
+    private AdaptiveImmuneSystem AIS;
     public float InfectionProgressPercent { get; private set; }
     public float StressLevelPercent {  get; private set; }
 
@@ -39,7 +39,7 @@ public class BodySectionSimulation : Simulated
     void Start()
     {
         parent = GetComponentInParent<BodySimulation>();
-        AIS = GetComponentInParent<AutoImmuneSystem>();
+        AIS = GetComponentInParent<AdaptiveImmuneSystem>();
         ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, parent.ResponseDefaultLevelPercent);
     }
 
