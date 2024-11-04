@@ -42,7 +42,7 @@ public class ObjectPoolingHelper : MonoBehaviour
 
             for (int i = 0; i < poolCount; i++)
             {
-                pooledObjects.Add(Instantiate(poolObject));
+                pooledObjects.Add(Instantiate(poolObject, gameObject.transform));
                 pooledObjects[i].SetActive(false);
             }
         }

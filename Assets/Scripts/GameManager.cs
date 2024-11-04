@@ -23,6 +23,6 @@ public class GameManager : MonoBehaviour
     //Links to an error screen that will output the string message by adding it to the string error list
     public void Error(string message)
     {
-
+        //add string to list of all errors then display errors
     }
 }

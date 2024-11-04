@@ -12,7 +12,6 @@ public class CellMovement : MonoBehaviour
     public float accelerationForce = 0.1f;
     [Tooltip("The mass of the object, or it's resistance to acceleration")]
     public float mass = 0.1f;
-    public bool isAccelerating = false;
 
     [Tooltip("The amount of change in momentum per frame when not accelerating")]
     public float frictionForce = 1.0f;
@@ -24,11 +23,11 @@ public class CellMovement : MonoBehaviour
     public float tolerance = 0.7f;
 
     //The direction the cell is moving in
-    public Vector3 momentum;
+    private Vector3 momentum;
     //The target position the cell is trying to reach
-    public Vector3 targetPosition;
+    private Vector3 targetPosition;
     //The direction of the target from where the cell currently is
-    public Vector3 targetDirection;
+    private Vector3 targetDirection;
 
     private void Start()
     {
@@ -41,7 +40,6 @@ public class CellMovement : MonoBehaviour
     {
         position.z = gameObject.transform.position.z;
         targetPosition = position;
-
     }
     public void SlowDown()
     {
@@ -61,9 +59,12 @@ public class CellMovement : MonoBehaviour
         targetDirection = Vector3.zero;
     }
 
-    //Must be called every frame to actually move the cell
-    public void UpdateCellMovement()
+    //Must be called every frame to actually move the cell, and returns if it has reached the target
+    public bool UpdateCellMovement()
     {
+        //used to return a value at the end of the script
+        bool hasArrived = false;
+
         targetDirection = CalculateMovementDirection();
 
         // if we are close and not moving fast, then we should use SlowDown() to dampen momentum instead of just using friction force because friction
@@ -71,19 +72,19 @@ public class CellMovement : MonoBehaviour
         if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 1.1f * tolerance && momentum.magnitude < 0.7f)
         {
             SlowDown();
+            hasArrived = true;
         }
         else
         {
             if (ShouldAccelerate())
             {
                 ApplyForce(accelerationForce);
-                isAccelerating = true;
             }
             else
             {
                 ApplyForce(-frictionForce);
-                isAccelerating = false;
 
+                //not sure why this being here helps, it just does
                 momentum *= 0.95f;
             }
         }
@@ -92,6 +93,8 @@ public class CellMovement : MonoBehaviour
         {
             gameObject.transform.position += momentum * Time.deltaTime;
         }
+
+        return hasArrived;
     }
 
     private Vector3 CalculateMovementDirection()

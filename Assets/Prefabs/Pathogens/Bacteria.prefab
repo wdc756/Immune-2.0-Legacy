@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 656320135563405327}
   - component: {fileID: 6251268801188661745}
+  - component: {fileID: 475086689285462607}
+  - component: {fileID: 8769249357666947556}
+  - component: {fileID: 8567686690884163351}
   m_Layer: 0
   m_Name: Bacteria
   m_TagString: Untagged
@@ -70,11 +73,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1554577895
+  m_SortingLayer: 1
+  m_SortingOrder: 1
   m_Sprite: {fileID: 2747690628134850419, guid: b670ab75dde984907b8570040daa08c5, type: 3}
-  m_Color: {r: 0, g: 0.8632076, b: 0.1308317, a: 1}
+  m_Color: {r: 0.08235294, g: 0.7019608, b: 0.40392157, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -84,3 +87,55 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &475086689285462607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934541465807140342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df66740fffe41f94cb214b794b4046c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  tasks: 
+  movementTargets: []
+  followObjects: []
+  currentTask: 0
+  canMove: 1
+  randomWalkDirectionChangeChance: 0.07
+  randomWalkChangeDistance: 18
+  followChangeChance: 0
+  followChangeDistance: 0
+  followChangeMaxTime: 0
+--- !u!114 &8769249357666947556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934541465807140342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  accelerationForce: 0.5
+  mass: 3
+  frictionForce: 1
+  maxSpeed: 3
+  tolerance: 0.7
+--- !u!114 &8567686690884163351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934541465807140342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7569b579808b98d4dac89b8c6eda7cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
