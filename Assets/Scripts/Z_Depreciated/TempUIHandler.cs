@@ -1,19 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
+//using UnityEngine.UI;
 
-public class TempUIHandler : MonoBehaviour
-{
+//public class TempUIHandler : MonoBehaviour
+//{
 
-    public Slider responseSlider;
-    public Slider infectionSlider;
+//    public Slider responseSlider;
+//    public Slider infectionSlider;
 
-    public CellManager cellManager;
+//    public CellManager cellManager;
 
-    // Update is called once per frame
-    void Update()
-    {
-        cellManager.RecieveSimulationNumbers(responseSlider.value, infectionSlider.value);
-    }
-}
+//    // Update is called once per frame
+//    void Update()
+//    {
+//        cellManager.RecieveSimulationNumbers(responseSlider.value, infectionSlider.value);
+//    }
+//}

@@ -39,7 +39,7 @@ public class VisualManager : MonoBehaviour
         InstantiateVisualScenes();
 
         cellManager = GetComponent<CellManager>();
-        if (cellManager != null )
+        if (cellManager != null)
         {
             cellManager.SetUp(gameManager);
         }
@@ -58,8 +58,13 @@ public class VisualManager : MonoBehaviour
     //Generates scenes using the visualScenePrefab
     private void InstantiateVisualScenes()
     {
-        VisualScene civilianCells = new VisualScene();
-        //civilianCells.
+        visualSceneList.Clear();
+        GameObject newSceneObject = Instantiate(visualScenePrefab, gameObject.transform);
+        visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
+        newSceneObject.name = "Thymus";
+
+        //instantiate rest of scenes
+        //make sure to set other scenes as inactive
     }
     
     //returns whether or not the level is ready, and will output why the level is not ready

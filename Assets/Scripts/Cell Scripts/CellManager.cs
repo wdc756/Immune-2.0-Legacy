@@ -13,14 +13,13 @@ public class CellManager : MonoBehaviour
     //reference to the GameManager; mainly for error messages
     private GameManager gameManager;
 
-    [SerializeField, Tooltip("Used to group the ObjectPoolingHelpers together for organization")]
-    private GameObject objectPoolingHelpersParent;
-    [SerializeField, Tooltip("Prefab used to generate Object Pooling Helpers")]
-    private ObjectPoolingHelper objectPoolingHelperPrefab;
-    //This is a list because then we can add/subtract stuff as needed during development or for other gamemodes
-    [SerializeField, Tooltip("Stores all the ObjectPoolingHelpers used throughout the game")]
-    private List<ObjectPoolingHelper> objectPoolingHelperList = new List<ObjectPoolingHelper>();
+    [Header("Screen Bounds, in unity units")]
+    [SerializeField, Tooltip("Vertical Max(absolute value)")]
+    private float verticalMax = 21.0f;
+    [SerializeField, Tooltip("Horizontal Max(absolute value)")]
+    private float horizontalMax = 36.0f;
 
+    [Header("Object Pooling Helpers, Must be set on compile time")]
     //these are here to help us instantiate the relevant ObjectPoolingHelpers easier
     [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab civilianCells")]
     private GameObject civilianPoolPre;
@@ -36,11 +35,6 @@ public class CellManager : MonoBehaviour
     private GameObject bacteriaPoolPre;
     [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab infected Cells")]
     private GameObject infectedCellPoolPre;
-
-    [SerializeField, Tooltip("Vertical Max(absolute value)")]
-    private float verticalMax = 21.0f;
-    [SerializeField, Tooltip("Horizontal Max(absolute value)")]
-    private float horizontalMax = 36.0f;
 
     public int MaxCivilianCells = 50;
     public int MaxImmuneCells = 50;
@@ -61,15 +55,7 @@ public class CellManager : MonoBehaviour
 
         visualManager = GetComponent<VisualManager>();
 
-        if (CheckObjectPoolingHelperPrefabs())
-        {
-            InstantiateObjectPoolingHelpers();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
 
     void Update()
@@ -197,68 +183,4 @@ public class CellManager : MonoBehaviour
         return new Vector3(x, y, 0);
     }
 
-    //checks if all the object pooling helper prefabs are not null
-    private bool CheckObjectPoolingHelperPrefabs()
-    {
-        bool isReady = true;
-
-        if (civilianPoolPre == null)
-        {
-            gameManager.Error("civilianPoolPre is null.");
-            isReady = false;
-        }
-        if (macrophagePoolPre == null)
-        {
-            gameManager.Error("macrophagePoolPre is null.");
-            isReady = false;
-        }
-        if (neutrophilePoolPre == null)
-        {
-            gameManager.Error("neutrophilePoolPre is null.");
-            isReady = false;
-        }
-        if (TCellPoolPre == null)
-        {
-            gameManager.Error("TCellPoolPre is null.");
-            isReady = false;
-        }
-        if (BCellPoolPre == null)
-        {
-            gameManager.Error("BCellPoolPre is null.");
-            isReady = false;
-        }
-        if (bacteriaPoolPre == null)
-        {
-            gameManager.Error("bacteriaPoolPre is null.");
-            isReady = false;
-        }
-        if (infectedCellPoolPre == null)
-        {
-            gameManager.Error("infectedCellPoolPre is null.");
-            isReady = false;
-        }
-
-        return isReady;
-    }
-    //Generates objectpools using the objectPoolingHelperPrefab
-    private void InstantiateObjectPoolingHelpers()
-    {
-        //In the future we can only choose to load in what we need by passing ints through the function
-
-        ObjectPoolingHelper civilians = Instantiate(civilianPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(civilians);
-
-        ObjectPoolingHelper macrophages = Instantiate(macrophagePoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(macrophages);
-        ObjectPoolingHelper neutrophils = Instantiate(neutrophilePoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(neutrophils);
-        ObjectPoolingHelper TCells = Instantiate(TCellPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(TCells);
-        ObjectPoolingHelper BCells = Instantiate(BCellPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(BCells);
-        ObjectPoolingHelper bacteria = Instantiate(bacteriaPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(bacteria);
-        ObjectPoolingHelper infectedCells = Instantiate(infectedCellPoolPre, objectPoolingHelpersParent.transform).GetComponent<ObjectPoolingHelper>();
-        objectPoolingHelperList.Add(infectedCells);
-    }
 }

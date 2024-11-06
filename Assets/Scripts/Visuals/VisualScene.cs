@@ -26,8 +26,11 @@ public class VisualScene : MonoBehaviour
     [SerializeField, Tooltip("The color shift hue when this section is very infected")]
     private Color infectedHue;
 
+    void Update()
+    {
+        
+    }
 
-    
     //Updates the visuals according to the new stress and infection levels
     public void UpdateColorTints(float stress, float infected)
     {

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 475086689285462607}
   - component: {fileID: 8769249357666947556}
   - component: {fileID: 8567686690884163351}
+  - component: {fileID: 5719378998862466126}
   m_Layer: 0
   m_Name: Bacteria
   m_TagString: Untagged
@@ -104,7 +105,10 @@ MonoBehaviour:
   movementTargets: []
   followObjects: []
   currentTask: 0
+  cellSmallMovement: {fileID: 0}
   canMove: 1
+  cellMovement: {fileID: 0}
+  cellWalk: {fileID: 0}
   randomWalkDirectionChangeChance: 0.07
   randomWalkChangeDistance: 18
   followChangeChance: 0
@@ -139,3 +143,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7569b579808b98d4dac89b8c6eda7cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5719378998862466126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934541465807140342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 166d8cdc5eb277f48a040a93ee70522d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPosition: {x: 0, y: 0, z: 0}
+  maxDistance: 0.5
+  movementTime: 0.7

@@ -39,14 +39,18 @@ public class Cell : MonoBehaviour
     [SerializeField, Tooltip("Used to broadcast what the cell is doing")]
     private int currentTask = 0;
 
+    //used when the cell is waiting, and keeps track of passed time
+    private float waitTimer = 0;
+    public CellSmallMovement cellSmallMovement;
+
     [Tooltip("Determines if the cell has a CellMovement script")]
     public bool canMove = false;
     //used to determine when the cell has reached a target and is ready to move to the next one
     private bool isMoving = false;
     //reference to the CellMovement class
-    private CellMovement cellMovement;
+    public CellMovement cellMovement;
     //reference to the CellRandomWalk class
-    private CellRandomWalk cellWalk;
+    public CellRandomWalk cellWalk;
     [Tooltip("Used to determine how often the cell will change to a new random adjacent position when random walking; smaller number is smaller chance, 0 = never change")]
     public float randomWalkDirectionChangeChance;
     [Tooltip("The distance from the current position that the new random one can be")]
@@ -62,36 +66,35 @@ public class Cell : MonoBehaviour
     //used for timer stuff for followChange logic
     private float followChangeTimer;
 
-
-
-    //Used whenever a cell is activated from the object pool
-    public void ActivateCell(Vector3 position, float maxVertical, float maxHorizontal)
+    void Start()
     {
-        transform.position = position;
-        tasks.Clear();
-        currentTask = 0;
-
-        SetBounds(maxVertical, maxHorizontal);
+        cellSmallMovement = gameObject.GetComponent<CellSmallMovement>();
+        cellSmallMovement.enabled = true;
 
         if (canMove)
         {
             cellMovement = gameObject.GetComponent<CellMovement>();
             cellWalk = gameObject.GetComponent<CellRandomWalk>();
+            cellSmallMovement.enabled = false;
         }
+
+        NewTask(0);
+    }
+
+    //Used whenever a cell is activated from the object pool
+    public void ActivateCell(Vector3 position, float maxVertical, float maxHorizontal)
+    {
+        transform.position = position;
+        ClearTasks();
+
+        SetBounds(maxVertical, maxHorizontal);
 
         StopMoving();
     }
     public void ActivateCell(Vector3 position)
     {
         transform.position = position;
-        tasks.Clear();
-        currentTask = 0;
-
-        if (canMove)
-        {
-            cellMovement = gameObject.GetComponent<CellMovement>();
-            cellWalk = gameObject.GetComponent<CellRandomWalk>();
-        }
+        ClearTasks();
 
         StopMoving();
     }
@@ -165,10 +168,24 @@ public class Cell : MonoBehaviour
 
     private void HandleTasks()
     {
+        // If the task is negative, wait for x seconds
+        if (currentTask < 0)
+        {
+            waitTimer += Time.deltaTime;
+            if (waitTimer >= Mathf.Abs(currentTask))
+            {
+                currentTask = 0;
+                cellSmallMovement.enabled = false;
+            }
+        }
+
         //is doing nothing, and has only one task, then do randomWalk updates
         if (currentTask == 0 && tasks.Count <= 1)
         {
-            HandleRandomWalk();
+            if (canMove)
+            {
+                HandleRandomWalk();
+            }
         }
 
         if (currentTask == 1)
@@ -217,6 +234,10 @@ public class Cell : MonoBehaviour
             else if (currentTask == 4)
             {
                 DeactivateCell();
+            }
+            else if (currentTask < 0)
+            {
+                cellSmallMovement.enabled = true;
             }
         }
         else
@@ -351,7 +372,7 @@ public class Cell : MonoBehaviour
     }
     public void StopMoving()
     {
-        if (canMove)
+        if (canMove && cellMovement != null)
         {
             cellMovement.SlowDown();
 

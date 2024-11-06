@@ -8,8 +8,8 @@ public class CellRandomWalk : MonoBehaviour
      Will return random locations for the cells to move to within the visual scene, creating a sort of patrol behavior
      */
 
-    private float verticalMax = 10f;
-    private float horizontalMax = 16f;
+    private float verticalMax = 5f;
+    private float horizontalMax = 8f;
 
     //used to set the maximum bounds of the random function
     public void SetBounds(float vMax, float hMax)

@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/FullSimulationScene.unity
+    path: Assets/Scenes/Testing/FullSimulationScene.unity
     guid: 43f8b7f46f8c3614caae2980cc6e46ce
   - enabled: 1
-    path: Assets/Scenes/Visual Testing.unity
+    path: Assets/Scenes/Testing/Visual Testing.unity
     guid: 20477a84419259e4fa51c9538a66594f
   m_configObjects: {}
