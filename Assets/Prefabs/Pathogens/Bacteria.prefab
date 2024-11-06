@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.43, y: 3.23, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -101,12 +101,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  distance: 0
   tasks: 
   movementTargets: []
   followObjects: []
   currentTask: 0
-  cellSmallMovement: {fileID: 0}
   canMove: 1
+  isMoving: 0
+  killRadius: 0.3
   cellMovement: {fileID: 0}
   cellWalk: {fileID: 0}
   randomWalkDirectionChangeChance: 0.07
@@ -126,11 +128,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 0.5
+  accelerationForce: 0.1
   mass: 3
   frictionForce: 1
   maxSpeed: 3
-  tolerance: 0.7
+  tolerance: 0.1
 --- !u!114 &8567686690884163351
 MonoBehaviour:
   m_ObjectHideFlags: 0

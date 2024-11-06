@@ -68,8 +68,8 @@ public class CellMovement : MonoBehaviour
         targetDirection = CalculateMovementDirection();
 
         // if we are close and not moving fast, then we should use SlowDown() to dampen momentum instead of just using friction force because friction
-        // is unreliable at best, this also helps us avoid orbiting and vibrating when close to the cell
-        if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 1.1f * tolerance && momentum.magnitude < 0.7f)
+        // is unreliable at best, this also helps us avoid orbiting and vibrating when close to the target
+        if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 1.5f * tolerance && momentum.magnitude < 0.7f)
         {
             SlowDown();
             hasArrived = true;

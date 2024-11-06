@@ -20,20 +20,20 @@ public class CellManager : MonoBehaviour
     private float horizontalMax = 36.0f;
 
     [Header("Object Pooling Helpers, Must be set on compile time")]
-    //these are here to help us instantiate the relevant ObjectPoolingHelpers easier
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab civilianCells")]
+    //These are used to "create" objects as needed
+    [SerializeField]
     private GameObject civilianPoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab macrophages")]
+    [SerializeField]
     private GameObject macrophagePoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab neutrophiles")]
+    [SerializeField]
     private GameObject neutrophilePoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab TCells")]
+    [SerializeField]
     private GameObject TCellPoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab BCells")]
+    [SerializeField]
     private GameObject BCellPoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab bacteria")]
+    [SerializeField]
     private GameObject bacteriaPoolPre;
-    [SerializeField, Tooltip("Reference to ObjectPoolingHelper for Prefab infected Cells")]
+    [SerializeField]
     private GameObject infectedCellPoolPre;
 
     public int MaxCivilianCells = 50;
@@ -179,7 +179,6 @@ public class CellManager : MonoBehaviour
                 break;
         }
 
-        // Set z to 0 if in 2D; adjust as needed for 3D space
         return new Vector3(x, y, 0);
     }
 
