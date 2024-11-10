@@ -21,6 +21,11 @@ public class CellSmallMovement : MonoBehaviour
 
     private void Start()
     {
+        ResetMovement();
+    }
+
+    public void ResetMovement()
+    {
         Cell cell = GetComponent<Cell>();
         startPosition = gameObject.transform.position;
         targetPosition = GetRandomPosition();

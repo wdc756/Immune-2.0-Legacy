@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1554577895
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 2747690628134850419, guid: b670ab75dde984907b8570040daa08c5, type: 3}
   m_Color: {r: 0.08235294, g: 0.7019608, b: 0.40392157, a: 1}
   m_FlipX: 0
@@ -101,16 +101,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
-  distance: 0
+  persistTime: 30
   tasks: 
   movementTargets: []
   followObjects: []
   currentTask: 0
   canMove: 1
-  isMoving: 0
-  killRadius: 0.3
-  cellMovement: {fileID: 0}
-  cellWalk: {fileID: 0}
+  interactRadius: 0.7
   randomWalkDirectionChangeChance: 0.07
   randomWalkChangeDistance: 18
   followChangeChance: 0
@@ -128,11 +125,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 0.1
-  mass: 3
+  accelerationForce: 0.7
+  mass: 0.25
   frictionForce: 1
   maxSpeed: 3
-  tolerance: 0.1
+  tolerance: 0.07
+  momentum: {x: 0, y: 0, z: 0}
+  isSlowingDown: 0
 --- !u!114 &8567686690884163351
 MonoBehaviour:
   m_ObjectHideFlags: 0

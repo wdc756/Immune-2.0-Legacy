@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  distance: 0
+  persistTime: 25
   tasks: 00000000
   movementTargets:
   - {x: 0, y: 0, z: 0}
@@ -109,10 +109,7 @@ MonoBehaviour:
   - {fileID: 0}
   currentTask: 0
   canMove: 1
-  isMoving: 0
-  killRadius: 1
-  cellMovement: {fileID: 0}
-  cellWalk: {fileID: 0}
+  interactRadius: 1
   randomWalkDirectionChangeChance: 0.05
   randomWalkChangeDistance: 7
   followChangeChance: 0.01
@@ -130,11 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 0.3
-  mass: 1.25
-  frictionForce: 0.5
+  accelerationForce: 0.7
+  mass: 0.3
+  frictionForce: 1
   maxSpeed: 2
-  tolerance: 0.3
+  tolerance: 0.1
+  momentum: {x: 0, y: 0, z: 0}
+  isSlowingDown: 0
 --- !u!114 &3449442962001245875
 MonoBehaviour:
   m_ObjectHideFlags: 0

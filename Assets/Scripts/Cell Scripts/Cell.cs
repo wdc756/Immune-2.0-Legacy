@@ -21,8 +21,10 @@ public class Cell : MonoBehaviour
      */
     [Tooltip("Used to determine the type of cell, which tells this script which scripts to use")]
     public int type = 0;
-
-    public float distance;
+    [Tooltip("The amount of time the cell can stay active for; used to help with cells persisting when they were supposed to die")]
+    public float persistTime = 15f;
+    //The actual time remaining until the cell gets deactivated
+    private float persistTimeLeft;
 
     /*
     -n: wait for seconds(n)
@@ -32,7 +34,9 @@ public class Cell : MonoBehaviour
     3: Follow GameObject (until told to stop)
     4: Follow GameObject (kill on arrive)
     5: Follow GameObject (eat on arrive)
-    10: Deactivate (aptosis)
+    6: Alert (alarm signal)
+    10: Deactivate (aptosis animation)
+    11: Deactivate (setActive(false))
      */
     [Header("Task Variables")]
     [SerializeField, Tooltip("List of tasks to be executed")]
@@ -52,11 +56,11 @@ public class Cell : MonoBehaviour
     [Tooltip("Determines if the cell moves to targets or just waves around")]
     public bool canMove = false;
     //used to determine when the cell has reached a target and is ready to move to the next one
-    public bool isMoving = false;
-    [Tooltip("Used when the cell is told to kill a target cell, and it represents the minimum distance required to activate kill mode")]
-    public float killRadius = 7;
-    public CellMovement cellMovement;
-    public CellRandomWalk cellWalk;
+    private bool isMoving = false;
+    [Tooltip("Used to determine when a cell will interact with surrounding cells in the simulation, or other objects")]
+    public float interactRadius = 1;
+    private CellMovement cellMovement;
+    private CellRandomWalk cellWalk;
     [Tooltip("Used to determine how often the cell will change to a new random adjacent position when random walking; smaller number is smaller chance, 0 = never change")]
     public float randomWalkDirectionChangeChance;
     [Tooltip("The distance from the current position that the new random one can be")]
@@ -90,29 +94,34 @@ public class Cell : MonoBehaviour
     //Used whenever a cell is activated from the object pool
     public void ActivateCell(Vector3 position, float maxVertical, float maxHorizontal)
     {
-        transform.position = position;
-        ClearTasks();
-
         SetBounds(maxVertical, maxHorizontal);
-
-        StopMoving();
+        Activate(position);
     }
     public void ActivateCell(Vector3 position)
+    {
+        Activate(position);
+    }
+    private void Activate(Vector3 position)
     {
         transform.position = position;
         ClearTasks();
 
-        //we need to add logic to handle varable changes
-        //perhaps keep one cell as a reference in the stack
+        if (canMove) { StopMoving(); }
+        if (cellSmallMovement != null) { cellSmallMovement.ResetMovement(); }
 
-        StopMoving();
+        ResetPersist();
     }
     //Used when a cell is deactivated and put back in the object pool
     public void DeactivateCell()
     {
+        //add if == 10 || == 11 for animations later
         currentTask = 0;
         ClearTasks();
         gameObject.SetActive(false);
+
+
+        //we need to add logic to handle varable changes
+        //perhaps keep one cell as a reference in the stack
     }
     //Sets the min/max bounds for random movement
     public void SetBounds(float maxVertical, float maxHorizontal)
@@ -125,24 +134,46 @@ public class Cell : MonoBehaviour
 
 
 
+    //Used to reset the persist timer, or anytime a cell funciton is called by another script
+    public void ResetPersistTime(float newTime)
+    {
+        persistTime = newTime;
+        ResetPersist();
+    }
+    public void ResetPersistTime()
+    {
+        ResetPersist();
+    }
+    private void ResetPersist()
+    {
+        persistTimeLeft = persistTime;
+    }
+
+
     //Puts a new task into the list
     public void NewTask(int task)
     {
         tasks.Add(task);
         movementTargets.Add(Vector3.zero);
         followObjects.Add(null);
+
+        ResetPersist();
     }
     public void NewTask(int task, Vector3 position)
     {
         tasks.Add(task);
         movementTargets.Add(position);
         followObjects.Add(null);
+
+        ResetPersist();
     }
     public void NewTask(int task, GameObject target)
     {
         tasks.Add(task);
         movementTargets.Add(Vector3.zero);
         followObjects.Add(target);
+
+        ResetPersist();
     }
     //Resets the list and what the cell is currently doing
     public void ClearTasks()
@@ -154,6 +185,8 @@ public class Cell : MonoBehaviour
         StopMoving();
 
         NewTask(0);
+
+        ResetPersist();
     }
 
 
@@ -168,6 +201,12 @@ public class Cell : MonoBehaviour
         }
 
         HandleTasks();
+
+        persistTimeLeft -= Time.deltaTime;
+        if (persistTimeLeft < 0)
+        {
+            DeactivateCell();
+        }
     }
 
 
@@ -237,14 +276,20 @@ public class Cell : MonoBehaviour
             {
                 SetMove(movementTargets[0]);
             }
-            else if (currentTask == 10)
+            else if (currentTask == 10 || currentTask == 11)
             {
-                Debug.Log("Deactivating");
                 DeactivateCell();
             }
             else if (currentTask < 0)
             {
                 cellSmallMovement.enabled = true;
+                cellSmallMovement.ResetMovement();
+            }
+
+            //If there is only one task left, add a new one
+            if (tasks.Count == 1 && currentTask != 0)
+            {
+                NewTask(0);
             }
         }
         else
@@ -253,6 +298,8 @@ public class Cell : MonoBehaviour
             currentTask = 0;
             NewTask(0);
         }
+
+        ResetPersist();
     }
 
 
@@ -316,40 +363,49 @@ public class Cell : MonoBehaviour
             }
 
             //if in kill follow mode, then when the target object is reached, kill it
-            if ((currentTask == 4 || currentTask == 5) && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < killRadius)
+            if ((currentTask == 4 || currentTask == 5) && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < interactRadius)
             {
-                //get the current kill target
-                Cell cell = followObjects[0].GetComponent<Cell>();
-                if (cell != null)
-                {
-                    //clear tasks and tell it to either kill immediately or to be swallowed
-                    cell.ClearTasks();
-                    //if in swallow mode, tell enemy to be swallowed
-                    if (currentTask == 5)
-                    {
-                        if (cell.canMove)
-                        {
-                            cell.NewTask(2, gameObject);
-                            //CellMovement enemyMovement = cell.GetComponent<CellMovement>();
-                            //enemyMovement.tolerance = 0.7f;
-                            cell.followChangeChance = 0f;
-                        }
-                    }
-                    //kill
-                    cell.NewTask(10);
-                }
-                //tell this cell to move to the target, to make swallowing easier
-                currentTask = 2;
+                KillEnemyCell();
             }
-
-            distance = Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position);
 
             //if in follow stop mode, then when the target is reached, reset task
-            if (currentTask == 2 && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < killRadius)
+            if (currentTask == 2 && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < interactRadius)
             {
-                currentTask = 0;
+                if (isMoving)
+                {
+                    cellMovement.SlowDown();
+                }
+                else
+                {
+                    currentTask = 0;
+                }
             }
         }
+    }
+    private void KillEnemyCell()
+    {
+        //get the current kill target
+        Cell cell = followObjects[0].GetComponent<Cell>();
+        if (cell != null)
+        {
+            //clear tasks and tell it to either kill immediately or to be swallowed
+            cell.ClearTasks();
+            //if in swallow mode, tell enemy to be swallowed
+            if (currentTask == 5)
+            {
+                if (cell.canMove)
+                {
+                    cell.NewTask(2, gameObject);
+                    //CellMovement enemyMovement = cell.GetComponent<CellMovement>();
+                    //enemyMovement.tolerance = 0.7f;
+                    cell.followChangeChance = 0f;
+                }
+            }
+            //kill
+            cell.NewTask(10);
+        }
+        //tell this cell to move to the target, to make swallowing easier
+        currentTask = 2;
     }
     //Handles random walk functions and variables, based on conditionals
     private void HandleRandomWalk()
@@ -404,6 +460,10 @@ public class Cell : MonoBehaviour
             cellMovement.SlowDown();
 
             //if in continuous follow mode, switch to follow mode, else if in follow mode, then go to regular move, then if in regular mode stop moving completely
+            if (currentTask == 4 || currentTask == 5)
+            {
+                currentTask = 3;
+            }
             if (currentTask == 3)
             {
                 currentTask = 2;

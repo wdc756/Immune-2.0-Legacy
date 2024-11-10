@@ -24,10 +24,7 @@ public class ObjectPoolingHelper : MonoBehaviour
     //determines if the script should do anything
     private bool isEnabled = true;
 
-    void Start()
-    {
-        InitializeScriptVariables();
-    }
+
 
     void InitializeScriptVariables()
     {
@@ -40,11 +37,12 @@ public class ObjectPoolingHelper : MonoBehaviour
         {
             originalCount = poolCount;
 
-            for (int i = 0; i < poolCount; i++)
+            for (int i = 0; i < poolCount + 1; i++)
             {
                 pooledObjects.Add(Instantiate(poolObject, gameObject.transform));
                 pooledObjects[i].SetActive(false);
             }
+            Debug.Log("Number needed: " + poolCount + ", Number reached: " + pooledObjects.Count);
         }
     }
 
@@ -136,21 +134,23 @@ public class ObjectPoolingHelper : MonoBehaviour
 
     public void SetPoolCount(int newCount, bool resetAll)
     {
-        if (1 < newCount)
+        //this is done as a protection against infinite loops, and for general stability
+
+        if (newCount > 1)
         {            
             if (resetAll)
             {
+                ClearPool();
                 poolCount = newCount;
-                pooledObjects.Clear();
                 InitializeScriptVariables();
             }
             else
             {
                 if (poolCount < newCount)
                 {
-                    for (int i = 0; i < newCount - poolCount; i++)
+                    for (int i = 0; i < newCount - poolCount + 3; i++)
                     {
-                        pooledObjects.Add(Instantiate(poolObject));
+                        pooledObjects.Add(Instantiate(poolObject, gameObject.transform));
                         pooledObjects[i].SetActive(false);
                     }
                 }
@@ -173,11 +173,22 @@ public class ObjectPoolingHelper : MonoBehaviour
     {
         if (isEnabled)
         {
+            ClearPool();
             InitializeScriptVariables();
         }
         else
         {
             Debug.LogWarning("Call was made on ResetObjectPoolingHelper() in ObjectPoolingHelper attached to " + gameObject.name + " when the script is disabled");
         }
+    }
+
+    //use to destory all the gameobjects and reset them all
+    private void ClearPool()
+    {
+        foreach (GameObject obj in pooledObjects)
+        {
+            Destroy(obj);
+        }
+        pooledObjects.Clear();
     }
 }

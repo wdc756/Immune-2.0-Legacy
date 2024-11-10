@@ -8,8 +8,6 @@ public class VisualScene : MonoBehaviour
      This just controls the color shifting and status images for the background(s) and also contains path references used by VisualManager to direct the player
     to different VisualScenes. Think like how the Thymus has connections to the lungs, the heart, and also two an interchange, then that interchange
     has connections back to the Thymus, but also to two other parts of the body
-    
-    Should be applied to an image
      */
 
     [SerializeField, Tooltip("Used by VisualManager to direct players to other VisualScenes")]

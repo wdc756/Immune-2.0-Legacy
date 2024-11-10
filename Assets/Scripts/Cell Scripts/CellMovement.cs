@@ -23,7 +23,8 @@ public class CellMovement : MonoBehaviour
     public float tolerance = 0.7f;
 
     //The direction the cell is moving in
-    private Vector3 momentum;
+    public Vector3 momentum;
+    public bool isSlowingDown = false;
     //The target position the cell is trying to reach
     private Vector3 targetPosition;
     //The direction of the target from where the cell currently is
@@ -69,13 +70,15 @@ public class CellMovement : MonoBehaviour
 
         // if we are close and not moving fast, then we should use SlowDown() to dampen momentum instead of just using friction force because friction
         // is unreliable at best, this also helps us avoid orbiting and vibrating when close to the target
-        if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 1.5f * tolerance && momentum.magnitude < 0.7f)
+        if (Vector3.Distance(gameObject.transform.position, targetPosition) <= 2f * tolerance && momentum.magnitude < 1f)
         {
+            isSlowingDown = true;
             SlowDown();
             hasArrived = true;
         }
         else
         {
+            isSlowingDown = false;
             if (ShouldAccelerate())
             {
                 ApplyForce(accelerationForce);
@@ -151,6 +154,6 @@ public class CellMovement : MonoBehaviour
     //Used to make the cell have more resistance when far from the object and little resistence when close; helps to stop orbiting
     private float CalculateMass()
     {
-        return Mathf.Clamp(Vector3.Distance(gameObject.transform.position, targetPosition) / 100, 0.001f, mass);
+        return Mathf.Clamp(Vector3.Distance(gameObject.transform.position, targetPosition) / 7, 0.001f, mass);
     }
 }

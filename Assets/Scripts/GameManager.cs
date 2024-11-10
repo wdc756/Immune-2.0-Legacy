@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,17 +13,10 @@ public class GameManager : MonoBehaviour
      It will handle when to change scenes, what stuff to generate, as well as error handling.
      */
 
-    VisualManager visualManager;    
+    public VisualManager visualManager;    
 
     void Start()
     {
-        //makes sure the game will always start in the main menu
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneAt(0))
-        {
-            Debug.LogError("Scene other than main menu was loaded first");
-            SceneManager.LoadScene(0);
-        }
-
         //makes sure this object is always in the scene
         DontDestroyOnLoad(gameObject);
     }
@@ -33,16 +27,27 @@ public class GameManager : MonoBehaviour
     }
 
     //called by the Start Game button in the main menu
-    void StartGame()
+    public void StartGame()
     {
-        //loads the game scene
-        SceneManager.LoadScene(1);
+        StartCoroutine(StartGameAsync());
+    }
+    //Async scene loading because loading a scene is an async task, so variable setting during scene loading has issues
+    private IEnumerator StartGameAsync()
+    {
+        //starts the loading process
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+
+        // Wait until the scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
 
         visualManager = FindObjectOfType<VisualManager>();
         if (visualManager == null)
         {
             Error("Could not find visualManager in the game scene");
-            return;
+            yield break;
         }
         visualManager.SetUp(this);
     }
@@ -50,6 +55,6 @@ public class GameManager : MonoBehaviour
     //Links to an error screen that will output the string message by adding it to the string error list
     public void Error(string message)
     {
-        //add string to list of all errors then display errors
+        Debug.LogWarning(message);
     }
 }

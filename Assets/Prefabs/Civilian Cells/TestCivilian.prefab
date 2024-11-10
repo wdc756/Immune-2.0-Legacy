@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
+  persistTime: 15
   tasks: 00000000
   movementTargets:
   - {x: 0, y: 0, z: 0}
@@ -106,6 +107,7 @@ MonoBehaviour:
   - {fileID: 0}
   currentTask: 0
   canMove: 0
+  interactRadius: 1
   randomWalkDirectionChangeChance: 0.05
   randomWalkChangeDistance: 7
   followChangeChance: 0.01

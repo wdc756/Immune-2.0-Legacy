@@ -8,8 +8,6 @@ public class VisualManager : MonoBehaviour
      Think of this as a sort of int main() but for the visuals. Without this nothing else will really happen
 
      While this script may not do much directly, it's responsible for coordinating the various systems in place
-
-     This should be attached to the main camera
      */
 
     //Reference to the GameManager to tell it if there was some sort of error
@@ -20,6 +18,8 @@ public class VisualManager : MonoBehaviour
 
     [SerializeField, Tooltip("Prefab used to generate Visual Scenes")]
     private GameObject visualScenePrefab;
+    [SerializeField, Tooltip("Holds all the VisualScenes")]
+    private GameObject visualSceneParent;
     [SerializeField, Tooltip("Used to reference all the VisualScenes")]
     private List<VisualScene> visualSceneList = new List<VisualScene>();
 
@@ -28,8 +28,6 @@ public class VisualManager : MonoBehaviour
 
     [SerializeField, Tooltip("Determines if the script should check variables before running the game")]
     private bool checkVariables = true;
-
-
 
     //Sets up the visual side of things; to be called by GameManager
     public void SetUp(GameManager gameM)
@@ -50,16 +48,16 @@ public class VisualManager : MonoBehaviour
 
         //other setup stuff here
 
-        if (!isLevelReady())
-        {
-            gameManager.Error("Error encountered during VisualManager setup");
-        }
+        //if (!isLevelReady())
+        //{
+        //    gameManager.Error("Error encountered during VisualManager setup");
+        //}
     }
     //Generates scenes using the visualScenePrefab
     private void InstantiateVisualScenes()
     {
         visualSceneList.Clear();
-        GameObject newSceneObject = Instantiate(visualScenePrefab, gameObject.transform);
+        GameObject newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
         newSceneObject.name = "Thymus";
 
@@ -76,11 +74,11 @@ public class VisualManager : MonoBehaviour
             return false;
         }
 
-        if (simulationManager == null)
-        {
-            Debug.LogWarning("simulationManager is null on VisualManager");
-            return false;
-        }
+        //if (simulationManager == null)
+        //{
+        //    Debug.LogWarning("simulationManager is null on VisualManager");
+        //    return false;
+        //}
 
         foreach (VisualScene scene in visualSceneList)
         {

@@ -11,13 +11,15 @@ public class TempCellManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (Cell cell in cells)
+        for (int i = 0; i < cells.Count; i++)
         {
+            Cell cell = cells[i];
             cell.ActivateCell(cell.gameObject.transform.position);
+            cell.NewTask(5, bacteria[i].gameObject);
+            cell.NewTask(-1);
         }
-        cells[0].NewTask(5, bacteria[0].gameObject);
-        cells[1].NewTask(5, bacteria[1].gameObject);
-        cells[2].NewTask(-3);
+        cells[0].NewTask(5, bacteria[4].gameObject);
+        cells[0].NewTask(-1);
         foreach (Cell cell in bacteria)
         {
             cell.ActivateCell(cell.gameObject.transform.position);
@@ -27,6 +29,6 @@ public class TempCellManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
