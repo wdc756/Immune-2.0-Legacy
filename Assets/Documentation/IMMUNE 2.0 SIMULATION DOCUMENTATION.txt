@@ -1,0 +1,132 @@
+IMMUNE 2.0 SIMULATION DOCUMENTATION
+TL;DR
+(NOTE: ANY VARIABLE WITH "percent" IS STORED AS 0-100, DIVIDE BY 100 BEFORE USE IN MULT.)
+Given:
+	BodySectionSimulation Section;
+> Where do I get the immune response level? (For a given body section)
+	Section.Response.LevelPercent
+
+> Where do I get the infection progess? (For a given body section)
+	Section.InfectionProgressPercent
+
+> Where do I get the current stress level? (For a given body section)
+	Section.StressLevelPercent
+
+> Where do I get information about the current response type? (For a given body section)
+	Section.Response.Type
+
+> How do I compare this type with the given types? (MACNEUTRO, COMPLIMENT, KILLERT, ANTIBODIES)
+	ImmuneSystemResponse.ResponseType.MACNEUTRO (etc.)
+
+> Where do I get information about the current infection itself?
+	Section.Pathogen
+	(ex:)
+	Section.Pathogen.Name
+	Section.Pathogen.Weakness
+
+> How do I compare the weakness of a pathogen to an immune system response?
+	Section.Pathogen.Weakness == ImmuneSystemResponse.ResponseType.MACNEUTRO (etc.)
+
+> How do I get a particular BodySectionSimulation?
+	Given:
+	BodySimulation Body;
+	Body.Sections[i] (returns ith section)
+
+
+
+How the simulation structure is laid out: (What pertains to visuals)
+There is a parent object, the body, which contains all of the scripts that apply to the whole body:
+	BodySimulation
+	AdaptiveImmuneSystem
+	SimulationManager
+
+Under the parent object, there are (currently 4) Body part objects which only contain one script:
+	BodySectionSimulation
+
+At Start(), the BodySimulation will fetch all of the child objects and grab a reference to their 
+BodySectionSimulation instances. This fills a list: 
+	BodySimulation.Sections
+Which because thankfully Unity fetches objects in order, is all of the BodySectionSimulation 
+scripts in the order in the inspector.
+
+> Okay, what are these scripts responsible for?
+BodySimulation stores many global values that control important information on the simulation 
+settings, as it pertains to gameplay. It also contains two levels that reflect the body's resource
+situation:
+	BodySimulation.ResourceDemandPercent
+	BodySimulation.ResourceProductionPercent
+ResourceDemandPercent can also be thought of as the sum of all BodySectionSimulation.Response.LevelPercent
+Whenever ResourceDemandPercent exceeds Production, all of the responses are "kicked back"
+(TODO) allow hooking into this kickback event
+
+(NOTE) if you want to represent the AdaptiveImmuneSystem:
+Three flag percentages: StressFlagPercentage, ProgressFlagPercentage, ResponseFlagPercentage
+	if (Section.StressLevelPercent >= StressFlagPercentage &&
+		Section.InfectionProgressPercent >= ProgressFlagPercentage &&
+		Section.ResponseFlagPercentage >= ResponseFlagPercentage) (automatically scan)
+(TODO) allow hooking into this event too
+> How does the AdaptiveImmuneSystem store all of the sections it's scanned or is scanning?
+All of the sections which have been responsed to by a scan are stored in a list that you could make public
+if you need:
+	AutoImmuneSystem.responses
+Also, all of the sections currently being scanned are stored in a dictionary (which stores the Section
+as an index and an int as the number of ticks left in the scan)
+	AutoImmuneSystem.scanDictionary
+This needs to be made public as well before you can use it.
+(NOTE) when you make those two public, capitalize the first letter to be consistent with the 
+current naming scheme pretty please thank you o7
+> How do I get the number of ticks left in a scan?
+	Given:
+	BodySection Section;
+	AutoImmuneSystem.scanDictionary[Section]
+	(will contain a value if it's being scanned. Check if it's being scanned by using
+	AutoImmuneSystem.scanDictionary.ContainsKey(Section))
+
+SimulationManager is entirely responsible just for running all of the simulated objects.
+There should(?) be no need to hold a reference to it for the visuals' sake.
+(TODO) add static functions that will convert ticks -> seconds and vice versa.
+
+BodySectionSimulation stores all of the data for one body section, allowing it to act independently
+of all other sections, but is tied to the BodySimulation through a reference which it uses
+to pull global settings from, which effects the way the simulation behaves.
+BodySectionSimulation stores the three most important numbers for the game:
+	BodySectionSimulation.Response.LevelPercent
+	BodySectionSimulation.InfectionProgressPercent
+	BodySectionSimulation.StressLevelPercent
+> Why does the response's percent come from a separate object rather than being tied to 
+BodySectionSimulation Like the other percents?
+BodySectionSimulation.Response (ImmuneSystemResponse) is a small class which stores the responses' 
+type (as an enum), its progress (as a float) and a method for updating the response level 
+WHICH YOU SHOULD NOT USE as BodySectionSimulation will update these values on its own.
+
+Speaking of this, BodySectionSimulation is also the main class in which the user will interact with
+through the gameplay mechanics.
+A couple of very important functions to keep in mind:
+	BodySectionSimulation.Escalate()
+	BodySectionSimulation.Deescalate()
+	BodySectionSimulation.Alarm()
+	BodySectionSimulation.Scan()
+These are all gameplay actions, and they don't have any arguments so that you can call them using
+Unity buttons.
+Last thing to keep in mind is that each BodySectionSimulation stores a small ScriptableObject
+which contains the data for the pathogen. This is:
+	BodySectionSimulation.Pathogen
+> What kind of data does this ScriptableObject store?
+The name:
+	Pathogen.Name
+The simulation values:
+	Pathogen.GainRatePercent (higher = more dangerous)
+	Pathogen.MaxLossRatePercent (higher = less dangerous)
+The weakness information (kind of part of the traits system, only gonna expand on that if we have time)
+	Pathogen.ResponseWeakness (This is the same enum that ImmuneSystemResponse uses)
+	Pathogen.WeaknessFactor (higher = correct immune response is more effective)
+
+This could easily store a sprite as well. This way, you can add this sprite to every instance of
+a Pathogen in the inspector, and reference it if needed.
+If you don't quite understand how this works, I really recommend looking up a YT video on
+Unity's ScriptableObjects, that's much easier than me trying to explain it here.
+
+If I have not listed something here, that means it does not exist or does not pertain to visuals.
+This is how cells are represented in the simulation.
+
+
