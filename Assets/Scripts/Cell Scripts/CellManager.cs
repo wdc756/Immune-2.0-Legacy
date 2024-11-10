@@ -68,12 +68,6 @@ public class CellManager : MonoBehaviour
     [SerializeField, Tooltip("Horizontal Max(absolute value)")]
     private float horizontalMax = 8;
 
-    [Header("Temp UI to test systems")]
-    public Slider responseSlider;
-    public Slider infectionSlider;
-    public float waitTime = 1.0f;
-    public float timeWaited = 0;
-
 
 
     public bool SetUp(GameManager gameM)
@@ -113,15 +107,6 @@ public class CellManager : MonoBehaviour
 
     void Update()
     {
-        //temp
-        if (timeWaited < waitTime)
-        {
-            timeWaited += Time.deltaTime;
-        }
-        else
-        {
-            NewSimulationNumbers(responseSlider.value, infectionSlider.value);
-        }
 
         //This should be run on gameTicks, not every frame, but oh well
         UpdatePersistCells();

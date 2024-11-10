@@ -14,8 +14,10 @@ public class VisualManager : MonoBehaviour
     private GameManager gameManager;
     //Reference to the CellManager
     private CellManager cellManager;
-    
 
+
+    [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
+    public int activeScene = 0;
     [SerializeField, Tooltip("Prefab used to generate Visual Scenes")]
     private GameObject visualScenePrefab;
     [SerializeField, Tooltip("Holds all the VisualScenes")]
@@ -94,8 +96,10 @@ public class VisualManager : MonoBehaviour
 
 
 
-    void Update()
-    {
-
+    //This will be called by the Simulation Manager to update the current scene numbers
+    public void ReceiveSimulationNumbers()
+    { 
+        //use ActiveScene int to index into the BodySections list and pull the correct numbers from there
+        //then send those numbers to the relevant scripts in the scene
     }
 }
