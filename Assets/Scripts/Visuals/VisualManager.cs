@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class VisualManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class VisualManager : MonoBehaviour
     private BodySimulation bodySimulation;
 
     [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
-    public int activeScene = 0;
+    public int activeScene = -1;
     [SerializeField, Tooltip("Prefab used to generate Visual Scenes")]
     private GameObject visualScenePrefab;
     [SerializeField, Tooltip("Holds all the VisualScenes")]
@@ -31,6 +32,19 @@ public class VisualManager : MonoBehaviour
 
     [SerializeField, Tooltip("Determines if the script should check variables before running the game")]
     private bool checkVariables = true;
+
+
+    //Changes the active VisualScene
+    public void ChangeScene(int scene)
+    {
+        activeScene++;
+        if (activeScene > SceneManager.sceneCount)
+        {
+            activeScene = 0;
+        }
+        cellManager.LoadVisualScene(visualSceneList[activeScene]);
+    }
+
 
     //Sets up the visual side of things; to be called by GameManager
     public void SetUp(GameManager gameM)
@@ -50,23 +64,28 @@ public class VisualManager : MonoBehaviour
         }
 
         bodySimulation = FindObjectOfType<BodySimulation>();
-        //other setup stuff here
-
-        //if (!isLevelReady())
-        //{
-        //    gameManager.Error("Error encountered during VisualManager setup");
-        //}
     }
     //Generates scenes using the visualScenePrefab
     private void InstantiateVisualScenes()
     {
         visualSceneList.Clear();
+
         GameObject newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
         newSceneObject.name = "Thymus";
 
+        newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
+        visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
+        newSceneObject.name = "Heart";
+
         //instantiate rest of scenes
         //make sure to set other scenes as inactive
+
+
+        foreach (VisualScene scene in visualSceneList)
+        {
+            scene.SetUp(2.5f, visualSceneList, 3, 100);
+        }
     }
     
     //returns whether or not the level is ready, and will output why the level is not ready
@@ -119,13 +138,24 @@ public class VisualManager : MonoBehaviour
 
         // Response 0-100, Response type
         float responsePercent = section.Response.LevelPercent;
-        ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
 
+        ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
+        //convert ResponseType to int
+        int responseTypeInt = 0;
 
         // Infection 0-100
         float infectionPercent = section.InfectionProgressPercent;
 
         // Stress 0-100
         float stressPercent = section.StressLevelPercent;
+
+        //send info to cellManager
+        cellManager.NewSimulationNumbers(responsePercent, infectionPercent, responseTypeInt);
+
+        //send info to visualScene, for color changes
+        if (activeScene != -1)
+        {
+            visualSceneList[activeScene].ShiftColor(stressPercent, infectionPercent);
+        }
     }
 }

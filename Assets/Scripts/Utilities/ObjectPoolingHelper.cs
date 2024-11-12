@@ -67,7 +67,7 @@ public class ObjectPoolingHelper : MonoBehaviour
             if (GenerateOnOverflow)
             {
                 pooledObjects.Add(Instantiate(poolObject));
-                pooledObjects[poolCount - 1].SetActive(true);
+                pooledObjects[poolCount - 1].SetActive(false);
                 poolCount++;
 
                 if (poolCount > 2 * originalCount)
@@ -83,6 +83,24 @@ public class ObjectPoolingHelper : MonoBehaviour
         {
             Debug.LogWarning("Call was made on GetNextObject() in ObjectPoolingHelper attached to " + gameObject.name + " when the script is disabled");
             return null;
+        }
+    }
+
+    public List<GameObject> GetAllObjects()
+    {
+        return pooledObjects;
+    }
+
+    //goes through each object and tells the cell to deactivate
+    public void DeactivateAllObjects()
+    {
+        foreach (GameObject obj in pooledObjects)
+        {
+            Cell cell = obj.GetComponent<Cell>();
+            if (cell != null)
+            {
+                cell.DeactivateCell();
+            }
         }
     }
 
@@ -115,7 +133,7 @@ public class ObjectPoolingHelper : MonoBehaviour
             if (-1 < index && index < poolCount)
             {
                 Destroy(pooledObjects[index]);
-                pooledObjects[index] = Instantiate(poolObject);
+                pooledObjects[index] = Instantiate(poolObject, gameObject.transform);
                 pooledObjects[index].SetActive(false);
             }
             else
