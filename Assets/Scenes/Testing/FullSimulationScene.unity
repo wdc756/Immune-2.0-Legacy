@@ -438,14 +438,12 @@ MonoBehaviour:
   SimulatedChildren: []
   VisualsManager: {fileID: 0}
   ManuallyRunChildren: 0
-  FixedUpdatesPerTick: 5
+  FixedUpdatesPerTick: 2
   SecondsPerVisualUpdate: 2
   Running: 0
   count: 0
   ticksPerVisualUpdate: 0
-  debug: 0
-  ticks: 0
-  tickTotal: 0
+  Tick: 0
 --- !u!114 &15361079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6463,7 +6461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Body: {fileID: 15361080}
-  BaseBacteria: {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  BaseBacteria: {fileID: 11400000, guid: 13a8b930d1e1555459c040f08b79c24b, type: 2}
   BaseVirus: {fileID: 11400000, guid: d0a6f447312f52a4e8b416f2092876de, type: 2}
   ResourceProductionSlider: {fileID: 872674485}
   ResourceDemandSlider: {fileID: 1306114848}

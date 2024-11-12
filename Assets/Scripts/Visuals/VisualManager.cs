@@ -15,6 +15,7 @@ public class VisualManager : MonoBehaviour
     private GameManager gameManager;
     //Reference to the CellManager
     private CellManager cellManager;
+    // reference to the body simulation
     private BodySimulation bodySimulation;
 
     [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
