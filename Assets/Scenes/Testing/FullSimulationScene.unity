@@ -436,9 +436,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Simulated: []
   SimulatedChildren: []
+  VisualsManager: {fileID: 0}
   ManuallyRunChildren: 0
-  FixedUpdatesPerTick: 1
+  FixedUpdatesPerTick: 5
+  SecondsPerVisualUpdate: 2
   Running: 0
+  count: 0
+  ticksPerVisualUpdate: 0
   debug: 0
   ticks: 0
   tickTotal: 0
@@ -489,6 +493,8 @@ MonoBehaviour:
   MaxResourceProductionPercent: 150
   DefaultResourceProductionPercent: 70
   ResourceChangeTime: 7
+  CivilianDeathCount: 0
+  PercentPerDeath: 10
 --- !u!1 &25284094
 GameObject:
   m_ObjectHideFlags: 0

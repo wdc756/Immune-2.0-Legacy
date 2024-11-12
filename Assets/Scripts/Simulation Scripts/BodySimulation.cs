@@ -36,6 +36,10 @@ public class BodySimulation : Simulated
     public float DefaultResourceProductionPercent;
     public float ResourceChangeTime;
 
+    [Header("Civilian Cell Death Count")]
+    public int CivilianDeathCount;
+    public float PercentPerDeath;
+
     private bool resourceChanging;
     private float resourceChangeTicks;
     private float resourceChangeDelta;
@@ -52,6 +56,8 @@ public class BodySimulation : Simulated
 
         resourceChangeTicks = (int) (ResourceChangeTime / SimulationManager.TickDelta);
         resourceChangeDelta = 10f / (float) resourceChangeTicks;
+
+        CivilianDeathCount = 0;
     }
 
     /*
@@ -74,6 +80,8 @@ public class BodySimulation : Simulated
         {
             section.Tick();
             sum += section.ResourceDemand;
+
+            CivilianDeathCount += (int)(section.StressLevelPercent + section.InfectionProgressPercent / PercentPerDeath); 
         }
         ResourceDemandPercent = sum;
 

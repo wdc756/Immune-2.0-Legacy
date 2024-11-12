@@ -25,6 +25,7 @@ public class SimulationManager : MonoBehaviour
     [Header("Simulation Objects")]
     public List<Simulated> Simulated;
     public List<Simulated> SimulatedChildren;
+    public VisualManager VisualsManager;
 
     [Header("Infrastructure (please don't touch)")]
     // Don't touch this, it's an infrastructure variable :)
@@ -33,12 +34,16 @@ public class SimulationManager : MonoBehaviour
     [Header("Simulation Time Settings")]
     public int FixedUpdatesPerTick = 1;
 
+    [Header("Visual Update Settings")]
+    public float SecondsPerVisualUpdate = 2f;
+
     [Header("(Debug)")]
     public bool Running = false;
     public static float TickDelta;
 
-    private int count;
-
+    [SerializeField] private int count;
+    [SerializeField] private int ticksPerVisualUpdate;
+    public int Tick;
 
     private void Start()
     {
@@ -50,12 +55,19 @@ public class SimulationManager : MonoBehaviour
 
         // Fun times with functional programming
         SimulatedChildren = GetComponentsInChildren<Simulated>().Except(Simulated).ToList<Simulated>();
+
+        ticksPerVisualUpdate = (int)(SecondsPerVisualUpdate / TickDelta);
+
+        VisualsManager = FindObjectOfType<VisualManager>();
     }
 
     private void FixedUpdate()
     {
         if (!Running) return;
         if (count++ % FixedUpdatesPerTick != 0) return;
+        Tick++;
+
+        if (Tick % ticksPerVisualUpdate == 0) UpdateVisuals();
 
         foreach (Simulated s in Simulated)
         {
@@ -63,7 +75,7 @@ public class SimulationManager : MonoBehaviour
         }
         if (ManuallyRunChildren) foreach (Simulated s in SimulatedChildren) s.Tick();
 
-        if (debug && --ticks <= 0) Running = false;
+        //if (debug && --ticks <= 0) Running = false;
     }
 
     public void Run()
@@ -78,9 +90,18 @@ public class SimulationManager : MonoBehaviour
         Running = false;
     }
 
+    public void UpdateVisuals()
+    {
+        //Debug.Log("Updating visual numbers");
+
+        if (VisualsManager == null) return;
+        // Call Will's code
+        VisualsManager.ReceiveSimulationNumbers();
+    }
+
     /*  
      *  Debug function for running a set amount of ticks
-     */
+     *//*
     [Header("Debug Ticks")]
     public bool debug = false;
     public int ticks;
@@ -90,5 +111,5 @@ public class SimulationManager : MonoBehaviour
         Debug.Log("running");
         Running = true;
         ticks = tickTotal;
-    }
+    }*/
 }

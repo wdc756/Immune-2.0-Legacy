@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class VisualManager : MonoBehaviour
@@ -14,7 +15,7 @@ public class VisualManager : MonoBehaviour
     private GameManager gameManager;
     //Reference to the CellManager
     private CellManager cellManager;
-
+    private BodySimulation bodySimulation;
 
     [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
     public int activeScene = 0;
@@ -48,6 +49,7 @@ public class VisualManager : MonoBehaviour
             gameManager.Error("CellManager is not set on VisualManager");
         }
 
+        bodySimulation = FindObjectOfType<BodySimulation>();
         //other setup stuff here
 
         //if (!isLevelReady())
@@ -98,8 +100,32 @@ public class VisualManager : MonoBehaviour
 
     //This will be called by the Simulation Manager to update the current scene numbers
     public void ReceiveSimulationNumbers()
-    { 
+    {
         //use ActiveScene int to index into the BodySections list and pull the correct numbers from there
         //then send those numbers to the relevant scripts in the scene
+
+        // Change for full body section if you use a boolean instead
+        if (activeScene == -1)
+        {
+            int civilianDeathCount = bodySimulation.CivilianDeathCount;
+            float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
+            float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
+            float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
+            return;
+        }
+
+        // Get the active section
+        BodySectionSimulation section = bodySimulation.Sections[activeScene];
+
+        // Response 0-100, Response type
+        float responsePercent = section.Response.LevelPercent;
+        ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
+
+
+        // Infection 0-100
+        float infectionPercent = section.InfectionProgressPercent;
+
+        // Stress 0-100
+        float stressPercent = section.StressLevelPercent;
     }
 }
