@@ -180,6 +180,9 @@ public class BodySectionSimulation : Simulated
 
         // Min cap the stress level. can't be less than 0 stress
         StressLevelPercent = Mathf.Max(0f, StressLevelPercent);
+
+        // Max cap the stress level, it shouldn't be more than 100% stress
+        StressLevelPercent = Mathf.Min(StressLevelPercent, 100f);
     }
 
     private void HandleResponse()

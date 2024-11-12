@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class BodySimulation : Simulated
@@ -81,9 +80,13 @@ public class BodySimulation : Simulated
             section.Tick();
             sum += section.ResourceDemand;
 
-            CivilianDeathCount += (int)(section.StressLevelPercent + section.InfectionProgressPercent / PercentPerDeath); 
+            CivilianDeathCount += (int)(section.StressLevelPercent + section.InfectionProgressPercent / PercentPerDeath);
+            int resourceDeathCount = (int)(ResourceProductionPercent - DefaultResourceProductionPercent / PercentPerDeath);
         }
         ResourceDemandPercent = sum;
+
+        // Min cap the resource demand percent
+        ResourceDemandPercent = Mathf.Max(0f, ResourceProductionPercent);
 
         HandleResources();
         if (ResourceProductionPercent < ResourceDemandPercent) Kickback();
