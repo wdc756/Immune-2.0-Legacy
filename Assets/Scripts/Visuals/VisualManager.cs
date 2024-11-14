@@ -201,11 +201,5 @@ public class VisualManager : MonoBehaviour
 
         //send info to cellManager
         cellManager.NewSimulationNumbers(responsePercent, infectionPercent, responseTypeInt);
-
-        //send info to visualScene, for color changes
-        if (activeScene != -1)
-        {
-            visualSceneList[activeScene].ShiftColor(stressPercent, infectionPercent);
-        }
     }
 }

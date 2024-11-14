@@ -41,11 +41,16 @@ public class SimulationManager : MonoBehaviour
     public bool Running = false;
     public static float TickDelta;
 
+
     [SerializeField] private int count;
     [SerializeField] private int ticksPerVisualUpdate;
     public int Tick;
 
-    private void Start()
+    [Header("Usability Demo")]
+    public List<Pathogen> demoPathogens;
+    public List<int> infectionDelays;
+
+    public void SetUp(GameManager gameManager)
     {
         // TickDelta is the seconds per tick used to convert seconds to ticks and vice versa
         TickDelta = Time.fixedDeltaTime * (float)FixedUpdatesPerTick;
@@ -59,6 +64,8 @@ public class SimulationManager : MonoBehaviour
         ticksPerVisualUpdate = (int)(SecondsPerVisualUpdate / TickDelta);
 
         VisualsManager = FindObjectOfType<VisualManager>();
+
+        Run();
     }
 
     private void FixedUpdate()
@@ -68,6 +75,11 @@ public class SimulationManager : MonoBehaviour
         Tick++;
 
         if (Tick % ticksPerVisualUpdate == 0) UpdateVisuals();
+
+        for (int i = 0; i < demoPathogens.Count; i++)
+        {
+            
+        }
 
         foreach (Simulated s in Simulated)
         {

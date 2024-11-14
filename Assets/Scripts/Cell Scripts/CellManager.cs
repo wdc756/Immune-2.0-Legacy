@@ -87,8 +87,8 @@ public class CellManager : MonoBehaviour
     [SerializeField, Tooltip("Horizontal Max(absolute value)")]
     private float horizontalMax = 9;
 
-    public Slider responseSlider;
-    public Slider infectionSlider;
+    /*public Slider responseSlider;
+    public Slider infectionSlider;*/
 
 
 
@@ -153,7 +153,7 @@ public class CellManager : MonoBehaviour
             isCivilianSpotUsed.Add(false);
         }
 
-        NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
+        //NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
         SetCellNumbers();
 
         canUpdate = true;
@@ -185,7 +185,7 @@ public class CellManager : MonoBehaviour
     {
         if (canUpdate)
         {
-            NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
+            //NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
 
             //These should be run on gameTicks, not every frame, but oh well
             UpdatePersistCells();
