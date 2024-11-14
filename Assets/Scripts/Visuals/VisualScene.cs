@@ -30,12 +30,6 @@ public class VisualScene : MonoBehaviour
     [Tooltip("The minimum distance a cell can be away from any other cell when generating")]
     public float cellMinDistance = 1.0f;
 
-    [Tooltip("The maximum number of civilian cells this VisualScene can hold")]
-    public int maxCivilians;
-    public int maxMacrophages;
-    public int maxNeutrophiles;
-    public int maxBacteria;
-
 
 
     [Header("Screen space stuff")]
@@ -49,7 +43,7 @@ public class VisualScene : MonoBehaviour
 
     [Header("Color shifting")]
     //The spriteRenderer on the same gameObject, to be set on Start()
-    public SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
     [SerializeField, Tooltip("The normal color when no external pressures exist")]
     private Color normalColor;
     [SerializeField, Tooltip("Determines the influence the color shifts have on the base colors as a whole")]
@@ -60,7 +54,8 @@ public class VisualScene : MonoBehaviour
     [SerializeField, Tooltip("The color shift hue when this section is very infected")]
     private Color infectedHue;
 
-
+    public Slider stressSlider;
+    public Slider infectedSlider;
 
     void Start()
     {
@@ -70,35 +65,29 @@ public class VisualScene : MonoBehaviour
 
     
     //Call to reset and generate new cell positions
-    public void SetUp(float scale, List<VisualScene> links, int numAnchors, int numCivilians, int numMacrophages, int numNeutrophiles, int numBacteria)
+    public void SetUp(float scale, List<VisualScene> links, int numAnchors, int numCells)
     {
         sceneScale = scale;
-        SetScreenScale();
+        SetScreenScale(scale);
 
         ResetPositions();
 
         GeneratePathingPositions(links);
         GenerateAnchors(numAnchors);
-        GenerateCellPositions(numCivilians + 1);
-
-        maxCivilians = numCivilians;
-        maxMacrophages = numMacrophages;
-        maxNeutrophiles = numNeutrophiles;
-        maxBacteria = numBacteria;
+        GenerateCellPositions(numCells + 1);
     }
     //Sets the new screen bounds by using scale, starting from v = 5, h = 9 and scales the screen starting at v = 10, h = 18
-    private void SetScreenScale()
+    private void SetScreenScale(float scale)
     {
-        verticalMax = 5 * sceneScale;
-        horizontalMax = 9 * sceneScale;
+        verticalMax = 5 * scale;
+        horizontalMax = 9 * scale;
 
-        //cAnchorMultiplier = cellAnchorMultiplier * ((sceneScale * sceneScale) - (sceneScale * 2f));
-        //Debug.Log(cAnchorMultiplier);
-        cAnchorMultiplier = 1.45f + (Mathf.Log(sceneScale, 20));
+        cAnchorMultiplier = cellAnchorMultiplier * Mathf.Log(scale);
+        Debug.Log(cAnchorMultiplier);
 
         Vector3 newScale = new Vector3();
-        newScale.x = 18 * sceneScale;
-        newScale.y = 10 * sceneScale;
+        newScale.x = 18 * scale;
+        newScale.y = 10 * scale;
         newScale.z = 0;
         gameObject.transform.localScale = newScale;
     }
@@ -106,7 +95,6 @@ public class VisualScene : MonoBehaviour
     private void ResetPositions()
     {
         pathingPositions.Clear();
-        pathingLinks.Clear();
         anchors.Clear();
         cellPositions.Clear();
     }
@@ -162,12 +150,12 @@ public class VisualScene : MonoBehaviour
         //used as a distance check
         //Distance formula(max-min) / numAnchors
         float minDistance = Mathf.Abs(Mathf.Sqrt(((-horizontalMax - horizontalMax) * (-horizontalMax - horizontalMax)) 
-            + ((-verticalMax - verticalMax) * (-verticalMax - verticalMax))) / (numAnchors * 2f));
+            + ((-verticalMax - verticalMax) * (-verticalMax - verticalMax))) / numAnchors);
 
         //temp ticker
         int tick = 0;
 
-        while (anchors.Count < numAnchors && tick < numAnchors * 20)
+        while (anchors.Count < numAnchors && tick < numAnchors * 15)
         {
             bool add = true;
             Vector3 v = GetRandomNearEdgePosition();
@@ -200,7 +188,7 @@ public class VisualScene : MonoBehaviour
             tick++;
         }
 
-        if (tick >= numAnchors * 20)
+        if (tick >= numAnchors * 15)
         {
             Debug.Log("Too many attempts: anchors");
         }
@@ -210,9 +198,8 @@ public class VisualScene : MonoBehaviour
         cellPositions = new List<Vector3>();
 
         int tick = 0;
-        int maxTick = numCells * 20;
 
-        while (cellPositions.Count < numCells && tick < maxTick)
+        while (cellPositions.Count < numCells && tick < numCells * 15)
         {
             bool add = true;
             Vector3 v = GetRandomNearAnchorPosition(anchors[Random.Range(0, anchors.Count)], cAnchorMultiplier);
@@ -235,19 +222,19 @@ public class VisualScene : MonoBehaviour
             tick++;
         }
 
-        if (tick >= maxTick)
+        if (tick >= numCells * 15)
         {
-            Debug.Log("Too many attempts: cells; Only able to generate: " + cellPositions.Count + "/" + numCells + " regularly, generating random positions...");
+            Debug.Log("Too many attempts: cells; Only able to generate: " + cellPositions.Count + " regularly, generating random positions...");
 
             tick = 0;
-            while (cellPositions.Count < numCells && tick < maxTick)
+            while (cellPositions.Count < numCells && tick < numCells * 10)
             {
                 bool add = true;
                 Vector3 v = GetRandomPosition();
 
                 for (int j = 0; j < cellPositions.Count; j++)
                 {
-                    if (Vector3.Distance(cellPositions[j], v) < cellMinDistance)
+                    if (Vector3.Distance((Vector3)cellPositions[j], v) < cellMinDistance)
                     {
                         add = false;
                         break;
@@ -278,11 +265,6 @@ public class VisualScene : MonoBehaviour
     public List<VisualScene> GetPathLinks()
     {
         return pathingLinks;
-    }
-    //Returns the number of anchors
-    public int GetNumAnchors()
-    {
-        return anchors.Count;
     }
 
 
@@ -354,8 +336,8 @@ public class VisualScene : MonoBehaviour
         Vector3 newPos = new Vector3();
 
         newPos.z = 0;
-        newPos.x = ClampToEdges(anchor.x + CloseToAnchorFunction(Random.Range(-1f * closenessMultiplier, 1f * closenessMultiplier), closenessMultiplier), horizontalMax);
-        newPos.y = ClampToEdges(anchor.y + CloseToAnchorFunction(Random.Range(-1f * closenessMultiplier, 1f * closenessMultiplier), closenessMultiplier), verticalMax);
+        newPos.x = ClampToEdges(anchor.x + CloseToAnchorFunction(Random.Range(-1.5f, 1.5f), closenessMultiplier), horizontalMax);
+        newPos.y = ClampToEdges(anchor.y + CloseToAnchorFunction(Random.Range(-1.5f, 1.5f), closenessMultiplier), verticalMax);
 
         return newPos;
     }
@@ -403,10 +385,6 @@ public class VisualScene : MonoBehaviour
         // Apply the hueShiftSaturation to modify the intensity
         finalColor = Color.Lerp(normalColor, finalColor, hueShiftSaturation);
 
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        }
         // Set the final color to the SpriteRenderer
         spriteRenderer.color = finalColor;
     }

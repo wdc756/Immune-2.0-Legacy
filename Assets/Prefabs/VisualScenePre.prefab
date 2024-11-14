@@ -97,17 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3322166e2b425ec48b8447eef4fefc4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellAnchorMultiplier: 1
+  cellAnchorMultiplier: 0.25
   cellMinDistance: 1
-  maxCivilians: 0
-  maxMacrophages: 0
-  maxNeutrophiles: 0
-  maxBacteria: 0
   sceneScale: 1.6
-  spriteRenderer: {fileID: 0}
   normalColor: {r: 0.09411765, g: 0.06666667, b: 0.16862746, a: 1}
   hueShiftSaturation: 0.3
   stressedHue: {r: 0.9098039, g: 0.27058825, b: 0.2627451, a: 1}
   infectedHue: {r: 0, g: 0.53333336, b: 0.3019608, a: 1}
-  anchorPre: {fileID: 1239773531498944231, guid: fe73b6586f9ed994ea3003b71287e878, type: 3}
-  anchorObjects: []
+  stressSlider: {fileID: 0}
+  infectedSlider: {fileID: 0}

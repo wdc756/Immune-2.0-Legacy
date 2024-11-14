@@ -18,8 +18,6 @@ public class VisualManager : MonoBehaviour
     private CellManager cellManager;
     // reference to the body simulation
     private BodySimulation bodySimulation;
-    //The main camera, used to change the camerasize float according to the size of the active VisualScene
-    public Camera cam;
 
     [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
     public int activeScene = -1;
@@ -40,43 +38,12 @@ public class VisualManager : MonoBehaviour
     //Changes the active VisualScene
     public void ChangeScene(int scene)
     {
-        visualSceneList[activeScene].gameObject.SetActive(false);
-        if (scene == -1)
-        {
-            activeScene++;
-        }
-        else
-        {
-            activeScene = scene;
-        }
-
-        if (activeScene >= visualSceneList.Count)
+        activeScene++;
+        if (activeScene > SceneManager.sceneCount)
         {
             activeScene = 0;
         }
-        visualSceneList[activeScene].gameObject.SetActive(true);
-
         cellManager.LoadVisualScene(visualSceneList[activeScene]);
-
-        cam.orthographicSize = visualSceneList[activeScene].sceneScale * 5f;
-
-        Debug.Log("Loaded " + visualSceneList[activeScene].gameObject.name);
-    }
-    public void ResetActiveScene()
-    {
-        VisualScene scene = visualSceneList[activeScene];
-
-        float scale = scene.sceneScale;
-        int numAnchors = scene.GetNumAnchors();
-        int numCivilians = scene.maxCivilians;
-        int numMacrophages = scene.maxMacrophages;
-        int numNeutrophiles = scene.maxNeutrophiles;
-        int numBacteria = scene.maxBacteria;
-
-        scene.SetUp(scale, visualSceneList, numAnchors, numCivilians, numMacrophages, numNeutrophiles, numBacteria);
-
-        Debug.Log("Reset " + scene.gameObject.name);
-        ChangeScene(activeScene);
     }
 
 
@@ -98,8 +65,6 @@ public class VisualManager : MonoBehaviour
         }
 
         bodySimulation = FindObjectOfType<BodySimulation>();
-
-        ChangeScene(activeScene);
     }
     //Generates scenes using the visualScenePrefab
     private void InstantiateVisualScenes()
@@ -114,28 +79,14 @@ public class VisualManager : MonoBehaviour
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
         newSceneObject.name = "Heart";
 
-        newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
-        visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
-        newSceneObject.name = "Lungs";
+        //instantiate rest of scenes
+        //make sure to set other scenes as inactive
 
-        newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
-        visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
-        newSceneObject.name = "Generic1";
 
-        //foreach (VisualScene scene in visualSceneList)
-        //{
-        //    scene.SetUp(5f, visualSceneList, 8, 500);
-        //}
-
-        //SetUp(scale, list of links, number of anchors, number of civilians, number of M, num N, num B
-        visualSceneList[0].SetUp(1.5f, visualSceneList, 5, 100, 50, 50, 75);
-        visualSceneList[0].gameObject.SetActive(false);
-        visualSceneList[1].SetUp(3.0f, visualSceneList, 10, 300, 100, 25, 150);
-        visualSceneList[1].gameObject.SetActive(false);
-        visualSceneList[2].SetUp(5.0f, visualSceneList, 12, 850, 200, 100, 400);
-        visualSceneList[2].gameObject.SetActive(false);
-        visualSceneList[3].SetUp(2.5f, visualSceneList, 7, 250, 75, 75, 125);
-        visualSceneList[3].gameObject.SetActive(false);
+        foreach (VisualScene scene in visualSceneList)
+        {
+            scene.SetUp(2.5f, visualSceneList, 3, 100);
+        }
     }
     
     //returns whether or not the level is ready, and will output why the level is not ready
