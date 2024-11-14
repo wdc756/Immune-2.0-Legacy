@@ -14,7 +14,7 @@ public class TempCellManager : MonoBehaviour
         for (int i = 0; i < cells.Count; i++)
         {
             Cell cell = cells[i];
-            cell.ActivateCell(cell.gameObject.transform.position);
+            //cell.ActivateCell(cell.gameObject.transform.position);
             cell.NewTask(5, bacteria[i].gameObject);
             cell.NewTask(-1);
         }
@@ -22,7 +22,7 @@ public class TempCellManager : MonoBehaviour
         cells[0].NewTask(-1);
         foreach (Cell cell in bacteria)
         {
-            cell.ActivateCell(cell.gameObject.transform.position);
+            //cell.ActivateCell(cell.gameObject.transform.position);
         }
     }
 

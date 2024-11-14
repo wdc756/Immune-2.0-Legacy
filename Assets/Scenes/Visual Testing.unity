@@ -327,7 +327,7 @@ PrefabInstance:
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: poolObject
       value: 
-      objectReference: {fileID: 5509639925671390790, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      objectReference: {fileID: 8894037529786137400, guid: acc85b3beb0f7f9499cf464ea0f9617b, type: 3}
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: WarnOnOverflow
       value: 0
@@ -502,7 +502,7 @@ PrefabInstance:
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: poolObject
       value: 
-      objectReference: {fileID: 5509639925671390790, guid: a1c09476a842e7b4796202904bbae2e8, type: 3}
+      objectReference: {fileID: 4114829806243798613, guid: af98d039817607b4c8de5ca064ea2b46, type: 3}
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: WarnOnOverflow
       value: 0
@@ -822,7 +822,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reload
+  m_text: Index Scene
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1313,7 +1313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -361.5923, y: 167.3}
+  m_AnchoredPosition: {x: -361.59, y: 167.3}
   m_SizeDelta: {x: 76.8154, y: 15.9555}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1498941560
@@ -1360,9 +1360,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1926928972}
-        m_TargetAssemblyTypeName: CellManager, Assembly-CSharp
-        m_MethodName: UpdateCells
+      - m_Target: {fileID: 1926928973}
+        m_TargetAssemblyTypeName: VisualManager, Assembly-CSharp
+        m_MethodName: ResetActiveScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1574,7 +1574,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -361.5923, y: 167.3}
+  m_AnchoredPosition: {x: -361.59, y: 148.3}
   m_SizeDelta: {x: 76.8154, y: 15.9555}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1533516329
@@ -1628,19 +1628,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1926928972}
-        m_TargetAssemblyTypeName: CellManager, Assembly-CSharp
-        m_MethodName: UpdateCells
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1793,75 +1781,6 @@ Transform:
   - {fileID: 708334507}
   m_Father: {fileID: 1926928974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1809769093
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4336250297274621561, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: stressSlider
-      value: 
-      objectReference: {fileID: 372910810}
-    - target: {fileID: 4336250297274621561, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: infectedSlider
-      value: 
-      objectReference: {fileID: 463984802}
-    - target: {fileID: 7670203133473028613, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_Name
-      value: VisualScenePre
-      objectReference: {fileID: 0}
-    - target: {fileID: 7670203133473028613, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8676962254927544211, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
 --- !u!1 &1892026879
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,13 +1897,13 @@ MonoBehaviour:
   bacteria: []
   civilianCellPositions: []
   isCivilianSpotUsed: 
-  maxCivilians: 100
+  maxCivilians: 1000
   targetCivilians: 0
-  maxMacrophages: 30
+  maxMacrophages: 200
   targetMacrophages: 0
-  maxNeutrophiles: 25
+  maxNeutrophiles: 100
   targetNeutrophiles: 0
-  maxBacteria: 50
+  maxBacteria: 750
   targetBacteria: 0
   sceneScale: 1
   verticalMax: 5
@@ -2003,6 +1922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60b13204011ed9f43ac5f32b059434b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 1511520477}
   activeScene: 0
   visualScenePrefab: {fileID: 7670203133473028613, guid: faeb661af281d344b901d6deef40b1dd, type: 3}
   visualSceneParent: {fileID: 910136420}
@@ -2083,7 +2003,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reload
+  m_text: Regenerate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2279,4 +2199,3 @@ SceneRoots:
   - {fileID: 1401643868}
   - {fileID: 1926928974}
   - {fileID: 1511520478}
-  - {fileID: 1809769093}

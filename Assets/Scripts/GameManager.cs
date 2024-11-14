@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
      */
 
     public VisualManager visualManager;    
-    public SimulationManager simulationManager;
+
     void Start()
     {
         //makes sure this object is always in the scene
@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
             yield break;
         }
         visualManager.SetUp(this);
-        simulationManager.SetUp(this);
     }
 
     //Links to an error screen that will output the string message by adding it to the string error list
