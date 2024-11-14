@@ -16,4 +16,4 @@ MonoBehaviour:
   ResponseWeakness: 0
   WeaknessFactor: 1.5
   GainRatePercent: 0.1
-  MaxLossRatePercent: 0.6
+  MaxLossRatePercent: 0.07
