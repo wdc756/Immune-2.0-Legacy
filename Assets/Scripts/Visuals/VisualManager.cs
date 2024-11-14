@@ -78,6 +78,11 @@ public class VisualManager : MonoBehaviour
         Debug.Log("Reset " + scene.gameObject.name);
         ChangeScene(activeScene);
     }
+    //returns the active scene from the list
+    public VisualScene GetActiveScene()
+    {
+        return visualSceneList[activeScene];
+    }
 
 
     //Sets up the visual side of things; to be called by GameManager
