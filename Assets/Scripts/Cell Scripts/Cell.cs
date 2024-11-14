@@ -76,6 +76,9 @@ public class Cell : MonoBehaviour
     //used for timer stuff for followChange logic
     private float followChangeTimer;
 
+    //used to hold what spot a civilian cell is using
+    public int cellSpot;
+
     void Start()
     {
         cellSmallMovement = gameObject.GetComponent<CellSmallMovement>();
@@ -126,10 +129,11 @@ public class Cell : MonoBehaviour
     //Sets the min/max bounds for random movement
     public void SetBounds(float maxVertical, float maxHorizontal)
     {
-        if (cellWalk != null)
+        if (cellWalk == null)
         {
-            cellWalk.SetBounds(maxVertical, maxHorizontal);
+            cellWalk = gameObject.GetComponent<CellRandomWalk>();
         }
+        cellWalk.SetBounds(maxVertical, maxHorizontal);
     }
 
 

@@ -17,6 +17,11 @@ public class CellManager : MonoBehaviour
 
     //reference to the active scene, just to do some functions and get data
     private VisualScene activeScene;
+    //List of vector3 pathing links, for cells to enter/exit scene
+    private List<Vector3> pathingPositions;
+
+    //Used when loading stuff in to prevent this from running before stuff is fully set up
+    private bool canUpdate = false;
 
     [Header("Object Pooling Helpers, Must be set on compile time")]
     //These are used to "create" objects as needed
@@ -53,20 +58,25 @@ public class CellManager : MonoBehaviour
     //List of bools that keep track of which positions are occupied
     public List<bool> isCivilianSpotUsed = new List<bool>();
     [Tooltip("The maximum number of civilian cells, will update the object pool")]
-    public int maxCivilians = 100;
+    public int maxCivilians;
+    //This is the actual max, set by the Visual Scene
+    private int mCivilians;
     [Tooltip("The number of civilian cells the scene should have")]
     public int targetCivilians;
 
-    public int maxMacrophages = 25;
+    public int maxMacrophages;
+    private int mMacrophages;
     public int targetMacrophages;
-    public int maxNeutrophiles = 25;
+    public int maxNeutrophiles;
+    private int mNeutrophiles;
     public int targetNeutrophiles;
     //public int maxTCells = 15;
     //public int targetTCells;
     //public int maxBCells = 10;
     //public int targetBCells;
     [Tooltip("This is not the total max for all bacteria types, but for each individual type")]
-    public int maxBacteria = 50;
+    public int maxBacteria;
+    private int mBacteria;
     public int targetBacteria;
 
     [Header("Screen Bounds")]
@@ -84,11 +94,15 @@ public class CellManager : MonoBehaviour
 
     public bool SetUp(GameManager gameM)
     {
+        canUpdate = false;
+
         gameManager = gameM;
 
         visualManager = GetComponent<VisualManager>();
 
         SetUpObjectPools();
+
+        DeactivateAllCells();
 
         return true;
     }
@@ -113,13 +127,23 @@ public class CellManager : MonoBehaviour
     //To be called by VisualManager to load in a VisualScene
     public void LoadVisualScene(VisualScene scene)
     {
+        canUpdate = false;
         DeactivateAllCells();
 
         activeScene = scene;
 
+        pathingPositions = activeScene.GetPathPositions();
+
         //Update screen scaling
-        sceneScale = activeScene.sceneScale;
-        SetScreenScale();
+        sceneScale = scene.sceneScale;
+        verticalMax = 5 * sceneScale;
+        horizontalMax = 9 * sceneScale;
+
+        //Get max cell counts
+        mCivilians = activeScene.maxCivilians;
+        mMacrophages = activeScene.maxMacrophages;
+        mNeutrophiles = activeScene.maxNeutrophiles;
+        mBacteria = activeScene.maxBacteria;
 
         //Set up civilian position lists
         civilianCellPositions = activeScene.GetCellPositions();
@@ -128,13 +152,13 @@ public class CellManager : MonoBehaviour
         {
             isCivilianSpotUsed.Add(false);
         }
+
+        NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
+        SetCellNumbers();
+
+        canUpdate = true;
     }
-    //Sets the new screen bounds by using scale, starting from v = 5, h = 9
-    private void SetScreenScale()
-    {
-        verticalMax = 5 * sceneScale;
-        horizontalMax = 9 * sceneScale;
-    }
+
     //Tells all the objectPoolingHelpers to deactivate all cells
     private void DeactivateAllCells()
     {
@@ -155,12 +179,21 @@ public class CellManager : MonoBehaviour
         }
     }
 
+
+
     void Update()
     {
-        NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
-        //This should be run on gameTicks, not every frame, but oh well
-        UpdatePersistCells();
+        if (canUpdate)
+        {
+            NewSimulationNumbers(responseSlider.value, infectionSlider.value, 0);
+
+            //These should be run on gameTicks, not every frame, but oh well
+            UpdatePersistCells();
+            UpdateCellNumbers();
+        }
     }
+
+
 
     //Updates all the active cells by resetting their kill clocks, done to get rid of old cells
     void UpdatePersistCells()
@@ -189,17 +222,19 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        targetCivilians = (int)(maxCivilians - (maxCivilians * infection));
+        targetCivilians = (int)(mCivilians - (mCivilians * infection));
 
-        targetMacrophages = (int)(maxMacrophages * response);
-    }
+        //Set macrophages as 60% of response and neutrophiles as 40%
+        targetMacrophages = (int)(mMacrophages * (response * 0.6f));
+        targetNeutrophiles = (int)(mNeutrophiles * (response * 0.4f));
 
+        targetBacteria = (int)(mBacteria * infection);
 
-    //Temp
-    public void UpdateCells()
-    {
-        //DeactivateAllCells();
-        SetCellNumbers(0);
+        //temp
+        if (activeScene != null)
+        {
+            activeScene.ShiftColor(response, infection);
+        }
     }
 
 
@@ -207,19 +242,332 @@ public class CellManager : MonoBehaviour
     //Sets cell tasks and activates new cells to reach target numbers
     void UpdateCellNumbers()
     {
+        //Set a maximum processing tick, which will put a limit on how many times the loop can run
+        int maxTick = mCivilians * 100;
+        //Keep track of how many times the loop runs
+        int tick = 0;
+
         //Civilian cells
         if (targetCivilians != civilians.Count)
         {
-            
+            //Will run until the civilian count is correct or it reaches the processing limit
+            while (civilians.Count < targetCivilians && tick < maxTick)
+            {
+                //Get the next avaliable cell from the object pool
+                GameObject cell = civilianPool.GetNextObject();
+
+                //If the object pool is out, or there are no spots open, then stop activating cells
+                if (cell == null || !CivilianSpotsOpen())
+                {
+                    Debug.Log("Missing cell componet or no spots open: civilians");
+                    break;
+                }
+
+                //Get a Cell.cs reference
+                Cell c = cell.GetComponent<Cell>();
+
+                //Until the cell is active, or we are out of processing time
+                while (!cell.activeInHierarchy && tick < maxTick)
+                {
+                    //Get a random civilian spot and test if it is not being used
+                    int randomSpot = Random.Range(0, isCivilianSpotUsed.Count);
+                    if (!isCivilianSpotUsed[randomSpot])
+                    {
+                        //Set the spot as used
+                        isCivilianSpotUsed[randomSpot] = true;
+
+                        //Activate the cell
+                        cell.SetActive(true);
+                        c.cellSpot = randomSpot;
+                        c.ActivateCell(civilianCellPositions[randomSpot]);
+                        civilians.Add(c);
+                        break;
+                    }
+
+                    tick++;
+                }
+
+                tick++;
+            }
+            //If we ran out of processing time, then log that
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: civilians");
+            }
+
+            //Reset tick for killing old cells
+            tick = 0;
+
+            while (civilians.Count > targetCivilians && tick < maxTick)
+            {
+                Cell c = civilians[Random.Range(0, civilians.Count)];
+
+                //if chance and there are bacteria in the scene, then select a random bacteria to kill the cell
+                if (Random.Range(0f, 10f) > 0.3f && bacteria.Count > 0)
+                {
+                    Cell b = bacteria[Random.Range(0, bacteria.Count)];
+                    b.NewTask(4, c.gameObject);
+                }
+                else
+                {
+                    c.NewTask(10);
+                }
+
+                //set the spot to unused
+                isCivilianSpotUsed[c.cellSpot] = false;
+                civilians.Remove(c);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: civilians");
+            }
         }
+
+        maxTick = mMacrophages * 10;
+        tick = 0;
+        //Macrophages
+        if (targetMacrophages != macrophages.Count)
+        {
+            while (macrophages.Count < targetMacrophages && tick < maxTick)
+            {
+                GameObject cell = macrophagePool.GetNextObject();
+                if (cell == null)
+                {
+                    Debug.Log("Missing cell componet: macrophages");
+                    break;
+                }
+
+                Cell m = cell.GetComponent<Cell>();
+                cell.SetActive(true);
+
+                float chance = Random.Range(0f, 10f);
+                //small chance to duplicate, large chance to enter from path, small chance to enter from random position
+                if (chance > 0.97f && macrophages.Count > 0)
+                {
+                    GameObject spawnCell = macrophages[Random.Range(0, macrophages.Count)].gameObject;
+                    m.ActivateCell(spawnCell.transform.position, verticalMax, horizontalMax);
+                }
+                else if (chance > 0.2f && pathingPositions.Count > 0)
+                {
+                    m.ActivateCell(pathingPositions[Random.Range(0, pathingPositions.Count)], verticalMax, horizontalMax);
+                }
+                else
+                {
+                    m.ActivateCell(GetRandomEdgePosition(), verticalMax, horizontalMax);
+                }
+
+                macrophages.Add(m);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: macrophages");
+            }
+
+            tick = 0;
+
+            while (macrophages.Count < targetMacrophages && tick < maxTick)
+            {
+                Cell m = macrophages[Random.Range(0, macrophages.Count)];
+
+                float chance = Random.Range(0f, 10f);
+                //Small chance of aptosis, large chance of moving to path, small chance of moving to random off screen
+                if (chance > 0.8f)
+                {
+                    m.NewTask(10);
+                }
+                else if (chance > 0.3f && pathingPositions.Count > 0)
+                {
+                    m.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                    m.NewTask(11);
+                }
+                else
+                {
+                    m.NewTask(1, GetRandomEdgePosition());
+                    m.NewTask(11);
+                }
+
+                macrophages.Remove(m);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: macrophages");
+            }
+        }
+
+        maxTick = mNeutrophiles * 10;
+        tick = 0;
+        //Neutrophiles
+        if (targetNeutrophiles != neutrophiles.Count)
+        {
+            while (neutrophiles.Count < targetNeutrophiles && tick < maxTick)
+            {
+                GameObject cell = neutrophilePool.GetNextObject();
+                if (cell == null)
+                {
+                    Debug.Log("Missing cell componet: neutrophiles");
+                    break;
+                }
+
+                Cell n = cell.GetComponent<Cell>();
+                cell.SetActive(true);
+
+                float chance = Random.Range(0f, 10f);
+                //small chance to duplicate, large chance to enter from path, small chance to enter from random position
+                if (chance > 0.98f && neutrophiles.Count > 0)
+                {
+                    GameObject spawnCell = neutrophiles[Random.Range(0, neutrophiles.Count)].gameObject;
+                    n.ActivateCell(spawnCell.transform.position, verticalMax, horizontalMax);
+                }
+                else if (chance > 0.2f && pathingPositions.Count > 0)
+                {
+                    n.ActivateCell(pathingPositions[Random.Range(0, pathingPositions.Count)], verticalMax, horizontalMax);
+                }
+                else
+                {
+                    n.ActivateCell(GetRandomEdgePosition(), verticalMax, horizontalMax);
+                }
+
+                neutrophiles.Add(n);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: neutrophiles");
+            }
+
+            tick = 0;
+
+            while (neutrophiles.Count < targetNeutrophiles && tick < maxTick)
+            {
+                Cell n = neutrophiles[Random.Range(0, neutrophiles.Count)];
+
+                float chance = Random.Range(0f, 10f);
+                //Small chance of aptosis, large chance of moving to path, small chance of moving to random off screen
+                if (chance > 0.8f)
+                {
+                    n.NewTask(10);
+                }
+                else if (chance > 0.3f && pathingPositions.Count > 0)
+                {
+                    n.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                    n.NewTask(11);
+                }
+                else
+                {
+                    n.NewTask(1, GetRandomEdgePosition());
+                    n.NewTask(11);
+                }
+
+                neutrophiles.Remove(n);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: neutrophiles");
+            }
+        }
+
+        maxTick = mBacteria * 10;
+        tick = 0;
+        //Bacteria
+        if (targetBacteria != bacteria.Count)
+        {
+            while (bacteria.Count < targetBacteria && tick < maxTick)
+            {
+                GameObject cell = bacteriaPool.GetNextObject();
+                if (cell == null)
+                {
+                    Debug.Log("Missing cell componet: bacteria");
+                    break;
+                }
+
+                Cell b = cell.GetComponent<Cell>();
+                cell.SetActive(true);
+
+                float chance = Random.Range(0f, 10f);
+                //large chance to duplicate, small chance to enter from path; if those fail then enter from random edge
+                if (chance > 0.9f && pathingPositions.Count > 0)
+                {
+                    b.ActivateCell(pathingPositions[Random.Range(0, pathingPositions.Count)], verticalMax, horizontalMax);
+                    
+                }
+                else if (bacteria.Count > 0)
+                {
+                    GameObject spawnCell = bacteria[Random.Range(0, bacteria.Count)].gameObject;
+                    b.ActivateCell(spawnCell.transform.position, verticalMax, horizontalMax);
+                }
+                else
+                {
+                    b.ActivateCell(GetRandomEdgePosition(), verticalMax, horizontalMax);
+                }
+
+                bacteria.Add(b);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: bacteria");
+            }
+
+            tick = 0;
+
+            while (bacteria.Count > targetBacteria && tick < maxTick)
+            {
+                Cell b = bacteria[Random.Range(0, bacteria.Count)];
+
+                float chance = Random.Range(0f, 10f);
+                //large chance to get killed, small chance to leave screen
+                if (chance > 0.9f && pathingPositions.Count > 0)
+                {
+                    Cell killingCell;
+                    if (chance > 0.7f && neutrophiles.Count > 0)
+                    {
+                        killingCell = neutrophiles[Random.Range(0, neutrophiles.Count)];
+                        killingCell.NewTask(4, b.gameObject);
+                    }
+                    else if (macrophages.Count > 0)
+                    {
+                        killingCell = macrophages[Random.Range(0, macrophages.Count)];
+                        killingCell.NewTask(4, b.gameObject);
+                    }
+                    else
+                    {
+                        b.NewTask(10);
+                    }
+                }
+                else
+                {
+                    b.NewTask(1, GetRandomEdgePosition());
+                    b.NewTask(11);
+                }
+
+                bacteria.Remove(b);
+
+                tick++;
+            }
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: bacteria");
+            }
+        }
+
     }
     //Simply activates new cells and places them in the scene during loading
-    void SetCellNumbers(int responseType)
+    void SetCellNumbers()
     {
         //Civilians
 
         //Set a maximum processing tick, which will put a limit on how many times the loop can run
-        int maxTick = targetCivilians * 100;
+        int maxTick = mCivilians * 100;
         //Keep track of how many times the loop runs
         int tick = 0;
 
@@ -251,6 +599,7 @@ public class CellManager : MonoBehaviour
 
                     //Activate the cell
                     cell.SetActive(true);
+                    c.cellSpot = randomSpot;
                     c.ActivateCell(civilianCellPositions[randomSpot]);
                     civilians.Add(c);
                     break;
@@ -268,7 +617,7 @@ public class CellManager : MonoBehaviour
         }
 
         //Macrophages
-        maxTick = maxMacrophages * 10;
+        maxTick = mMacrophages * 10;
         tick = 0;
         while (macrophages.Count < targetMacrophages && tick < maxTick)
         {
@@ -292,8 +641,33 @@ public class CellManager : MonoBehaviour
             Debug.Log("Too many attempts: macrophages");
         }
 
+        //Neutrophiles
+        maxTick = mNeutrophiles * 10;
+        tick = 0;
+        while (neutrophiles.Count < targetNeutrophiles && tick < maxTick)
+        {
+            GameObject cell = neutrophilePool.GetNextObject();
+            if (cell == null)
+            {
+                Debug.Log("Missing cell componet: neutrophiles");
+                break;
+            }
+
+            Cell n = cell.GetComponent<Cell>();
+
+            cell.SetActive(true);
+            n.ActivateCell(GetRandomPosition(), verticalMax, horizontalMax);
+            neutrophiles.Add(n);
+
+            tick++;
+        }
+        if (tick >= maxTick)
+        {
+            Debug.Log("Too many attempts: neutrophiles");
+        }
+
         //Bacteria
-        maxTick = maxBacteria * 10;
+        maxTick = mBacteria * 10;
         tick = 0;
         while (bacteria.Count < targetBacteria && tick < maxTick)
         {
@@ -308,7 +682,7 @@ public class CellManager : MonoBehaviour
 
             cell.SetActive(true);
             b.ActivateCell(GetRandomPosition(), verticalMax, horizontalMax);
-            macrophages.Add(b);
+            bacteria.Add(b);
 
             tick++;
         }
@@ -328,6 +702,11 @@ public class CellManager : MonoBehaviour
                 spotsOpen = true;
                 break;
             }
+        }
+
+        if (!spotsOpen)
+        {
+            Debug.Log("No spots open");
         }
         return spotsOpen;
     }
