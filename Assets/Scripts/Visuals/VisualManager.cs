@@ -200,7 +200,7 @@ public class VisualManager : MonoBehaviour
         float stressPercent = section.StressLevelPercent;
 
         //send info to cellManager
-        cellManager.NewSimulationNumbers(responsePercent, infectionPercent, responseTypeInt);
+        cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
 
         //send info to visualScene, for color changes
         if (activeScene != -1)

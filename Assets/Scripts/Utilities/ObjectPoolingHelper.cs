@@ -66,7 +66,7 @@ public class ObjectPoolingHelper : MonoBehaviour
 
             if (GenerateOnOverflow)
             {
-                pooledObjects.Add(Instantiate(poolObject));
+                pooledObjects.Add(Instantiate(poolObject, gameObject.transform));
                 pooledObjects[poolCount - 1].SetActive(false);
                 poolCount++;
 
