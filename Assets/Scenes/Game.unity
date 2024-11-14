@@ -1495,19 +1495,17 @@ MonoBehaviour:
   bacteria: []
   civilianCellPositions: []
   isCivilianSpotUsed: 
-  maxCivilians: 1000
+  maxCivilians: 100
   targetCivilians: 0
-  maxMacrophages: 200
+  maxMacrophages: 10
   targetMacrophages: 0
-  maxNeutrophiles: 100
+  maxNeutrophiles: 10
   targetNeutrophiles: 0
-  maxBacteria: 750
+  maxBacteria: 50
   targetBacteria: 0
   sceneScale: 1
   verticalMax: 5
   horizontalMax: 9
-  responseSlider: {fileID: 0}
-  infectionSlider: {fileID: 0}
 --- !u!114 &1801698980
 MonoBehaviour:
   m_ObjectHideFlags: 0

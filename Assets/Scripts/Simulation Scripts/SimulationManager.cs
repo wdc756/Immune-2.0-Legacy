@@ -45,7 +45,7 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] private int ticksPerVisualUpdate;
     public int Tick;
 
-    private void Start()
+    public void SetUp(GameManager gameManager)
     {
         // TickDelta is the seconds per tick used to convert seconds to ticks and vice versa
         TickDelta = Time.fixedDeltaTime * (float)FixedUpdatesPerTick;
@@ -58,7 +58,9 @@ public class SimulationManager : MonoBehaviour
 
         ticksPerVisualUpdate = (int)(SecondsPerVisualUpdate / TickDelta);
 
-        VisualsManager = FindObjectOfType<VisualManager>();
+        VisualsManager = gameManager.visualManager;
+
+        Run();
     }
 
     private void FixedUpdate()

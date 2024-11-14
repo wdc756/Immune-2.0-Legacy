@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour
      It will handle when to change scenes, what stuff to generate, as well as error handling.
      */
 
-    public VisualManager visualManager;    
-
+    public VisualManager visualManager;
+    public SimulationManager simulationManager;
     void Start()
     {
         //makes sure this object is always in the scene
@@ -44,12 +44,14 @@ public class GameManager : MonoBehaviour
         }
 
         visualManager = FindObjectOfType<VisualManager>();
+        simulationManager = FindObjectOfType<SimulationManager>();
         if (visualManager == null)
         {
             Error("Could not find visualManager in the game scene");
             yield break;
         }
         visualManager.SetUp(this);
+        simulationManager.SetUp(this);
     }
 
     //Links to an error screen that will output the string message by adding it to the string error list
