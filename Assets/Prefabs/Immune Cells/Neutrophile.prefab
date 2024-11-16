@@ -109,12 +109,13 @@ MonoBehaviour:
   - {fileID: 0}
   currentTask: 0
   canMove: 1
-  interactRadius: 0.7
+  interactRadius: 0.5
   randomWalkDirectionChangeChance: 0.06
   randomWalkChangeDistance: 9
   followChangeChance: 0.015
   followChangeDistance: 10
   followChangeMaxTime: 2
+  cellSpot: 0
 --- !u!114 &8323753703043113533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,10 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 1
+  accelerationForce: 1.5
   mass: 0.2
-  frictionForce: 1
-  maxSpeed: 3
+  frictionForce: 2.5
+  maxSpeed: 3.5
   tolerance: 0.07
   momentum: {x: 0, y: 0, z: 0}
   isSlowingDown: 0

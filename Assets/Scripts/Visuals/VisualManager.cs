@@ -12,6 +12,9 @@ public class VisualManager : MonoBehaviour
      While this script may not do much directly, it's responsible for coordinating the various systems in place
      */
 
+    //Makes sure that stuff doesn't get called too early
+    private bool canRun = false;
+
     //Reference to the GameManager to tell it if there was some sort of error
     private GameManager gameManager;
     //Reference to the CellManager
@@ -40,6 +43,8 @@ public class VisualManager : MonoBehaviour
     //Changes the active VisualScene
     public void ChangeScene(int scene)
     {
+        canRun = false;
+
         visualSceneList[activeScene].gameObject.SetActive(false);
         if (scene == -1)
         {
@@ -56,7 +61,11 @@ public class VisualManager : MonoBehaviour
         }
         visualSceneList[activeScene].gameObject.SetActive(true);
 
+        canRun = true;
+
         cellManager.LoadVisualScene(visualSceneList[activeScene]);
+        ReceiveSimulationNumbers();
+        cellManager.SetCellNumbers();
 
         cam.orthographicSize = visualSceneList[activeScene].sceneScale * 5f;
 
@@ -64,8 +73,11 @@ public class VisualManager : MonoBehaviour
     }
     public void ResetActiveScene()
     {
+        canRun = false;
+
         VisualScene scene = visualSceneList[activeScene];
 
+        int index = scene.sceneIndex;
         float scale = scene.sceneScale;
         int numAnchors = scene.GetNumAnchors();
         int numCivilians = scene.maxCivilians;
@@ -73,7 +85,7 @@ public class VisualManager : MonoBehaviour
         int numNeutrophiles = scene.maxNeutrophiles;
         int numBacteria = scene.maxBacteria;
 
-        scene.SetUp(scale, visualSceneList, numAnchors, numCivilians, numMacrophages, numNeutrophiles, numBacteria);
+        scene.SetUp(index, scale, visualSceneList, numAnchors, numCivilians, numMacrophages, numNeutrophiles, numBacteria);
 
         Debug.Log("Reset " + scene.gameObject.name);
         ChangeScene(activeScene);
@@ -88,6 +100,8 @@ public class VisualManager : MonoBehaviour
     //Sets up the visual side of things; to be called by GameManager
     public void SetUp(GameManager gameM)
     {
+        canRun = false;
+
         gameManager = gameM;
 
         InstantiateVisualScenes();
@@ -133,13 +147,13 @@ public class VisualManager : MonoBehaviour
         //}
 
         //SetUp(scale, list of links, number of anchors, number of civilians, number of M, num N, num B
-        visualSceneList[0].SetUp(1.5f, visualSceneList, 5, 100, 50, 50, 75);
+        visualSceneList[0].SetUp(0, 1.5f, visualSceneList, 5, 100, 50, 50, 75);
         visualSceneList[0].gameObject.SetActive(false);
-        visualSceneList[1].SetUp(3.0f, visualSceneList, 10, 300, 100, 25, 150);
+        visualSceneList[1].SetUp(1, 3.0f, visualSceneList, 10, 300, 100, 25, 150);
         visualSceneList[1].gameObject.SetActive(false);
-        visualSceneList[2].SetUp(5.0f, visualSceneList, 12, 850, 200, 100, 400);
+        visualSceneList[2].SetUp(2, 5.0f, visualSceneList, 12, 850, 200, 100, 400);
         visualSceneList[2].gameObject.SetActive(false);
-        visualSceneList[3].SetUp(2.5f, visualSceneList, 7, 250, 75, 75, 125);
+        visualSceneList[3].SetUp(3, 2.5f, visualSceneList, 7, 250, 75, 75, 125);
         visualSceneList[3].gameObject.SetActive(false);
     }
     
@@ -172,45 +186,59 @@ public class VisualManager : MonoBehaviour
 
 
 
-    //This will be called by the Simulation Manager to update the current scene numbers
+    //This will be called by the Simulation Manager to update the current scene numbers, and by this whenever a scene gets loaded in
     public void ReceiveSimulationNumbers()
     {
-        //use ActiveScene int to index into the BodySections list and pull the correct numbers from there
-        //then send those numbers to the relevant scripts in the scene
-
-        // Change for full body section if you use a boolean instead
-        if (activeScene == -1)
+        if (canRun)
         {
-            int civilianDeathCount = bodySimulation.CivilianDeathCount;
-            float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
-            float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
-            float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
-            return;
+            //use ActiveScene int to index into the BodySections list and pull the correct numbers from there
+            //then send those numbers to the relevant scripts in the scene
+
+            // Change for full body section if you use a boolean instead
+            if (activeScene == -1)
+            {
+                int civilianDeathCount = bodySimulation.CivilianDeathCount;
+                float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
+                float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
+                float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
+                return;
+            }
+
+            // Get the active section
+            BodySectionSimulation section = bodySimulation.Sections[activeScene];
+
+            // Response 0-100, Response type
+            float responsePercent = section.Response.LevelPercent;
+
+            ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
+            //convert ResponseType to int
+            int responseTypeInt = 0;
+
+            // Infection 0-100
+            float infectionPercent = section.InfectionProgressPercent;
+
+            // Stress 0-100
+            float stressPercent = section.StressLevelPercent;
+
+            //send info to cellManager
+            cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
+            //Debug.Log("new sim numbers");
+
+            //send info to visualScene, for color changes
+            if (activeScene != -1)
+            {
+                visualSceneList[activeScene].ShiftColor(stressPercent / 100f, infectionPercent / 100f);
+            }
         }
+    }
 
-        // Get the active section
-        BodySectionSimulation section = bodySimulation.Sections[activeScene];
-
-        // Response 0-100, Response type
-        float responsePercent = section.Response.LevelPercent;
-
-        ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
-        //convert ResponseType to int
-        int responseTypeInt = 0;
-
-        // Infection 0-100
-        float infectionPercent = section.InfectionProgressPercent;
-
-        // Stress 0-100
-        float stressPercent = section.StressLevelPercent;
-
-        //send info to cellManager
-        cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
-
-        //send info to visualScene, for color changes
-        if (activeScene != -1)
+    //Called for testing
+    public void ReceiveTestingNumbers(float response, float infection, int responseType)
+    {
+        if (canRun)
         {
-            visualSceneList[activeScene].ShiftColor(stressPercent, infectionPercent);
+            cellManager.NewSimulationNumbers(response, infection, responseType);
+            visualSceneList[activeScene].ShiftColor(response, infection);
         }
     }
 }

@@ -1,19 +1,43 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
-//public class TempUIHandler : MonoBehaviour
-//{
+public class TempUIHandler : MonoBehaviour
+{
+    public BodySimulation simulation;
+    private BodySectionSimulation sectionSim;
+    public VisualManager visualManager;
 
-//    public Slider responseSlider;
-//    public Slider infectionSlider;
+    //calls the active body section's function when a button is pressed
+    public void CallBodySectionFunction(int type)
+    {
+        int activeScene = visualManager.activeScene;
+        sectionSim = simulation.Sections[activeScene];
 
-//    public CellManager cellManager;
+        if (sectionSim == null)
+        {
+            Debug.Log("Could not find BodySectionSimulation");
+            return;
+        }
 
-//    // Update is called once per frame
-//    void Update()
-//    {
-//        cellManager.RecieveSimulationNumbers(responseSlider.value, infectionSlider.value);
-//    }
-//}
+        switch (type)
+        {
+            case 0:
+                sectionSim.Alarm();
+                break;
+            case 1:
+                sectionSim.Escalate();
+                break;
+            case 2:
+                sectionSim.Deescalate();
+                break;
+            case 3:
+                sectionSim.Scan();
+                break;
+            default:
+                Debug.Log("Invalid int argument for CallBodySectionFunction: " +  type);
+                break;
+        }
+    }
+}

@@ -31,6 +31,11 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(StartGameAsync());
     }
+    //temp, called by exit button
+    public void StartTesting()
+    {
+        StartCoroutine(StartTestingAsync());
+    }
     //Async scene loading because loading a scene is an async task, so variable setting during scene loading has issues
     private IEnumerator StartGameAsync()
     {
@@ -52,6 +57,28 @@ public class GameManager : MonoBehaviour
         }
         visualManager.SetUp(this);
         simulationManager.SetUp(this);
+    }
+
+    private IEnumerator StartTestingAsync()
+    {
+        //starts the loading process
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(2);
+
+        // Wait until the scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        visualManager = FindObjectOfType<VisualManager>();
+        //simulationManager = FindObjectOfType<SimulationManager>();
+        if (visualManager == null)
+        {
+            Error("Could not find visualManager in the game scene");
+            yield break;
+        }
+        visualManager.SetUp(this);
+        //simulationManager.SetUp(this);
     }
 
     //Links to an error screen that will output the string message by adding it to the string error list

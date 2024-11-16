@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1554577895
   m_SortingLayer: 1
-  m_SortingOrder: 3
+  m_SortingOrder: 1
   m_Sprite: {fileID: 2747690628134850419, guid: b670ab75dde984907b8570040daa08c5, type: 3}
   m_Color: {r: 0.08235294, g: 0.7019608, b: 0.40392157, a: 1}
   m_FlipX: 0
@@ -113,6 +113,7 @@ MonoBehaviour:
   followChangeChance: 0
   followChangeDistance: 0
   followChangeMaxTime: 0
+  cellSpot: 0
 --- !u!114 &8769249357666947556
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,8 @@ public class VisualScene : MonoBehaviour
      */
 
     //Pathing data for linking scenes
+    //This VisualScene's index in VisualManager
+    public int sceneIndex;
     //Used by VisualManager to direct players to other VisualScenes
     private List<VisualScene> pathingLinks = new List<VisualScene>();
     //Vector3 positions to stop blockage
@@ -70,8 +72,10 @@ public class VisualScene : MonoBehaviour
 
     
     //Call to reset and generate new cell positions
-    public void SetUp(float scale, List<VisualScene> links, int numAnchors, int numCivilians, int numMacrophages, int numNeutrophiles, int numBacteria)
+    public void SetUp(int index, float scale, List<VisualScene> links, int numAnchors, int numCivilians, int numMacrophages, int numNeutrophiles, int numBacteria)
     {
+        sceneIndex = index;
+
         sceneScale = scale;
         SetScreenScale();
 
@@ -79,7 +83,7 @@ public class VisualScene : MonoBehaviour
 
         GeneratePathingPositions(links);
         GenerateAnchors(numAnchors);
-        GenerateCellPositions(numCivilians + 1);
+        GenerateCellPositions((int)(numCivilians * 1.1f));
 
         maxCivilians = numCivilians;
         maxMacrophages = numMacrophages;

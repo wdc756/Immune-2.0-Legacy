@@ -115,6 +115,7 @@ MonoBehaviour:
   followChangeChance: 0.01
   followChangeDistance: 10
   followChangeMaxTime: 3
+  cellSpot: 0
 --- !u!114 &8044138589372531607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,9 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 0.7
+  accelerationForce: 1.3
   mass: 0.3
-  frictionForce: 1
+  frictionForce: 1.5
   maxSpeed: 2
   tolerance: 0.1
   momentum: {x: 0, y: 0, z: 0}
