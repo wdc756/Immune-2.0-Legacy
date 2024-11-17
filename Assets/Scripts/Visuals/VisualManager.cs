@@ -21,6 +21,10 @@ public class VisualManager : MonoBehaviour
     private CellManager cellManager;
     // reference to the body simulation
     private BodySimulation bodySimulation;
+    //used to generate new link buttons on load scene
+    private TempUIHandler tempUIHandler;
+
+
     //The main camera, used to change the camerasize float according to the size of the active VisualScene
     public Camera cam;
 
@@ -69,7 +73,10 @@ public class VisualManager : MonoBehaviour
 
         cam.orthographicSize = visualSceneList[activeScene].sceneScale * 5f;
 
-        Debug.Log("Loaded " + visualSceneList[activeScene].gameObject.name);
+        //Debug.Log("Loaded " + visualSceneList[activeScene].gameObject.name);
+
+        //temp
+        tempUIHandler.LoadSceneLinkButtons();
     }
     public void ResetActiveScene()
     {
@@ -87,7 +94,11 @@ public class VisualManager : MonoBehaviour
 
         scene.SetUp(index, scale, visualSceneList, numAnchors, numCivilians, numMacrophages, numNeutrophiles, numBacteria);
 
-        Debug.Log("Reset " + scene.gameObject.name);
+        //Debug.Log("Reset " + scene.gameObject.name);
+
+        //temp
+        tempUIHandler.DestroyAllLinkButtons();
+
         ChangeScene(activeScene);
     }
     //returns the active scene from the list
@@ -118,6 +129,9 @@ public class VisualManager : MonoBehaviour
 
         bodySimulation = FindObjectOfType<BodySimulation>();
 
+        //temp
+        tempUIHandler = FindObjectOfType<TempUIHandler>();
+
         ChangeScene(activeScene);
     }
     //Generates scenes using the visualScenePrefab
@@ -147,13 +161,38 @@ public class VisualManager : MonoBehaviour
         //}
 
         //SetUp(scale, list of links, number of anchors, number of civilians, number of M, num N, num B
-        visualSceneList[0].SetUp(0, 1.5f, visualSceneList, 5, 100, 50, 50, 75);
+
+        //A new list varaible used to set up a selection of paths
+        List<VisualScene> setUpScenes = new List<VisualScene>
+        {
+            visualSceneList[1],
+            visualSceneList[2]
+        };
+        visualSceneList[0].SetUp(0, 1.5f, setUpScenes, 5, 100, 50, 50, 75);
         visualSceneList[0].gameObject.SetActive(false);
-        visualSceneList[1].SetUp(1, 3.0f, visualSceneList, 10, 300, 100, 25, 150);
+
+        setUpScenes = new List<VisualScene>
+        {
+            visualSceneList[0],
+            visualSceneList[2],
+            visualSceneList[3]
+        };
+        visualSceneList[1].SetUp(1, 3.0f, setUpScenes, 10, 300, 100, 25, 150);
         visualSceneList[1].gameObject.SetActive(false);
-        visualSceneList[2].SetUp(2, 5.0f, visualSceneList, 12, 850, 200, 100, 400);
+
+        setUpScenes = new List<VisualScene>
+        {
+            visualSceneList[0],
+            visualSceneList[1]
+        };
+        visualSceneList[2].SetUp(2, 5.0f, setUpScenes, 12, 850, 200, 100, 400);
         visualSceneList[2].gameObject.SetActive(false);
-        visualSceneList[3].SetUp(3, 2.5f, visualSceneList, 7, 250, 75, 75, 125);
+
+        setUpScenes = new List<VisualScene>
+        {
+            visualSceneList[2]
+        };
+        visualSceneList[3].SetUp(3, 2.5f, setUpScenes, 7, 250, 75, 75, 125);
         visualSceneList[3].gameObject.SetActive(false);
     }
     

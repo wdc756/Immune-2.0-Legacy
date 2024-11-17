@@ -14,7 +14,7 @@ public class VisualScene : MonoBehaviour
     public int sceneIndex;
     //Used by VisualManager to direct players to other VisualScenes
     private List<VisualScene> pathingLinks = new List<VisualScene>();
-    //Vector3 positions to stop blockage
+    //Vector3 positions that link to other scenes
     private List<Vector3> pathingPositions = new List<Vector3>();
 
 
@@ -62,6 +62,8 @@ public class VisualScene : MonoBehaviour
     [SerializeField, Tooltip("The color shift hue when this section is very infected")]
     private Color infectedHue;
 
+
+    public GameObject pathPre;
 
 
     void Start()
@@ -147,8 +149,11 @@ public class VisualScene : MonoBehaviour
 
             if (add)
             {
-                pathingPositions.Add(v);
                 pathingLinks.Add(links[pathingLinks.Count]);
+                pathingPositions.Add(v);
+
+                GameObject obj = Instantiate(pathPre, v, Quaternion.identity);
+                obj.transform.SetParent(transform);
             }
 
             tick++;
