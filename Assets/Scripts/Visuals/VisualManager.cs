@@ -21,8 +21,8 @@ public class VisualManager : MonoBehaviour
     private CellManager cellManager;
     // reference to the body simulation
     private BodySimulation bodySimulation;
-    //used to generate new link buttons on load scene
-    private TempUIHandler tempUIHandler;
+    //Used to generate new link buttons
+    private UIManager uiManager;
 
 
     //The main camera, used to change the camerasize float according to the size of the active VisualScene
@@ -75,8 +75,7 @@ public class VisualManager : MonoBehaviour
 
         //Debug.Log("Loaded " + visualSceneList[activeScene].gameObject.name);
 
-        //temp
-        tempUIHandler.LoadSceneLinkButtons();
+        uiManager.LoadSceneLinkButtons();
     }
     public void ResetActiveScene()
     {
@@ -96,8 +95,7 @@ public class VisualManager : MonoBehaviour
 
         //Debug.Log("Reset " + scene.gameObject.name);
 
-        //temp
-        tempUIHandler.DestroyAllLinkButtons();
+        uiManager.DestroyAllLinkButtons();
 
         ChangeScene(activeScene);
     }
@@ -133,8 +131,7 @@ public class VisualManager : MonoBehaviour
 
         bodySimulation = FindObjectOfType<BodySimulation>();
 
-        //temp
-        tempUIHandler = FindObjectOfType<TempUIHandler>();
+        uiManager = FindObjectOfType<UIManager>();
 
         ChangeScene(activeScene);
     }

@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
             Vector3 screenPos = cam.WorldToScreenPoint(linkPositions[i]);
 
             //Margin to add some space between the screen bounds
-            float margin = 50;
+            float margin = 200; //Leave this as the higher number, because the build needs it
             screenPos.x = Mathf.Clamp(screenPos.x, margin, Screen.width - margin);
             screenPos.y = Mathf.Clamp(screenPos.y, margin, Screen.height - margin);
 
