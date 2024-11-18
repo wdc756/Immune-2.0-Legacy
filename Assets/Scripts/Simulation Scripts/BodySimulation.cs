@@ -86,7 +86,7 @@ public class BodySimulation : Simulated
         ResourceDemandPercent = sum;
 
         // Min cap the resource demand percent
-        ResourceDemandPercent = Mathf.Max(0f, ResourceProductionPercent);
+        //ResourceDemandPercent = Mathf.Max(0f, ResourceProductionPercent);
 
         HandleResources();
         if (ResourceProductionPercent < ResourceDemandPercent) Kickback();
@@ -95,6 +95,7 @@ public class BodySimulation : Simulated
     public void IncreaseProduction()
     {
         if (resourceChanging) return;
+        Debug.Log("Increase");
 
         resourceTarget = ResourceProductionPercent + 10f;
         resourceChangeDelta = Mathf.Abs(resourceChangeDelta);
@@ -105,6 +106,7 @@ public class BodySimulation : Simulated
     public void DecreaseProduction()
     {
         if (resourceChanging) return;
+        Debug.Log("Decrease");
 
         resourceTarget = ResourceProductionPercent - 10f;
         resourceChangeDelta = -Mathf.Abs(resourceChangeDelta);

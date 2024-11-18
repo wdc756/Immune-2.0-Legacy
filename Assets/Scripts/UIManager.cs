@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     public BodySimulation simulation;
     [Tooltip("The visual manger, used to get the active scene reference")]
     public VisualManager visualManager;
+    public GameManager gameManager;
 
     //The active simulation section, which will be set as needed on runtime
     private BodySectionSimulation sectionSim;
@@ -28,7 +29,8 @@ public class UIManager : MonoBehaviour
     //List of instantiated buttons, used to delete them when done
     private List<GameObject> changeSceneButtons = new List<GameObject>();
 
-
+    public Slider cellDeathSlider;
+    public Slider resourceSlider;
 
     //Called by VisualManger on LoadScene(), to generate new scene link buttons
     public void LoadSceneLinkButtons()
@@ -128,8 +130,12 @@ public class UIManager : MonoBehaviour
     public void UpdateThymusUI(int civilianDeathCount, float resourceUsage)
     {
         //update civilian death slider
+        //cellDeathSlider.maxValue = gameManager.maxCivilianDeathCount;
+        cellDeathSlider.value = civilianDeathCount;
 
         //update resource usage slider
+        resourceSlider.value = resourceUsage;
+
         //note that resourceUsage is 0-100
     }
 }

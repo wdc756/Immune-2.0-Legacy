@@ -238,11 +238,14 @@ public class VisualManager : MonoBehaviour
             }
 
             // Change for full body section if you use a boolean instead
-            if (activeScene == -1)
+            if (activeScene == 0)
             {
                 float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
                 float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
                 float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
+
+                Debug.Log($"demand {resourceDemandPercent} prod {resourceProductionPercent}");
+                //Debug.Log(resourceUsagePercent);
 
                 uiManager.UpdateThymusUI(civilianDeathCount, resourceUsagePercent);
 
