@@ -29,7 +29,7 @@ public class VisualManager : MonoBehaviour
     public Camera cam;
 
     [Tooltip("The active visual scene that the visual system is rendering; change this number to change the starting scene")]
-    public int activeScene = -1;
+    public int activeScene = 0;
     [SerializeField, Tooltip("Prefab used to generate Visual Scenes")]
     private GameObject visualScenePrefab;
     [SerializeField, Tooltip("Holds all the VisualScenes")]
@@ -98,10 +98,6 @@ public class VisualManager : MonoBehaviour
         uiManager.DestroyAllLinkButtons();
 
         ChangeScene(activeScene);
-    }
-    private void LoadThymus(int civilianDeaths, float resourceDemandPercent, float resourceProductionPercent, float resourceUsagePercent)
-    {
-        //call UI manager and do change UI elements accordingly
     }
     //returns the active scene from the list
     public VisualScene GetActiveScene()
@@ -238,7 +234,7 @@ public class VisualManager : MonoBehaviour
             int civilianDeathCount = bodySimulation.CivilianDeathCount;
             if (civilianDeathCount > gameManager.maxCivilianDeathCount)
             {
-
+                gameManager.Lose();
             }
 
             // Change for full body section if you use a boolean instead
@@ -247,6 +243,9 @@ public class VisualManager : MonoBehaviour
                 float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
                 float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
                 float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
+
+                uiManager.UpdateThymusUI(civilianDeathCount, resourceUsagePercent);
+
                 return;
             }
 

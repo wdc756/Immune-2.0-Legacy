@@ -124,7 +124,7 @@ public class UIManager : MonoBehaviour
 
 
 
-    //To control the Thymus UI
+    //To control the Thymus UI, called by VisualManager
     public void UpdateThymusUI(int civilianDeathCount, float resourceUsage)
     {
         //update civilian death slider
