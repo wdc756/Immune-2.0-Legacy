@@ -624,7 +624,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 729694561}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TempUIHandler, Assembly-CSharp
         m_MethodName: CallBodySectionFunction
         m_Mode: 3
@@ -1398,57 +1398,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 709899037}
   m_CullTransparentMesh: 1
---- !u!1 &729694560
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 729694562}
-  - component: {fileID: 729694561}
-  m_Layer: 0
-  m_Name: TempUIHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &729694561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729694560}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d6ba4a9ab150d4a8bf3f049db8366c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simulation: {fileID: 1259092083}
-  visualManager: {fileID: 1801698980}
-  canvasTransform: {fileID: 1562232543}
-  canvasRectTransform: {fileID: 1562232543}
-  cam: {fileID: 696626992}
-  buttonParent: {fileID: 2051912359}
-  changeSceneButtonPre: {fileID: 4784077187569327048, guid: 437a8dede28f4334b962df9e549c2dd4, type: 3}
---- !u!4 &729694562
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729694560}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 475.73166, y: 272.9864, z: -0.4824793}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &772560617
 GameObject:
   m_ObjectHideFlags: 0
@@ -2081,7 +2030,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 729694561}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TempUIHandler, Assembly-CSharp
         m_MethodName: CallBodySectionFunction
         m_Mode: 3
@@ -2777,7 +2726,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 729694561}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TempUIHandler, Assembly-CSharp
         m_MethodName: CallBodySectionFunction
         m_Mode: 3
@@ -2987,7 +2936,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 729694561}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TempUIHandler, Assembly-CSharp
         m_MethodName: CallBodySectionFunction
         m_Mode: 3
@@ -3623,6 +3572,57 @@ MonoBehaviour:
   targetResponsePercent: 0
   previousResponse: 0
   StressFactor: 0
+--- !u!1 &1880116060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1880116062}
+  - component: {fileID: 1880116061}
+  m_Layer: 0
+  m_Name: UIHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1880116061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880116060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e938a7e35f2905449aa1a948193f9a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulation: {fileID: 1259092083}
+  visualManager: {fileID: 1801698980}
+  canvasTransform: {fileID: 1562232543}
+  canvasRectTransform: {fileID: 1562232543}
+  cam: {fileID: 696626992}
+  buttonParent: {fileID: 2051912359}
+  changeSceneButtonPre: {fileID: 7387040531078548072, guid: b903c22b554151049870ad93a1e68db0, type: 3}
+--- !u!4 &1880116062
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880116060}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 502.1807, y: 287.9108, z: -1.7302698}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1945509482
 GameObject:
   m_ObjectHideFlags: 0
@@ -4141,4 +4141,4 @@ SceneRoots:
   - {fileID: 1596462456}
   - {fileID: 1259092084}
   - {fileID: 1801698981}
-  - {fileID: 729694562}
+  - {fileID: 1880116062}

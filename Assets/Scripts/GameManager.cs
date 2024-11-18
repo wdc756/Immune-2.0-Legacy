@@ -90,12 +90,14 @@ public class GameManager : MonoBehaviour
 
         pauseMenu.SetActive(false);
 
+
         gameOverMenu = GameObject.Find("GameOverMenu");
 
         exitButton = gameOverMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
         exitButton.onClick.AddListener(() => Exit());
 
         gameOverMenu.SetActive(false);
+
 
         canPause = true;
     }
