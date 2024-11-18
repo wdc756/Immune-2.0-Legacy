@@ -21,10 +21,14 @@ public class TempUIHandler : MonoBehaviour
     [SerializeField, Tooltip("The main camera, used to world to screen transformations")]
     private Camera cam;
 
+    [SerializeField, Tooltip("Where the buttons will be parented to")]
+    private GameObject buttonParent;
     [SerializeField, Tooltip("The button to be instantiated when loading in visualScenes")]
     private GameObject changeSceneButtonPre;
     //List of instantiated buttons, used to delete them when done
     private List<GameObject> changeSceneButtons = new List<GameObject>();
+
+
 
     //Called by VisualManger on LoadScene(), to generate new scene link buttons
     public void LoadSceneLinkButtons()
@@ -71,11 +75,12 @@ public class TempUIHandler : MonoBehaviour
 
             //change the button text
             buttonText.text = links[i].name;
+
+            //Put the button in a container
+            newButton.transform.SetParent(buttonParent.transform);
         }
 
     }
-
-
     //Destroys all the buttons in the scene
     public void DestroyAllLinkButtons()
     {
@@ -85,7 +90,6 @@ public class TempUIHandler : MonoBehaviour
         }
         changeSceneButtons.Clear();
     }
-
     //calls the active body section's function when a button is pressed
     public void CallBodySectionFunction(int type)
     {
@@ -117,4 +121,8 @@ public class TempUIHandler : MonoBehaviour
                 break;
         }
     }
+
+
+
+
 }

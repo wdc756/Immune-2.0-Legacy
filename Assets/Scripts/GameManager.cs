@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,15 @@ public class GameManager : MonoBehaviour
 
     public VisualManager visualManager;
     public SimulationManager simulationManager;
+
+    public GameObject pauseMenu;
+    public bool canPause = false;
+    public bool isPaused = false;
+    public GameObject gameOverMenu;
+
+    public int maxCivilianDeathCount;
+
+
     void Start()
     {
         //makes sure this object is always in the scene
@@ -23,18 +33,25 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused)
+            {
+                Pause();
+            }
+            else
+            {
+                Resume();
+            }
+        }
     }
+
+
 
     //called by the Start Game button in the main menu
     public void StartGame()
     {
         StartCoroutine(StartGameAsync());
-    }
-    //temp, called by exit button
-    public void StartTesting()
-    {
-        StartCoroutine(StartTestingAsync());
     }
     //Async scene loading because loading a scene is an async task, so variable setting during scene loading has issues
     private IEnumerator StartGameAsync()
@@ -57,8 +74,37 @@ public class GameManager : MonoBehaviour
         }
         visualManager.SetUp(this);
         simulationManager.SetUp(this);
-    }
 
+        //set up buttons
+
+        Button pauseButton = GameObject.Find("PauseButton").GetComponent<Button>();
+        pauseButton.onClick.AddListener(() => Pause());
+
+        pauseMenu = GameObject.Find("PauseMenu");
+
+        Button resumeButton = pauseMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
+        resumeButton.onClick.AddListener(() => Resume());
+
+        Button exitButton = pauseMenu.transform.GetChild(2).gameObject.GetComponent<Button>();
+        exitButton.onClick.AddListener(() => Exit());
+
+        pauseMenu.SetActive(false);
+
+        gameOverMenu = GameObject.Find("GameOverMenu");
+
+        exitButton = gameOverMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
+        exitButton.onClick.AddListener(() => Exit());
+
+        gameOverMenu.SetActive(false);
+
+        canPause = true;
+    }
+    
+    //temp, called by exit button
+    public void StartTesting()
+    {
+        StartCoroutine(StartTestingAsync());
+    }
     private IEnumerator StartTestingAsync()
     {
         //starts the loading process
@@ -80,6 +126,37 @@ public class GameManager : MonoBehaviour
         visualManager.SetUp(this);
         //simulationManager.SetUp(this);
     }
+
+
+
+    public void Pause()
+    {
+        if (canPause)
+        {
+            Time.timeScale = 0f;
+            pauseMenu.SetActive(true);
+            isPaused = true;
+        }
+    }
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        pauseMenu.SetActive(false);
+        isPaused = false;
+    }
+
+
+    public void Lose()
+    {
+        gameOverMenu.SetActive(true);
+        Resume();
+        canPause = false;
+    }
+    public void Exit()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 
     //Links to an error screen that will output the string message by adding it to the string error list
     public void Error(string message)

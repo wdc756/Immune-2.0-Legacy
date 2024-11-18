@@ -101,6 +101,10 @@ public class VisualManager : MonoBehaviour
 
         ChangeScene(activeScene);
     }
+    private void LoadThymus(int civilianDeaths, float resourceDemandPercent, float resourceProductionPercent, float resourceUsagePercent)
+    {
+        //call UI manager and do change UI elements accordingly
+    }
     //returns the active scene from the list
     public VisualScene GetActiveScene()
     {
@@ -168,7 +172,7 @@ public class VisualManager : MonoBehaviour
             visualSceneList[1],
             visualSceneList[2]
         };
-        visualSceneList[0].SetUp(0, 1.5f, setUpScenes, 5, 100, 50, 50, 75);
+        visualSceneList[0].SetUp(0, 1f, setUpScenes, 0, 0, 0, 0, 0);
         visualSceneList[0].gameObject.SetActive(false);
 
         setUpScenes = new List<VisualScene>
@@ -190,7 +194,7 @@ public class VisualManager : MonoBehaviour
 
         setUpScenes = new List<VisualScene>
         {
-            visualSceneList[2]
+            visualSceneList[1]
         };
         visualSceneList[3].SetUp(3, 2.5f, setUpScenes, 7, 250, 75, 75, 125);
         visualSceneList[3].gameObject.SetActive(false);
@@ -233,10 +237,16 @@ public class VisualManager : MonoBehaviour
             //use ActiveScene int to index into the BodySections list and pull the correct numbers from there
             //then send those numbers to the relevant scripts in the scene
 
+            //Check if we've lost
+            int civilianDeathCount = bodySimulation.CivilianDeathCount;
+            if (civilianDeathCount > gameManager.maxCivilianDeathCount)
+            {
+
+            }
+
             // Change for full body section if you use a boolean instead
             if (activeScene == -1)
             {
-                int civilianDeathCount = bodySimulation.CivilianDeathCount;
                 float resourceDemandPercent = bodySimulation.ResourceDemandPercent;
                 float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
                 float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;

@@ -166,97 +166,75 @@ public class VisualScene : MonoBehaviour
     }
     private void GenerateAnchors(int numAnchors)
     {
-        anchors = new List<Vector3>();
-
-        //used as a distance check
-        //Distance formula(max-min) / numAnchors
-        float minDistance = Mathf.Abs(Mathf.Sqrt(((-horizontalMax - horizontalMax) * (-horizontalMax - horizontalMax)) 
-            + ((-verticalMax - verticalMax) * (-verticalMax - verticalMax))) / (numAnchors * 2f));
-
-        //temp ticker
-        int tick = 0;
-
-        while (anchors.Count < numAnchors && tick < numAnchors * 20)
+        if (numAnchors != 0)
         {
-            bool add = true;
-            Vector3 v = GetRandomNearEdgePosition();
-            
-            for (int j = 0; j < pathingPositions.Count; j++)
+            anchors = new List<Vector3>();
+
+            //used as a distance check
+            //Distance formula(max-min) / numAnchors
+            float minDistance = Mathf.Abs(Mathf.Sqrt(((-horizontalMax - horizontalMax) * (-horizontalMax - horizontalMax))
+                + ((-verticalMax - verticalMax) * (-verticalMax - verticalMax))) / (numAnchors * 2f));
+
+            //temp ticker
+            int tick = 0;
+
+            while (anchors.Count < numAnchors && tick < numAnchors * 20)
             {
-                //if the random position is not too close to the pathing points
-                if (Vector3.Distance(v, pathingPositions[j]) < minDistance)
+                bool add = true;
+                Vector3 v = GetRandomNearEdgePosition();
+
+                for (int j = 0; j < pathingPositions.Count; j++)
                 {
-                    add = false;
-                    break;
+                    //if the random position is not too close to the pathing points
+                    if (Vector3.Distance(v, pathingPositions[j]) < minDistance)
+                    {
+                        add = false;
+                        break;
+                    }
                 }
-            }
 
-            for (int j = 0; j < anchors.Count; j++)
-            {
-                //if the random position is not too close to any others
-                if (Vector3.Distance(v, anchors[j]) < minDistance)
+                for (int j = 0; j < anchors.Count; j++)
                 {
-                    add = false;
-                    break;
+                    //if the random position is not too close to any others
+                    if (Vector3.Distance(v, anchors[j]) < minDistance)
+                    {
+                        add = false;
+                        break;
+                    }
                 }
+
+                if (add)
+                {
+                    anchors.Add(v);
+                }
+
+                tick++;
             }
 
-            if (add)
+            if (tick >= numAnchors * 20)
             {
-                anchors.Add(v);
+                Debug.Log("Too many attempts: anchors");
             }
-
-            tick++;
-        }
-
-        if (tick >= numAnchors * 20)
-        {
-            Debug.Log("Too many attempts: anchors");
         }
     }
     private void GenerateCellPositions(int numCells)
     {
-        cellPositions = new List<Vector3>();
-
-        int tick = 0;
-        int maxTick = numCells * 20;
-
-        while (cellPositions.Count < numCells && tick < maxTick)
+        if (numCells != 0)
         {
-            bool add = true;
-            Vector3 v = GetRandomNearAnchorPosition(anchors[Random.Range(0, anchors.Count)], cAnchorMultiplier);
+            cellPositions = new List<Vector3>();
 
-            for (int j = 0; j < cellPositions.Count; j++)
-            {
-                //if the random position is not too close to any others
-                if (Vector3.Distance(v, cellPositions[j]) < cellMinDistance)
-                {
-                    add = false;
-                    break;
-                }
-            }
+            int tick = 0;
+            int maxTick = numCells * 20;
 
-            if (add)
-            {
-                cellPositions.Add(v);
-            }
-
-            tick++;
-        }
-
-        if (tick >= maxTick)
-        {
-            Debug.Log("Too many attempts: cells; Only able to generate: " + cellPositions.Count + "/" + numCells + " regularly, generating random positions...");
-
-            tick = 0;
             while (cellPositions.Count < numCells && tick < maxTick)
             {
                 bool add = true;
-                Vector3 v = GetRandomPosition();
+                Vector3 v = GetRandomNearAnchorPosition(anchors[Random.Range(0, anchors.Count)], cAnchorMultiplier);
 
                 for (int j = 0; j < cellPositions.Count; j++)
                 {
-                    if (Vector3.Distance(cellPositions[j], v) < cellMinDistance)
+                    //if the random position is not too close to any others
+                    if (Vector3.Distance(v, cellPositions[j]) < cellMinDistance)
                     {
                         add = false;
                         break;
@@ -266,6 +244,34 @@ public class VisualScene : MonoBehaviour
                 if (add)
                 {
                     cellPositions.Add(v);
+                }
+
+                tick++;
+            }
+
+            if (tick >= maxTick)
+            {
+                Debug.Log("Too many attempts: cells; Only able to generate: " + cellPositions.Count + "/" + numCells + " regularly, generating random positions...");
+
+                tick = 0;
+                while (cellPositions.Count < numCells && tick < maxTick)
+                {
+                    bool add = true;
+                    Vector3 v = GetRandomPosition();
+
+                    for (int j = 0; j < cellPositions.Count; j++)
+                    {
+                        if (Vector3.Distance(cellPositions[j], v) < cellMinDistance)
+                        {
+                            add = false;
+                            break;
+                        }
+                    }
+
+                    if (add)
+                    {
+                        cellPositions.Add(v);
+                    }
                 }
             }
         }
