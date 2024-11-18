@@ -10,11 +10,15 @@ public class UIManager : MonoBehaviour
     public BodySimulation simulation;
     [Tooltip("The visual manger, used to get the active scene reference")]
     public VisualManager visualManager;
-    public GameManager gameManager;
+    //Set on SetUp, used to get the max civilian death count
+    private GameManager gameManager;
 
     //The active simulation section, which will be set as needed on runtime
     private BodySectionSimulation sectionSim;
 
+
+
+    [Header("Scene transition buttons")]
     [SerializeField, Tooltip("The canvas the buttons should be added to")]
     private Transform canvasTransform;
     [SerializeField, Tooltip("The canvas rectTransform, used to clamp buttons")]
@@ -29,8 +33,21 @@ public class UIManager : MonoBehaviour
     //List of instantiated buttons, used to delete them when done
     private List<GameObject> changeSceneButtons = new List<GameObject>();
 
-    public Slider cellDeathSlider;
-    public Slider resourceSlider;
+    [Header("Thymus UI")]
+    [SerializeField, Tooltip("The slider showing cell death")]
+    private Slider cellDeathSlider;
+    [SerializeField, Tooltip("The slider showing resource usage")]
+    private Slider resourceSlider;
+
+
+
+    //To be called by VisualManager during setup phase
+    public void SetUp(GameManager gameManager)
+    {
+        this.gameManager = gameManager;
+    }
+
+
 
     //Called by VisualManger on LoadScene(), to generate new scene link buttons
     public void LoadSceneLinkButtons()
@@ -130,7 +147,7 @@ public class UIManager : MonoBehaviour
     public void UpdateThymusUI(int civilianDeathCount, float resourceUsage)
     {
         //update civilian death slider
-        //cellDeathSlider.maxValue = gameManager.maxCivilianDeathCount;
+        cellDeathSlider.maxValue = gameManager.maxCivilianDeathCount;
         cellDeathSlider.value = civilianDeathCount;
 
         //update resource usage slider

@@ -43,13 +43,20 @@ public class VisualManager : MonoBehaviour
     [SerializeField, Tooltip("Determines if the script should check variables before running the game")]
     private bool checkVariables = true;
 
+    [SerializeField, Tooltip("The Thymus UI")]
+    private GameObject thymusUI;
+
 
     //Changes the active VisualScene
     public void ChangeScene(int scene)
     {
+        //stop update functions
         canRun = false;
 
+        //Disable the active scene
         visualSceneList[activeScene].gameObject.SetActive(false);
+
+        //If the new scene is -1, index through the list of scenes
         if (scene == -1)
         {
             activeScene++;
@@ -58,24 +65,40 @@ public class VisualManager : MonoBehaviour
         {
             activeScene = scene;
         }
-
+        //Check for indexing overflow
         if (activeScene >= visualSceneList.Count)
         {
             activeScene = 0;
         }
+
+        //if on thymus, then turn on thymus UI
+        if (activeScene == 0)
+        {
+            thymusUI.SetActive(true);
+        }
+        else
+        {
+            thymusUI.SetActive(false);
+        }
+
+        //activate the new current scene
         visualSceneList[activeScene].gameObject.SetActive(true);
 
+        //turn update functions back on
         canRun = true;
 
+        //update the camera size
+        cam.orthographicSize = visualSceneList[activeScene].sceneScale * 5f;
+
+        //Reset and create new link buttons
+        uiManager.LoadSceneLinkButtons();
+
+        //Setup cellmanager
         cellManager.LoadVisualScene(visualSceneList[activeScene]);
         ReceiveSimulationNumbers();
         cellManager.SetCellNumbers();
 
-        cam.orthographicSize = visualSceneList[activeScene].sceneScale * 5f;
-
         //Debug.Log("Loaded " + visualSceneList[activeScene].gameObject.name);
-
-        uiManager.LoadSceneLinkButtons();
     }
     public void ResetActiveScene()
     {
@@ -116,18 +139,12 @@ public class VisualManager : MonoBehaviour
         InstantiateVisualScenes();
 
         cellManager = GetComponent<CellManager>();
-        if (cellManager != null)
-        {
-            cellManager.SetUp(gameManager);
-        }
-        else
-        {
-            gameManager.Error("CellManager is not set on VisualManager");
-        }
+        cellManager.SetUp(gameManager);
 
         bodySimulation = FindObjectOfType<BodySimulation>();
 
         uiManager = FindObjectOfType<UIManager>();
+        uiManager.SetUp(gameManager);
 
         ChangeScene(activeScene);
     }
@@ -152,10 +169,11 @@ public class VisualManager : MonoBehaviour
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
         newSceneObject.name = "Generic1";
 
-        //foreach (VisualScene scene in visualSceneList)
-        //{
-        //    scene.SetUp(5f, visualSceneList, 8, 500);
-        //}
+        newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
+        visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
+        newSceneObject.name = "Generic2";
+
+
 
         //SetUp(scale, list of links, number of anchors, number of civilians, number of M, num N, num B
 
@@ -187,10 +205,18 @@ public class VisualManager : MonoBehaviour
 
         setUpScenes = new List<VisualScene>
         {
-            visualSceneList[1]
+            visualSceneList[1],
+            visualSceneList[4]
         };
         visualSceneList[3].SetUp(3, 2.5f, setUpScenes, 7, 250, 75, 75, 125);
         visualSceneList[3].gameObject.SetActive(false);
+
+        setUpScenes = new List<VisualScene>
+        {
+            visualSceneList[3]
+        };
+        visualSceneList[4].SetUp(4, 3f, setUpScenes, 8, 300, 100, 100, 150);
+        visualSceneList[4].gameObject.SetActive(false);
     }
     
     //returns whether or not the level is ready, and will output why the level is not ready
@@ -244,37 +270,39 @@ public class VisualManager : MonoBehaviour
                 float resourceProductionPercent = bodySimulation.ResourceProductionPercent;
                 float resourceUsagePercent = (resourceDemandPercent / resourceProductionPercent) * 100f;
 
-                Debug.Log($"demand {resourceDemandPercent} prod {resourceProductionPercent}");
+                //Debug.Log($"demand {resourceDemandPercent} prod {resourceProductionPercent}");
                 //Debug.Log(resourceUsagePercent);
 
+                //Update Thymus UI
                 uiManager.UpdateThymusUI(civilianDeathCount, resourceUsagePercent);
+
+                //send info to cellManager, specifically to reset the target values to avoid unnecesarry calculations
+                cellManager.NewSimulationNumbers(0f, 0f, 0);
 
                 return;
             }
-
-            // Get the active section
-            BodySectionSimulation section = bodySimulation.Sections[activeScene];
-
-            // Response 0-100, Response type
-            float responsePercent = section.Response.LevelPercent;
-
-            ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
-            //convert ResponseType to int
-            int responseTypeInt = 0;
-
-            // Infection 0-100
-            float infectionPercent = section.InfectionProgressPercent;
-
-            // Stress 0-100
-            float stressPercent = section.StressLevelPercent;
-
-            //send info to cellManager
-            cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
-            //Debug.Log("new sim numbers");
-
-            //send info to visualScene, for color changes
-            if (activeScene != -1)
+            else
             {
+                // Get the active section, set back by one because the thymus is an inactive scene
+                BodySectionSimulation section = bodySimulation.Sections[activeScene - 1];
+
+                // Response 0-100, Response type
+                float responsePercent = section.Response.LevelPercent;
+
+                ImmuneSystemResponse.ResponseType responseType = section.Response.Type;
+                //convert ResponseType to int
+                int responseTypeInt = 0;
+
+                // Infection 0-100
+                float infectionPercent = section.InfectionProgressPercent;
+
+                // Stress 0-100
+                float stressPercent = section.StressLevelPercent;
+
+                //send info to cellManager
+                cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
+                //Debug.Log("new sim numbers");
+
                 visualSceneList[activeScene].ShiftColor(stressPercent / 100f, infectionPercent / 100f);
             }
         }

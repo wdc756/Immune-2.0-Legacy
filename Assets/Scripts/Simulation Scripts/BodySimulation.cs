@@ -95,7 +95,7 @@ public class BodySimulation : Simulated
     public void IncreaseProduction()
     {
         if (resourceChanging) return;
-        Debug.Log("Increase");
+        //Debug.Log("Increase");
 
         resourceTarget = ResourceProductionPercent + 10f;
         resourceChangeDelta = Mathf.Abs(resourceChangeDelta);
@@ -106,7 +106,7 @@ public class BodySimulation : Simulated
     public void DecreaseProduction()
     {
         if (resourceChanging) return;
-        Debug.Log("Decrease");
+        //Debug.Log("Decrease");
 
         resourceTarget = ResourceProductionPercent - 10f;
         resourceChangeDelta = -Mathf.Abs(resourceChangeDelta);

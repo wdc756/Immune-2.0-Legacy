@@ -290,7 +290,7 @@ public class CellManager : MonoBehaviour
                 //If the object pool is out, or there are no spots open, then stop activating cells
                 if (cell == null || !CivilianSpotsOpen())
                 {
-                    Debug.Log("Missing cell componet or no spots open: civilians");
+                    Debug.Log("Missing cell componet or no spots open spawnUpdate: civilians on " + gameObject.name);
                     break;
                 }
 
@@ -323,7 +323,7 @@ public class CellManager : MonoBehaviour
             //If we ran out of processing time, then log that
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: civilians");
+                Debug.Log("Too many attempts spawnUpdate: civilians on " + gameObject.name);
             }
 
             //Reset tick for killing old cells
@@ -370,7 +370,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: civilians");
+                Debug.Log("Too many attempts destroyUpdate: civilians on " + gameObject.name);
             }
         }
     }
@@ -388,7 +388,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = macrophagePool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: macrophages");
+                    Debug.Log("Missing cell componet spawnUpdate: macrophages on" + gameObject.name);
                     break;
                 }
 
@@ -417,7 +417,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: macrophages");
+                Debug.Log("Too many attempts spawnUpdate: macrophages on" + gameObject.name);
             }
 
             tick = 0;
@@ -449,7 +449,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: macrophages");
+                Debug.Log("Too many attempts destroyUpdate: macrophages on" + gameObject.name);
             }
         }
     }
@@ -467,7 +467,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = neutrophilePool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: neutrophiles");
+                    Debug.Log("Missing cell componet spawnUpdate: neutrophiles on" + gameObject.name);
                     break;
                 }
 
@@ -496,7 +496,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: neutrophiles");
+                Debug.Log("Too many attempts spawnUpdate: neutrophiles on" + gameObject.name);
             }
 
             tick = 0;
@@ -528,7 +528,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: neutrophiles");
+                Debug.Log("Too many attempts destroyUpdate: neutrophiles on" + gameObject.name);
             }
         }
     }
@@ -546,7 +546,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = bacteriaPool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: bacteria");
+                    Debug.Log("Missing cell componet spawnUpdate: bacteria on" + gameObject.name);
                     break;
                 }
 
@@ -576,7 +576,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: bacteria");
+                Debug.Log("Too many attempts spawnUpdate: bacteria on" + gameObject.name);
             }
 
             tick = 0;
@@ -657,7 +657,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: bacteria");
+                Debug.Log("Too many attempts destroyUpdate: bacteria on" + gameObject.name);
             }
         }
     }
@@ -681,7 +681,7 @@ public class CellManager : MonoBehaviour
                 //If the object pool is out, or there are no spots open, then stop activating cells
                 if (cell == null || !CivilianSpotsOpen())
                 {
-                    Debug.Log("Missing cell componet or no spots open: civilians");
+                    Debug.Log("Missing cell componet or no spots open Spawn: civilians on" + gameObject.name);
                     break;
                 }
 
@@ -714,7 +714,7 @@ public class CellManager : MonoBehaviour
             //If we ran out of processing time, then log that
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: civilians");
+                Debug.Log("Too many attempts Spawn: civilians on" + gameObject.name);
             }
         }
 
@@ -728,7 +728,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = macrophagePool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: macrophages");
+                    Debug.Log("Missing cell componet Spawn: macrophages on" + gameObject.name);
                     break;
                 }
 
@@ -742,7 +742,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: macrophages");
+                Debug.Log("Too many attempts Spawn: macrophages on" + gameObject.name);
             }
         }
 
@@ -756,7 +756,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = neutrophilePool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: neutrophiles");
+                    Debug.Log("Missing cell componet Spawn: neutrophiles on" + gameObject.name);
                     break;
                 }
 
@@ -770,7 +770,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: neutrophiles");
+                Debug.Log("Too many attempts Spawn: neutrophiles on" + gameObject.name);
             }
         }
 
@@ -784,7 +784,7 @@ public class CellManager : MonoBehaviour
                 GameObject cell = bacteriaPool.GetNextObject();
                 if (cell == null)
                 {
-                    Debug.Log("Missing cell componet: bacteria");
+                    Debug.Log("Missing cell componet Spawn: bacteria on" + gameObject.name);
                     break;
                 }
 
@@ -798,7 +798,7 @@ public class CellManager : MonoBehaviour
             }
             if (tick >= maxTick)
             {
-                Debug.Log("Too many attempts: bacteria");
+                Debug.Log("Too many attempts Spawn: bacteria on" + gameObject.name);
             }
         }
     }
