@@ -2741,7 +2741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ec6694ae8749df4485c40affbf3146c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Infection: {fileID: 11400000, guid: 13a8b930d1e1555459c040f08b79c24b, type: 2}
+  Infection: {fileID: 0}
   ResponseIsChanging: 0
   responseChangeTotal: 0
   responseChangeDelta: 0
@@ -2782,6 +2782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Simulated: []
   SimulatedChildren: []
+  bodySimulation: {fileID: 1259092083}
   VisualsManager: {fileID: 0}
   ManuallyRunChildren: 0
   FixedUpdatesPerTick: 2
@@ -2790,6 +2791,12 @@ MonoBehaviour:
   count: 0
   ticksPerVisualUpdate: 0
   Tick: 0
+  pathogens:
+  - {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  - {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  - {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  - {fileID: 11400000, guid: 36730c709e7e8ea4e91d7d921fbc7f48, type: 2}
+  delays: 
 --- !u!114 &1259092082
 MonoBehaviour:
   m_ObjectHideFlags: 0

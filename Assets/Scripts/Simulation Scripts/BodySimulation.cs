@@ -56,6 +56,9 @@ public class BodySimulation : Simulated
         resourceChangeTicks = (int) (ResourceChangeTime / SimulationManager.TickDelta);
         resourceChangeDelta = 10f / (float) resourceChangeTicks;
 
+        Debug.Log($"ticks delta: {SimulationManager.TickDelta} time: {ResourceChangeTime}");
+        Debug.Log($"ticks: {resourceChangeTicks} delta: {resourceChangeDelta}");
+
         CivilianDeathCount = 0;
     }
 

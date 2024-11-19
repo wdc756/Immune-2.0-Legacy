@@ -300,6 +300,7 @@ public class VisualManager : MonoBehaviour
                 float stressPercent = section.StressLevelPercent;
 
                 //send info to cellManager
+                Debug.Log($"response {responsePercent} infection {infectionPercent}");
                 cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
                 //Debug.Log("new sim numbers");
 

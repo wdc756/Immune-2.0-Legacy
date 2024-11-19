@@ -25,6 +25,7 @@ public class SimulationManager : MonoBehaviour
     [Header("Simulation Objects")]
     public List<Simulated> Simulated;
     public List<Simulated> SimulatedChildren;
+    public BodySimulation bodySimulation;
     public VisualManager VisualsManager;
 
     [Header("Infrastructure (please don't touch)")]
@@ -45,10 +46,19 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] private int ticksPerVisualUpdate;
     public int Tick;
 
-    public void SetUp(GameManager gameManager)
+    public List<Pathogen> pathogens;
+    public List<int> delays;
+
+    // Make sure that tick delta is calculated before anything else
+    void Awake()
     {
         // TickDelta is the seconds per tick used to convert seconds to ticks and vice versa
         TickDelta = Time.fixedDeltaTime * (float)FixedUpdatesPerTick;
+    }
+
+    public void SetUp(GameManager gameManager)
+    {
+        
 
         // All of the scripts who have tick functions on this object
         Simulated = new List<Simulated>(GetComponents<Simulated>());
@@ -77,6 +87,15 @@ public class SimulationManager : MonoBehaviour
         }
         if (ManuallyRunChildren) foreach (Simulated s in SimulatedChildren) s.Tick();
 
+        for (int i = 0; i < delays.Count; i++)
+        {
+            if (delays[i] < 0) continue;
+            else if (delays[i]-- == 0)
+            {
+                Debug.Log($"Scheduled infection complete section {i} pathogen {pathogens[i].name}");
+                bodySimulation.Sections[i].Infection = pathogens[i];
+            }
+        }
         //if (debug && --ticks <= 0) Running = false;
     }
 
