@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public bool isPaused = false;
     public GameObject gameOverMenu;
 
+    public GameObject gameWinMenu;
+
     public int maxCivilianDeathCount;
 
 
@@ -97,6 +99,14 @@ public class GameManager : MonoBehaviour
 
         gameOverMenu.SetActive(false);
 
+        gameWinMenu = GameObject.Find("GameWinMenu");
+        Debug.Log(gameWinMenu);
+
+        exitButton = gameWinMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
+        exitButton.onClick.AddListener(() => Exit());
+
+        gameWinMenu.SetActive(false);
+
 
         canPause = true;
     }
@@ -146,7 +156,12 @@ public class GameManager : MonoBehaviour
         isPaused = false;
     }
 
-
+    public void Win()
+    {
+        gameWinMenu.SetActive(true);
+        Resume();
+        canPause = false;
+    }
     public void Lose()
     {
         gameOverMenu.SetActive(true);

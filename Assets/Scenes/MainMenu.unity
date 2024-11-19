@@ -363,7 +363,7 @@ MonoBehaviour:
   canPause: 0
   isPaused: 0
   gameOverMenu: {fileID: 0}
-  maxCivilianDeathCount: 75000
+  maxCivilianDeathCount: 200000
 --- !u!4 &541906397
 Transform:
   m_ObjectHideFlags: 0

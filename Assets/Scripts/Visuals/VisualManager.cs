@@ -263,6 +263,8 @@ public class VisualManager : MonoBehaviour
                 gameManager.Lose();
             }
 
+
+
             // Change for full body section if you use a boolean instead
             if (activeScene == 0)
             {
@@ -285,7 +287,7 @@ public class VisualManager : MonoBehaviour
             {
                 // Get the active section, set back by one because the thymus is an inactive scene
                 BodySectionSimulation section = bodySimulation.Sections[activeScene - 1];
-
+                //Debug.Log(section);
                 // Response 0-100, Response type
                 float responsePercent = section.Response.LevelPercent;
 
@@ -300,7 +302,7 @@ public class VisualManager : MonoBehaviour
                 float stressPercent = section.StressLevelPercent;
 
                 //send info to cellManager
-                Debug.Log($"response {responsePercent} infection {infectionPercent}");
+                //Debug.Log($"response {responsePercent} infection {infectionPercent}");
                 cellManager.NewSimulationNumbers(responsePercent / 100f, infectionPercent / 100f, responseTypeInt);
                 //Debug.Log("new sim numbers");
 

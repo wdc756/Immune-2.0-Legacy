@@ -113,7 +113,7 @@ public class UIManager : MonoBehaviour
     public void CallBodySectionFunction(int type)
     {
         int activeScene = visualManager.activeScene;
-        sectionSim = simulation.Sections[activeScene];
+        sectionSim = simulation.Sections[activeScene - 1]; // again the thymus is not a valid section
 
         if (sectionSim == null)
         {
