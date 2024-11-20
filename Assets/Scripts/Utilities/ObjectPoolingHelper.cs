@@ -103,6 +103,18 @@ public class ObjectPoolingHelper : MonoBehaviour
             }
         }
     }
+    //goes through each object and returns if there are any active cells
+    public bool AreObjectsActive()
+    {
+        foreach (GameObject obj in pooledObjects)
+        {
+            if (obj.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void SetGameObjectInList(GameObject newObject, int index)
     {

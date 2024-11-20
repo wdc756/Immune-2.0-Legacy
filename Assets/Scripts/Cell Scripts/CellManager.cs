@@ -47,8 +47,10 @@ public class CellManager : MonoBehaviour
     //This is in list format because there can be multiple types of bacteria
     //private List<ObjectPoolingHelper> bacteriaPools;
     //private List<List<Cell>> bacteria;
-
-    //this is just temp
+    [SerializeField]
+    private ObjectPoolingHelper dendriticPool;
+    public List<Cell> dendritic;
+    public int maxDendritic;
     public ObjectPoolingHelper bacteriaPool;
     public List<Cell> bacteria;
 
@@ -121,6 +123,8 @@ public class CellManager : MonoBehaviour
         neutrophiles = new List<Cell>();
         //BCellPool.SetPoolCount(maxBCells, false);
         //TCellPool.SetPoolCount(maxBCells, false);
+        dendriticPool.SetPoolCount(maxDendritic, false);
+
 
         //temp
         bacteriaPool.SetPoolCount(maxBacteria, false);
@@ -170,11 +174,13 @@ public class CellManager : MonoBehaviour
         macrophages.Clear();
         neutrophiles.Clear();
         bacteria.Clear();
+        dendritic.Clear();
 
         civilianPool.DeactivateAllObjects();
         macrophagePool.DeactivateAllObjects();
         neutrophilePool.DeactivateAllObjects();
         bacteriaPool.DeactivateAllObjects();
+        dendriticPool.DeactivateAllObjects();
 
         isCivilianSpotUsed.Clear();
         foreach (Vector3 v in civilianCellPositions)
@@ -214,6 +220,10 @@ public class CellManager : MonoBehaviour
         {
             cell.ResetPersistTime();
         }
+        foreach (Cell cell in dendritic)
+        {
+            cell.ResetPersistTime();
+        }
 
         //do this for all the cell types
 
@@ -226,26 +236,27 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        targetBacteria = (int)(mBacteria * infection);
+        int randomNum = (int)Random.Range(-0.25f * sceneScale, 0.25f * sceneScale);
+        targetBacteria = Mathf.Clamp((int)(mBacteria * infection) + randomNum, 0, mBacteria);
         if (mBacteria == 0)
         {
             targetBacteria = 0;
         }
 
         //Debug.Log("target: " + targetBacteria + " mB: " + mBacteria + " " + ((float)targetBacteria / (float)mBacteria));
-        targetCivilians = (int)(mCivilians - (float)(mCivilians * ((float)targetBacteria / (float)mBacteria)));
+        targetCivilians = (int)Mathf.Clamp((mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria))) + randomNum, 0, mCivilians);
         if (mCivilians == 0)
         {
             targetCivilians = 0;
         }
 
         //Set macrophages as 60% of response and neutrophiles as 40%
-        targetMacrophages = (int)(mMacrophages * (response * 0.6f));
+        targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 0, mMacrophages);
         if (mMacrophages == 0)
         {
             targetMacrophages = 0;
         }
-        targetNeutrophiles = (int)(mNeutrophiles * (response * 0.4f));
+        targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 0, mNeutrophiles);
         if (mNeutrophiles == 0)
         {
             targetNeutrophiles = 0;
@@ -255,6 +266,56 @@ public class CellManager : MonoBehaviour
         if (activeScene != null)
         {
             activeScene.ShiftColor(response, infection);
+        }
+    }
+    //Called by the scan button, generates some dendritic cells
+    public void StartScan()
+    {
+        //int targetDendritic = (int)Mathf.Clamp(maxDendritic * (sceneScale / (5 * sceneScale)), 0, maxDendritic);
+        //Debug.Log(sceneScale);
+        //Debug.Log(targetDendritic);
+
+        int targetDendritic = maxDendritic;
+
+        //check if there are any active scanning cells
+        if (!dendriticPool.AreObjectsActive())
+        {
+            //spawn all of them
+            for (int i = 0; i < targetDendritic; i++)
+            {
+                GameObject cell = dendriticPool.GetNextObject();
+                cell.SetActive(true);
+                Cell d = cell.GetComponent<Cell>();
+
+                //if already cells in the scene, then somtimes duplicate, otherwise enter
+                float chance = Random.Range(0f, 10f);
+                if (chance > 8f && dendritic.Count > 0)
+                {
+                    d.ActivateCell(dendritic[Random.Range(0, dendritic.Count)].gameObject.transform.position);
+                }
+                else
+                {
+                    d.ActivateCell(pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                }
+
+                //if there are bacteria, then chase/eat a few, then leave, otherwise randomly walk around
+                if (bacteria.Count > 0)
+                {
+                    Cell b = bacteria[Random.Range(0, bacteria.Count)];
+                    d.NewTask(5, b.gameObject);
+                    bacteria.Remove(b);
+                    d.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                    d.NewTask(10);
+                }
+                else
+                {
+                    d.NewTask(1, GetRandomPosition());
+                    d.NewTask(1, GetRandomPosition());
+                    d.NewTask(1, GetRandomPosition());
+                    d.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                    d.NewTask(10);
+                }
+            }
         }
     }
 
@@ -333,29 +394,58 @@ public class CellManager : MonoBehaviour
             {
                 Cell c = civilians[Random.Range(0, civilians.Count)];
 
-                //if chance and there are bacteria in the scene, then select a random bacteria to kill the cell
-                if (Random.Range(0f, 10f) > 0.3f && bacteria.Count > 0)
+                float chance = Random.Range(0f, 10f);
+                //if chance and there are bacteria/neutrophiles in the scene, then select a random bacteria/neutrophile to kill the cell
+                if (bacteria.Count > 0 || neutrophiles.Count > 0)
                 {
                     int smallTick = 0;
-                    int smallMaxTick = neutrophiles.Count * 10;
+                    int smallMaxTick = civilians.Count * 10;
 
-                    while (smallTick < smallMaxTick)
+                    if (chance > 6f && neutrophiles.Count > 0)
                     {
-                        Cell b = bacteria[Random.Range(0, bacteria.Count)];
-                        if (Vector3.Distance(b.transform.position, c.transform.position) < mChaseDistance)
+                        while (smallTick < smallMaxTick)
                         {
-                            b.NewTask(4, c.gameObject);
-                            break;
+                            Cell n = neutrophiles[Random.Range(0, neutrophiles.Count)];
+                            if (Vector3.Distance(n.transform.position, n.transform.position) < mChaseDistance)
+                            {
+                                n.NewTask(4, c.gameObject);
+                                break;
+                            }
+                            else
+                            {
+                                smallTick++;
+                            }
                         }
-                        else
+                        if (smallTick >= smallMaxTick)
                         {
-                            smallTick++;
+                            c.NewTask(10);
                         }
                     }
-                    if (smallTick >= smallMaxTick)
+                    else if (chance > 0.3f && bacteria.Count > 0)
+                    {
+                        while (smallTick < smallMaxTick)
+                        {
+                            Cell b = bacteria[Random.Range(0, bacteria.Count)];
+                            if (Vector3.Distance(b.transform.position, c.transform.position) < mChaseDistance)
+                            {
+                                b.NewTask(4, c.gameObject);
+                                break;
+                            }
+                            else
+                            {
+                                smallTick++;
+                            }
+                        }
+                        if (smallTick >= smallMaxTick)
+                        {
+                            c.NewTask(10);
+                        }
+                    }
+                    else
                     {
                         c.NewTask(10);
                     }
+                    
                 }
                 else
                 {
@@ -428,11 +518,11 @@ public class CellManager : MonoBehaviour
 
                 float chance = Random.Range(0f, 10f);
                 //Small chance of aptosis, large chance of moving to path, small chance of moving to random off screen
-                if (chance > 0.98f)
+                if (chance > 9.5f)
                 {
                     m.NewTask(10);
                 }
-                else if (chance > 0.2f && pathingPositions.Count > 0)
+                else if (chance > 2f && pathingPositions.Count > 0)
                 {
                     m.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
                     m.NewTask(11);
@@ -507,7 +597,7 @@ public class CellManager : MonoBehaviour
 
                 float chance = Random.Range(0f, 10f);
                 //Small chance of aptosis, large chance of moving to path, small chance of moving to random off screen
-                if (chance > 9.8f)
+                if (chance > 9f)
                 {
                     n.NewTask(10);
                 }
@@ -821,19 +911,6 @@ public class CellManager : MonoBehaviour
         }
         return spotsOpen;
     }
-
-
-
-    ////Sets up bacteria stuff when a new one instantiates
-    //void NewBacteria()
-    //{
-
-    //}
-    ////removes a specific bacteria type from all scenes
-    //void EradicateBacteria()
-    //{
-
-    //}
 
 
 

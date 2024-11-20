@@ -673,6 +673,7 @@ Transform:
   - {fileID: 1778462446}
   - {fileID: 533817524}
   - {fileID: 2137244943}
+  - {fileID: 309942981}
   m_Father: {fileID: 1801698981}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &188624382
@@ -796,6 +797,91 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188624382}
   m_CullTransparentMesh: 1
+--- !u!1001 &309942980
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 141984614}
+    m_Modifications:
+    - target: {fileID: 2031336098698263430, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_Name
+      value: DendriticCells
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: poolObject
+      value: 
+      objectReference: {fileID: 828646050355174648, guid: 56853d5055a231a46bf43cc0e39e74ab, type: 3}
+    - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: WarnOnOverflow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+      propertyPath: GenerateOnOverflow
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+--- !u!4 &309942981 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3383825168155837455, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+  m_PrefabInstance: {fileID: 309942980}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &309942982 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
+  m_PrefabInstance: {fileID: 309942980}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 248ccd94f9cc4d44b96d7c04754f2a5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &330894978
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,6 +3000,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1801698979}
+        m_TargetAssemblyTypeName: CellManager, Assembly-CSharp
+        m_MethodName: StartScan
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1204374793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5002,6 +5100,9 @@ MonoBehaviour:
   macrophages: []
   neutrophilePool: {fileID: 533817525}
   neutrophiles: []
+  dendriticPool: {fileID: 309942982}
+  dendritic: []
+  maxDendritic: 3
   bacteriaPool: {fileID: 2137244942}
   bacteria: []
   civilianCellPositions: []
