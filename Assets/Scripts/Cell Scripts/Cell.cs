@@ -346,7 +346,24 @@ public class Cell : MonoBehaviour
             //if the cell has not veered off, then regular update, if it has, then follow until the timer reaches max time
             if (followChangeTimer == 0)
             {
-                SetMove(followObjects[0].transform.position);
+
+                //If the distance is lower than the interactRadius, then add distance to the target to make the cell move faster
+                if (Vector3.Distance(transform.position, followObjects[0].transform.position) > interactRadius * 1.2f)
+                {
+                    //Get the direction to the current target
+                    Vector3 direction = followObjects[0].transform.position - transform.position;
+
+                    direction *= cellMovement.frictionForce / 7f;
+                    //Debug.Log(direction.magnitude);
+
+                    Vector3 movePastTarget = followObjects[0].transform.position + direction;
+
+                    SetMove(movePastTarget);
+                }
+                else
+                {
+                    SetMove(followObjects[0].transform.position);
+                }
 
                 if (Random.Range(0f, 100f) < followChangeChance)
                 {

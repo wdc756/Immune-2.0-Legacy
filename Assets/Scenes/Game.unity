@@ -5118,7 +5118,7 @@ MonoBehaviour:
   sceneScale: 1
   verticalMax: 5
   horizontalMax: 9
-  maxChaseDistance: 3
+  maxChaseDistance: 5
 --- !u!114 &1801698980
 MonoBehaviour:
   m_ObjectHideFlags: 0

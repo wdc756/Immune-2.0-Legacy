@@ -152,7 +152,7 @@ public class CellMovement : MonoBehaviour
     }
 
     //Used to make the cell have more resistance when far from the object and little resistence when close; helps to stop orbiting
-    private float CalculateMass()
+    public float CalculateMass()
     {
         return Mathf.Clamp(Vector3.Distance(gameObject.transform.position, targetPosition) / 7, 0.001f, mass);
     }

@@ -89,7 +89,7 @@ public class CellManager : MonoBehaviour
     [SerializeField, Tooltip("Horizontal Max(absolute value)")]
     private float horizontalMax = 9;
     //used as a distance check when setting cell kill targets
-    public float maxChaseDistance = 3.0f;
+    public float maxChaseDistance = 4.0f;
     //The actual number used
     private float mChaseDistance;
 
@@ -236,7 +236,9 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        int randomNum = (int)Random.Range(-0.25f * sceneScale, 0.25f * sceneScale);
+        int randomNum = (int)Random.Range(-1.25f * sceneScale, 1.75f * sceneScale);
+        //Debug.Log(randomNum);
+
         targetBacteria = Mathf.Clamp((int)(mBacteria * infection) + randomNum, 0, mBacteria);
         if (mBacteria == 0)
         {
@@ -406,7 +408,7 @@ public class CellManager : MonoBehaviour
                         while (smallTick < smallMaxTick)
                         {
                             Cell n = neutrophiles[Random.Range(0, neutrophiles.Count)];
-                            if (Vector3.Distance(n.transform.position, n.transform.position) < mChaseDistance)
+                            if (Vector3.Distance(n.transform.position, n.transform.position) < mChaseDistance * 2f)
                             {
                                 n.NewTask(4, c.gameObject);
                                 break;
@@ -426,7 +428,7 @@ public class CellManager : MonoBehaviour
                         while (smallTick < smallMaxTick)
                         {
                             Cell b = bacteria[Random.Range(0, bacteria.Count)];
-                            if (Vector3.Distance(b.transform.position, c.transform.position) < mChaseDistance)
+                            if (Vector3.Distance(b.transform.position, c.transform.position) < mChaseDistance * 2f)
                             {
                                 b.NewTask(4, c.gameObject);
                                 break;
@@ -691,6 +693,7 @@ public class CellManager : MonoBehaviour
                             if (Vector3.Distance(killingCell.transform.position, b.gameObject.transform.position) < mChaseDistance)
                             {
                                 killingCell.NewTask(4, b.gameObject);
+                                //Debug.Log("Killing N");
                                 break;
                             }
                             else
@@ -715,6 +718,7 @@ public class CellManager : MonoBehaviour
                             if (Vector3.Distance(killingCell.transform.position, b.gameObject.transform.position) < mChaseDistance)
                             {
                                 killingCell.NewTask(5, b.gameObject);
+                                //Debug.Log("Killing M");
                                 break;
                             }
                             else
