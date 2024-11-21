@@ -3139,7 +3139,7 @@ MonoBehaviour:
   VisualsManager: {fileID: 0}
   ManuallyRunChildren: 0
   FixedUpdatesPerTick: 2
-  SecondsPerVisualUpdate: 2
+  SecondsPerVisualUpdate: 0.5
   Running: 0
   count: 0
   ticksPerVisualUpdate: 0
@@ -3188,7 +3188,7 @@ MonoBehaviour:
   AlarmResponsePercent: 50
   AlarmMaxResponseTime: 0.5
   ResponseDefaultLevelPercent: 10
-  ReponseChangeTime: 3
+  ReponseChangeTime: 1
   ReponseChangeDelta: 10
   PostscanResponsePercent: 30
   AllStressFactor: 0.5
@@ -3197,7 +3197,7 @@ MonoBehaviour:
   MinResourceProductionPercent: 40
   MaxResourceProductionPercent: 150
   DefaultResourceProductionPercent: 70
-  ResourceChangeTime: 7
+  ResourceChangeTime: 3
   CivilianDeathCount: 0
   PercentPerDeath: 10
 --- !u!4 &1259092084

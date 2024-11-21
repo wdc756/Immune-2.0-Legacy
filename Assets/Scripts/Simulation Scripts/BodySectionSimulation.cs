@@ -166,6 +166,7 @@ public class BodySectionSimulation : Simulated
         if (InfectionProgressPercent <= 0f)
         {
             Infection = null;       // Remove the infection if we win
+            InfectionProgressPercent = 0f;
             // Set default response
             ChangeResponse(ImmuneSystemResponse.ResponseType.MACNEUTRO, parent.ResponseDefaultLevelPercent);
         }
