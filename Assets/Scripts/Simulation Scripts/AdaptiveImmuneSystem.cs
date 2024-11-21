@@ -88,6 +88,12 @@ public class AdaptiveImmuneSystem : Simulated
                         section.HeavyWeaponsResponse(newResponse);
                         responses.Add(section); // We are actively responding to this threat, don't scan again
                     }
+                    else
+                    {
+                        section.Alarm();
+                    }
+
+                    section.statusScan = false;
 
                     Debug.Log($"Scan complete, new response: {newResponse}");
                     sectionsToRemove.Add(section);

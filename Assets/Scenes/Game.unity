@@ -3164,8 +3164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Body: {fileID: 1259092083}
-  AutoScanTime: 10
-  ManualScanTime: 3
+  AutoScanTime: 30
+  ManualScanTime: 10
   StressFlagPercentage: 35
   ProgressFlagPercentage: 40
   ResponseFlagPercentage: 50

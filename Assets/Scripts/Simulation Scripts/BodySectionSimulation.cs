@@ -36,6 +36,14 @@ public class BodySectionSimulation : Simulated
 
     public float ResourceDemand { get; private set; }
 
+    [Header("Status")]
+    public bool statusResponseChange;
+    public bool statusScan;
+    public bool statusAlarmLockout;
+
+    [Header("(Debug) Alarm Lockout")]
+    [SerializeField] private int lockoutTicks;
+
     void Start()
     {
         parent = GetComponentInParent<BodySimulation>();
@@ -48,6 +56,7 @@ public class BodySectionSimulation : Simulated
     {
         if (ResponseIsChanging || Response.LevelPercent + parent.ReponseChangeDelta > 100f) return;
         ResponseIsChanging = true;
+        statusResponseChange = true;
         responseChangeTotal = parent.ReponseChangeDelta;
         responseChangeTicks += (int) (parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
@@ -60,6 +69,7 @@ public class BodySectionSimulation : Simulated
     {
         if (ResponseIsChanging || Response.LevelPercent - parent.ReponseChangeDelta < 0f) return;
         ResponseIsChanging = true;
+        statusResponseChange = true;
         responseChangeTotal = -parent.ReponseChangeDelta;
         responseChangeTicks += (int)(parent.ReponseChangeTime / SimulationManager.TickDelta);
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
@@ -83,11 +93,14 @@ public class BodySectionSimulation : Simulated
 
     public void Alarm()
     {
-        if (ResponseIsChanging) return;
+        if (ResponseIsChanging || statusAlarmLockout) return;
         // Don't do anything if we don't reach the minimum flag percent or we are already responding more than the alarm level
         if (InfectionProgressPercent < parent.AlarmFlagPercent || Response.LevelPercent >= parent.AlarmResponsePercent)
         {
             Debug.Log("Alarm dismissed, did not meet requirements");
+            lockoutTicks = (int)(parent.AlarmLockoutTime / SimulationManager.TickDelta);
+            statusAlarmLockout = true;
+            Debug.Log($"lockout ticks: {lockoutTicks}");
             return;
         }
         ResponseIsChanging = true;
@@ -103,6 +116,7 @@ public class BodySectionSimulation : Simulated
     public void Scan()
     {
         Debug.Log($"Scanning section manually {this.gameObject.name}");
+        statusScan = true;
         AIS.BeginScan(this, false);
     }
 
@@ -124,6 +138,17 @@ public class BodySectionSimulation : Simulated
 
         // Calculate the resource demand for this body part
         ResourceDemand = Response.LevelPercent - parent.ResponseDefaultLevelPercent;
+
+        // Lockouts
+        if (statusAlarmLockout)
+        {
+            lockoutTicks--;
+            if (lockoutTicks <= 0)
+            {
+                Debug.Log("Lockout release");
+                statusAlarmLockout = false;
+            }
+        }
     }
 
     [Header("Debug and stupid")]
@@ -203,6 +228,7 @@ public class BodySectionSimulation : Simulated
             responseChangeTotal = 0f;
             responseChangeDelta = 0f;
             ResponseIsChanging = false;
+            statusResponseChange = false;
         }
     }
 

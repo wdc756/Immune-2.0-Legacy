@@ -24,6 +24,7 @@ public class BodySimulation : Simulated
     public float ReponseChangeDelta = 10f;          // The amount 1 escalation/deescalation changes the response percent
     public float PostscanResponsePercent = 30f;     //  if a scan was successful we want to set the response to this level (should be neutral)
     public float AllStressFactor;
+    public float AlarmLockoutTime = 5f;
 
     //public BodySectionSimulation firstSection;
 

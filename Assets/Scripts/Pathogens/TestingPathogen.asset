@@ -15,5 +15,5 @@ MonoBehaviour:
   Name: Testing
   ResponseWeakness: 0
   WeaknessFactor: 3
-  GainRatePercent: 0.025
+  GainRatePercent: 0.03
   MaxLossRatePercent: 0.05
