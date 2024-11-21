@@ -236,7 +236,7 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        int randomNum = (int)Random.Range(-1.25f * sceneScale, 1.75f * sceneScale);
+        int randomNum = (int)Random.Range(-1f * sceneScale, 1f * sceneScale);
         //Debug.Log(randomNum);
 
         targetBacteria = Mathf.Clamp((int)(mBacteria * infection) + randomNum, 0, mBacteria);
