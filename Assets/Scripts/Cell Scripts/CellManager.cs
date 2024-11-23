@@ -63,23 +63,24 @@ public class CellManager : MonoBehaviour
     public int maxCivilians;
     //This is the actual max, set by the Visual Scene
     private int mCivilians;
-    [Tooltip("The number of civilian cells the scene should have")]
     public int targetCivilians;
 
     public int maxMacrophages;
     private int mMacrophages;
-    public int targetMacrophages;
+    private int targetMacrophages;
     public int maxNeutrophiles;
     private int mNeutrophiles;
-    public int targetNeutrophiles;
+    private int targetNeutrophiles;
     //public int maxTCells = 15;
     //public int targetTCells;
     //public int maxBCells = 10;
     //public int targetBCells;
-    [Tooltip("This is not the total max for all bacteria types, but for each individual type")]
     public int maxBacteria;
     private int mBacteria;
     public int targetBacteria;
+    [Tooltip("The amount the visual sim cells will fight back")]
+    public float immuneResilienceAmount;
+    private float immuneResilience;
 
     [Header("Screen Bounds")]
     [Tooltip("The scale of the active scene, used to change the cell bounds")]
@@ -92,9 +93,6 @@ public class CellManager : MonoBehaviour
     public float maxChaseDistance = 4.0f;
     //The actual number used
     private float mChaseDistance;
-
-    /*public Slider responseSlider;
-    public Slider infectionSlider;*/
 
 
 
@@ -153,6 +151,8 @@ public class CellManager : MonoBehaviour
         mMacrophages = activeScene.maxMacrophages;
         mNeutrophiles = activeScene.maxNeutrophiles;
         mBacteria = activeScene.maxBacteria;
+
+        immuneResilience = immuneResilienceAmount * sceneScale;
 
         //Set up civilian position lists
         civilianCellPositions = activeScene.GetCellPositions();
@@ -247,28 +247,49 @@ public class CellManager : MonoBehaviour
         }
 
         //Debug.Log("target: " + targetBacteria + " mB: " + mBacteria + " " + ((float)targetBacteria / (float)mBacteria));
-        targetCivilians = (int)Mathf.Clamp((mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria))) + randomNum, 0, mCivilians);
+        targetCivilians = (int)Mathf.Clamp(mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria)) + randomNum, 0, mCivilians);
+
+        //if the immune response is high enough, start killing civilians from the response
+        if (response > 0.5f)
+        {
+            targetCivilians = targetCivilians - (int)Mathf.Clamp(mCivilians - (mCivilians * (response / 2f)), 0, mCivilians);
+        }
         if (mCivilians == 0)
         {
             targetCivilians = 0;
         }
 
-        //Set macrophages as 60% of response and neutrophiles as 40%
-        targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 0, mMacrophages);
-        if (mMacrophages == 0)
+        //Set macrophages as 60% of response and neutrophiles as 40%, if response is low, when high swap
+        if (response > 0.3f)
         {
-            targetMacrophages = 0;
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f) + randomNum, 0, mMacrophages);
+            if (mMacrophages == 0)
+            {
+                targetMacrophages = 0;
+            }
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f) + randomNum, 0, mNeutrophiles);
+            if (mNeutrophiles == 0)
+            {
+                targetNeutrophiles = 0;
+            }
         }
-        targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 0, mNeutrophiles);
-        if (mNeutrophiles == 0)
+        else
         {
-            targetNeutrophiles = 0;
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 0, mMacrophages);
+            if (mMacrophages == 0)
+            {
+                targetMacrophages = 0;
+            }
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 0, mNeutrophiles);
+            if (mNeutrophiles == 0)
+            {
+                targetNeutrophiles = 0;
+            }
         }
 
-        //temp
-        if (activeScene != null)
+        if ((bacteria.Count > immuneResilience / 2f && Random.Range(0f, 10f) > 5f) || bacteria.Count > immuneResilience)
         {
-            activeScene.ShiftColor(response, infection);
+            UpdateImmuneResilience();
         }
     }
     //Called by the scan button, generates some dendritic cells
@@ -404,7 +425,7 @@ public class CellManager : MonoBehaviour
                     int smallTick = 0;
                     int smallMaxTick = civilians.Count * 10;
 
-                    if (chance > 6f && neutrophiles.Count > 0)
+                    if (chance > 7f && neutrophiles.Count > 0)
                     {
                         while (smallTick < smallMaxTick)
                         {
@@ -705,6 +726,7 @@ public class CellManager : MonoBehaviour
                         if (smallTick >= smallMaxTick)
                         {
                             //Debug.Log("Fail kill N");
+                            b.ClearTasks();
                             b.NewTask(10);
                         }
                     }
@@ -730,18 +752,21 @@ public class CellManager : MonoBehaviour
                         if (smallTick >= smallMaxTick)
                         {
                             //Debug.Log("Fail kill M");
+                            b.ClearTasks();
                             b.NewTask(10);
                         }
                     }
                     else
                     {
                         //Debug.Log("Fail kill");
+                        b.ClearTasks();
                         b.NewTask(10);
                     }
                 }
                 else
                 {
                     //Debug.Log("Leaving");
+                    b.ClearTasks();
                     b.NewTask(1, GetRandomEdgePosition());
                     b.NewTask(11);
                 }
@@ -754,6 +779,69 @@ public class CellManager : MonoBehaviour
             {
                 Debug.Log("Too many attempts destroyUpdate: bacteria on" + gameObject.name);
             }
+        }
+    }
+    void UpdateImmuneResilience()
+    {
+        int delta = (int)Mathf.Clamp(immuneResilience * Mathf.Sqrt(Random.Range(0f, 0.2f)), 0f, immuneResilience);
+
+        int newTargetB = targetBacteria - delta;
+        //Debug.Log("New targetB: " + newTargetB + " Delta: " + delta + " Resilience: " + immuneResilience);
+
+        if (delta > 0)
+        {
+            Debug.Log("Removing " + delta + " bacteria");
+        }
+
+        if (delta <= 0)
+        {
+            return;
+        }
+
+        //Set a maximum processing tick, which will put a limit on how many times the loop can run
+        int maxTick = mBacteria * 100;
+        //Keep track of how many times the loop runs
+        int tick = 0;
+
+        while (bacteria.Count > newTargetB && tick < maxTick)
+        {
+            Cell b = bacteria[Random.Range(0, bacteria.Count)];
+
+            float chance = Random.Range(0f, 10f);
+            //large chance to get killed, small chance to leave screen
+            if (chance > 0.5f && pathingPositions.Count > 0)
+            {
+                Cell killingCell;
+                if (chance > 7.5f && neutrophiles.Count > 0)
+                {
+                    killingCell = neutrophiles[Random.Range(0, neutrophiles.Count)];
+                    killingCell.NewTask(4, b.gameObject);
+                }
+                else if (macrophages.Count > 0)
+                {
+                    killingCell = macrophages[Random.Range(0, macrophages.Count)];
+                    killingCell.NewTask(5, b.gameObject);
+                }
+                else
+                {
+                    b.ClearTasks();
+                    b.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
+                    b.NewTask(10);
+                }
+            }
+            else
+            {
+                b.NewTask(1, GetRandomEdgePosition());
+                b.NewTask(11);
+            }
+
+            bacteria.Remove(b);
+
+            tick++;
+        }
+        if (tick >= maxTick)
+        {
+            Debug.Log("Too many attempts ImmuneResilience: bacteria on" + gameObject.name);
         }
     }
     //Simply activates new cells and places them in the scene during loading

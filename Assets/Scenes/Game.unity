@@ -2642,6 +2642,10 @@ MonoBehaviour:
   responseChangeTicks: 0
   targetResponsePercent: 0
   previousResponse: 0
+  statusResponseChange: 0
+  statusScan: 0
+  statusAlarmLockout: 0
+  lockoutTicks: 0
   StressFactor: 0
 --- !u!1001 &1138553136
 PrefabInstance:
@@ -3101,6 +3105,10 @@ MonoBehaviour:
   responseChangeTicks: 0
   targetResponsePercent: 0
   previousResponse: 0
+  statusResponseChange: 0
+  statusScan: 0
+  statusAlarmLockout: 0
+  lockoutTicks: 0
   StressFactor: 0
 --- !u!1 &1259092080
 GameObject:
@@ -3192,6 +3200,7 @@ MonoBehaviour:
   ReponseChangeDelta: 10
   PostscanResponsePercent: 30
   AllStressFactor: 0.5
+  AlarmLockoutTime: 5
   ResourceDemandPercent: 0
   ResourceProductionPercent: 0
   MinResourceProductionPercent: 40
@@ -4575,6 +4584,10 @@ MonoBehaviour:
   responseChangeTicks: 0
   targetResponsePercent: 0
   previousResponse: 0
+  statusResponseChange: 0
+  statusScan: 0
+  statusAlarmLockout: 0
+  lockoutTicks: 0
   StressFactor: 0
 --- !u!1 &1690498110
 GameObject:
@@ -5110,11 +5123,9 @@ MonoBehaviour:
   maxCivilians: 1000
   targetCivilians: 0
   maxMacrophages: 250
-  targetMacrophages: 0
   maxNeutrophiles: 150
-  targetNeutrophiles: 0
   maxBacteria: 500
-  targetBacteria: 0
+  immuneResilienceAmount: 1
   sceneScale: 1
   verticalMax: 5
   horizontalMax: 9
@@ -5341,6 +5352,10 @@ MonoBehaviour:
   responseChangeTicks: 0
   targetResponsePercent: 0
   previousResponse: 0
+  statusResponseChange: 0
+  statusScan: 0
+  statusAlarmLockout: 0
+  lockoutTicks: 0
   StressFactor: 0
 --- !u!1 &1880116060
 GameObject:

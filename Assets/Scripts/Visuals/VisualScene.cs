@@ -63,9 +63,6 @@ public class VisualScene : MonoBehaviour
     private Color infectedHue;
 
 
-    public GameObject pathPre;
-
-
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -151,9 +148,6 @@ public class VisualScene : MonoBehaviour
             {
                 pathingLinks.Add(links[pathingLinks.Count]);
                 pathingPositions.Add(v);
-
-                GameObject obj = Instantiate(pathPre, v, Quaternion.identity);
-                obj.transform.SetParent(transform);
             }
 
             tick++;
