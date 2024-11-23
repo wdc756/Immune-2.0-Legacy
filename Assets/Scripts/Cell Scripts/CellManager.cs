@@ -262,12 +262,12 @@ public class CellManager : MonoBehaviour
         //Set macrophages as 60% of response and neutrophiles as 40%, if response is low, when high swap
         if (response > 0.3f)
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f) + randomNum, 0, mMacrophages);
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f) + randomNum, 2, mMacrophages);
             if (mMacrophages == 0)
             {
                 targetMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f) + randomNum, 0, mNeutrophiles);
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f) + randomNum, 1, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
                 targetNeutrophiles = 0;
@@ -275,12 +275,12 @@ public class CellManager : MonoBehaviour
         }
         else
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 0, mMacrophages);
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 1, mMacrophages);
             if (mMacrophages == 0)
             {
                 targetMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 0, mNeutrophiles);
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 2, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
                 targetNeutrophiles = 0;
