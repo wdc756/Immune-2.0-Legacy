@@ -107,7 +107,7 @@ MonoBehaviour:
   followObjects: []
   currentTask: 0
   canMove: 1
-  interactRadius: 0.7
+  interactRadius: 1
   randomWalkDirectionChangeChance: 0.07
   randomWalkChangeDistance: 18
   followChangeChance: 0

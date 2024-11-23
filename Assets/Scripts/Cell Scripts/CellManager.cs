@@ -788,12 +788,13 @@ public class CellManager : MonoBehaviour
         int newTargetB = targetBacteria - delta;
         //Debug.Log("New targetB: " + newTargetB + " Delta: " + delta + " Resilience: " + immuneResilience);
 
-        if (delta > 0)
-        {
-            Debug.Log("Removing " + delta + " bacteria");
-        }
+        //if (delta > 0)
+        //{
+        //    Debug.Log("Removing " + delta + " bacteria");
+        //}
 
-        if (delta <= 0)
+        //if no change or no Immune Cells, don't do logic
+        if (delta <= 0 || (macrophages.Count == 0 && neutrophiles.Count == 0))
         {
             return;
         }
@@ -808,31 +809,21 @@ public class CellManager : MonoBehaviour
             Cell b = bacteria[Random.Range(0, bacteria.Count)];
 
             float chance = Random.Range(0f, 10f);
-            //large chance to get killed, small chance to leave screen
-            if (chance > 0.5f && pathingPositions.Count > 0)
+            Cell killingCell;
+            if (chance > 7.5f && neutrophiles.Count > 0)
             {
-                Cell killingCell;
-                if (chance > 7.5f && neutrophiles.Count > 0)
-                {
-                    killingCell = neutrophiles[Random.Range(0, neutrophiles.Count)];
-                    killingCell.NewTask(4, b.gameObject);
-                }
-                else if (macrophages.Count > 0)
-                {
-                    killingCell = macrophages[Random.Range(0, macrophages.Count)];
-                    killingCell.NewTask(5, b.gameObject);
-                }
-                else
-                {
-                    b.ClearTasks();
-                    b.NewTask(1, pathingPositions[Random.Range(0, pathingPositions.Count)]);
-                    b.NewTask(10);
-                }
+                killingCell = neutrophiles[Random.Range(0, neutrophiles.Count)];
+                killingCell.NewTask(4, b.gameObject);
+            }
+            else if (macrophages.Count > 0)
+            {
+                killingCell = macrophages[Random.Range(0, macrophages.Count)];
+                killingCell.NewTask(5, b.gameObject);
             }
             else
             {
-                b.NewTask(1, GetRandomEdgePosition());
-                b.NewTask(11);
+                b.ClearTasks();
+                b.NewTask(10);
             }
 
             bacteria.Remove(b);

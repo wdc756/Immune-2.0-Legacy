@@ -5125,7 +5125,8 @@ MonoBehaviour:
   maxMacrophages: 250
   maxNeutrophiles: 150
   maxBacteria: 500
-  immuneResilienceAmount: 1
+  targetBacteria: 0
+  immuneResilienceAmount: 1.1
   sceneScale: 1
   verticalMax: 5
   horizontalMax: 9

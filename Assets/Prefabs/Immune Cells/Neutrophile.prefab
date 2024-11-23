@@ -109,7 +109,7 @@ MonoBehaviour:
   - {fileID: 0}
   currentTask: 0
   canMove: 1
-  interactRadius: 0.5
+  interactRadius: 0.7
   randomWalkDirectionChangeChance: 0.06
   randomWalkChangeDistance: 9
   followChangeChance: 0.015
