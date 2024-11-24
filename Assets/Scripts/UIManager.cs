@@ -39,6 +39,26 @@ public class UIManager : MonoBehaviour
     [SerializeField, Tooltip("The slider showing resource usage")]
     private Slider resourceSlider;
 
+    [Header("Toolbar UI")]
+    public GameObject toolbar;
+    [SerializeField]
+    private GameObject alarmButtonObject;
+    private float alarmTime;
+    public float alarmLockoutTime;
+    public GameObject escalateButtonObject;
+    private float escalateTime;
+    public float escalateLockoutTime;
+    public GameObject deescalateButtonObject;
+    private float deescalateTime;
+    public float deescalateLockoutTime;
+    public GameObject scanButtonObject;
+    private float scanTime;
+    public float scanLockoutTime;
+
+    public Color failColor;
+    public Color escalateColor;
+    public Color deescalateColor;
+
 
 
     //To be called by VisualManager during setup phase
@@ -110,6 +130,16 @@ public class UIManager : MonoBehaviour
         changeSceneButtons.Clear();
     }
     //calls the active body section's function when a button is pressed
+
+
+
+    private void Update()
+    {
+        UpdateActionButtons();
+    }
+
+
+
     public void CallBodySectionFunction(int type)
     {
         int activeScene = visualManager.activeScene;
@@ -124,16 +154,55 @@ public class UIManager : MonoBehaviour
         switch (type)
         {
             case 0:
-                sectionSim.Alarm();
+                //just a quick reference
+                GameObject fillAreaObject = null;
+
+                if (alarmTime == 0)
+                {
+                    fillAreaObject = alarmButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+                    fillAreaObject.SetActive(true);
+
+                    if (sectionSim.Alarm())
+                    {
+                        fillAreaObject.GetComponent<Image>().color = escalateColor;
+                    }
+                    else
+                    {
+                        fillAreaObject.GetComponent<Image>().color = failColor;
+                    }
+
+                    alarmTime = alarmLockoutTime;
+                }
                 break;
             case 1:
-                sectionSim.Escalate();
+                if (escalateTime == 0)
+                {
+                    fillAreaObject = escalateButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+                    fillAreaObject.SetActive(true);
+
+                    sectionSim.Escalate();
+                    escalateTime = escalateLockoutTime;
+                }
                 break;
             case 2:
-                sectionSim.Deescalate();
+                if (deescalateTime == 0)
+                {
+                    fillAreaObject = deescalateButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+                    fillAreaObject.SetActive(true);
+
+                    sectionSim.Deescalate();
+                    deescalateTime = deescalateLockoutTime;
+                }
                 break;
             case 3:
-                sectionSim.Scan();
+                if (scanTime == 0)
+                {
+                    fillAreaObject = scanButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+                    fillAreaObject.SetActive(true);
+
+                    sectionSim.Scan();
+                    scanTime = scanLockoutTime;
+                }
                 break;
             default:
                 Debug.Log("Invalid int argument for CallBodySectionFunction: " + type);
@@ -152,7 +221,61 @@ public class UIManager : MonoBehaviour
 
         //update resource usage slider
         resourceSlider.value = resourceUsage;
+    }
 
-        //note that resourceUsage is 0-100
+    //controls the player action buttons
+    public void UpdateActionButtons()
+    {
+        if (alarmTime > 0)
+        {
+            alarmTime -= Time.deltaTime;
+
+            alarmButtonObject.transform.GetChild(0).gameObject.GetComponent<Slider>().value = alarmTime;
+
+            if (alarmTime < 0)
+            {
+                alarmTime = 0;
+                alarmButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+        }
+
+        if (escalateTime > 0)
+        {
+            escalateTime -= Time.deltaTime;
+
+            escalateButtonObject.transform.GetChild(0).gameObject.GetComponent<Slider>().value = escalateTime;
+
+            if (escalateTime < 0)
+            {
+                escalateTime = 0;
+                escalateButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+        }
+
+        if (deescalateTime > 0)
+        {
+            deescalateTime -= Time.deltaTime;
+
+            deescalateButtonObject.transform.GetChild(0).gameObject.GetComponent<Slider>().value = deescalateTime;
+
+            if (deescalateTime < 0)
+            {
+                deescalateTime = 0;
+                deescalateButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+        }
+
+        if (scanTime > 0)
+        {
+            scanTime -= Time.deltaTime;
+
+            scanButtonObject.transform.GetChild(0).gameObject.GetComponent<Slider>().value = scanTime;
+
+            if (scanTime < 0)
+            {
+                scanTime = 0;
+                scanButtonObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+        }
     }
 }

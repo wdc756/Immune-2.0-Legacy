@@ -91,9 +91,9 @@ public class BodySectionSimulation : Simulated
         Deescalate();
     }
 
-    public void Alarm()
+    public bool Alarm()
     {
-        if (ResponseIsChanging || statusAlarmLockout) return;
+        if (ResponseIsChanging || statusAlarmLockout) return false;
         // Don't do anything if we don't reach the minimum flag percent or we are already responding more than the alarm level
         if (InfectionProgressPercent < parent.AlarmFlagPercent || Response.LevelPercent >= parent.AlarmResponsePercent)
         {
@@ -101,7 +101,7 @@ public class BodySectionSimulation : Simulated
             lockoutTicks = (int)(parent.AlarmLockoutTime / SimulationManager.TickDelta);
             statusAlarmLockout = true;
             Debug.Log($"lockout ticks: {lockoutTicks}");
-            return;
+            return false;
         }
         ResponseIsChanging = true;
         
@@ -111,6 +111,8 @@ public class BodySectionSimulation : Simulated
         responseChangeDelta = responseChangeTotal / (float)responseChangeTicks;
 
         targetResponsePercent = parent.AlarmResponsePercent;
+
+        return true;
     }
 
     public void Scan()

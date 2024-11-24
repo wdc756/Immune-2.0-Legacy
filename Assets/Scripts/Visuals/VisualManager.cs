@@ -92,6 +92,15 @@ public class VisualManager : MonoBehaviour
 
         //Reset and create new link buttons
         uiManager.LoadSceneLinkButtons();
+        //Update the toolbar
+        if (activeScene != 0)
+        {
+            uiManager.toolbar.SetActive(true);
+        }
+        else
+        {
+            uiManager.toolbar.SetActive(false);
+        }
 
         //Setup cellmanager
         cellManager.LoadVisualScene(visualSceneList[activeScene]);
