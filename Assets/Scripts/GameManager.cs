@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     public VisualManager visualManager;
     public SimulationManager simulationManager;
+    public CellManager cellManager;
+    public StopPlaying stopPlaying;
 
     public GameObject pauseMenu;
     public bool canPause = false;
@@ -24,6 +26,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameWinMenu;
 
     public int maxCivilianDeathCount;
+
+    private bool tryingToClose = false;
 
 
     void Start()
@@ -43,6 +47,16 @@ public class GameManager : MonoBehaviour
             else
             {
                 Resume();
+            }
+        }
+
+        if (tryingToClose)
+        {
+            if (!cellManager.AnyBacteriaLeft())
+            {
+                gameWinMenu.SetActive(true);
+                Resume();
+                canPause = false;
             }
         }
     }
@@ -158,9 +172,8 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
-        gameWinMenu.SetActive(true);
-        Resume();
-        canPause = false;
+        tryingToClose = true;
+        cellManager = FindObjectOfType<CellManager>();
     }
     public void Lose()
     {
@@ -170,7 +183,8 @@ public class GameManager : MonoBehaviour
     }
     public void Exit()
     {
-        SceneManager.LoadScene(0);
+        stopPlaying = FindObjectOfType<StopPlaying>();
+        stopPlaying.CloseGameScene(this);
     }
 
 

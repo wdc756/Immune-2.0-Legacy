@@ -36,22 +36,12 @@ public class CellManager : MonoBehaviour
     [SerializeField]
     private ObjectPoolingHelper neutrophilePool;
     public List<Cell> neutrophiles;
-    //[SerializeField]
-    //private ObjectPoolingHelper TCellPool;
-    //private List<Cell> TCells;
-    //[SerializeField]
-    //private ObjectPoolingHelper BCellPool;
-    //private List<Cell> BCells;
-    //[SerializeField, Tooltip("This is a prefab, not something already in the scene")]
-    //private ObjectPoolingHelper bacteriaPoolPre;
-    //This is in list format because there can be multiple types of bacteria
-    //private List<ObjectPoolingHelper> bacteriaPools;
-    //private List<List<Cell>> bacteria;
     [SerializeField]
     private ObjectPoolingHelper dendriticPool;
     public List<Cell> dendritic;
     public int maxDendritic;
-    public ObjectPoolingHelper bacteriaPool;
+    [SerializeField]
+    private ObjectPoolingHelper bacteriaPool;
     public List<Cell> bacteria;
 
     [Header("Cell variables")]
@@ -81,6 +71,8 @@ public class CellManager : MonoBehaviour
     [Tooltip("The amount the visual sim cells will fight back")]
     public float immuneResilienceAmount;
     private float immuneResilience;
+    [Tooltip("The amount of civilian death by the Immune System")]
+    public float immuneDamageMultiplier = 0.7f;
 
     [Header("Screen Bounds")]
     [Tooltip("The scale of the active scene, used to change the cell bounds")]
@@ -232,6 +224,15 @@ public class CellManager : MonoBehaviour
             cell.ResetPersistTime();
         }
     }
+    //Checks if there are any active bacteria
+    public bool AnyBacteriaLeft()
+    {
+        if (!bacteriaPool.AreAnyObjectsActive())
+        {
+            return true;
+        }
+        return false;
+    }
 
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
@@ -252,7 +253,7 @@ public class CellManager : MonoBehaviour
         //if the immune response is high enough, start killing civilians from the response
         if (response > 0.5f)
         {
-            targetCivilians = targetCivilians - (int)Mathf.Clamp(mCivilians - (mCivilians * (response / 2f)), 0, mCivilians);
+            targetCivilians -= (int)Mathf.Clamp(mCivilians - (mCivilians * (response * immuneDamageMultiplier)), 0, mCivilians);
         }
         if (mCivilians == 0)
         {
@@ -302,7 +303,7 @@ public class CellManager : MonoBehaviour
         int targetDendritic = maxDendritic;
 
         //check if there are any active scanning cells
-        if (!dendriticPool.AreObjectsActive())
+        if (!dendriticPool.AreAnyObjectsActive())
         {
             //spawn all of them
             for (int i = 0; i < targetDendritic; i++)
@@ -793,8 +794,8 @@ public class CellManager : MonoBehaviour
         //    Debug.Log("Removing " + delta + " bacteria");
         //}
 
-        //if no change or no Immune Cells, don't do logic
-        if (delta <= 0 || (macrophages.Count == 0 && neutrophiles.Count == 0))
+        //if no change, no bacteria, or Immune Cells, don't do logic
+        if (delta <= 0 || bacteria.Count == 0 || newTargetB < 0 || (macrophages.Count == 0 && neutrophiles.Count == 0))
         {
             return;
         }

@@ -104,7 +104,7 @@ public class ObjectPoolingHelper : MonoBehaviour
         }
     }
     //goes through each object and returns if there are any active cells
-    public bool AreObjectsActive()
+    public bool AreAnyObjectsActive()
     {
         foreach (GameObject obj in pooledObjects)
         {
