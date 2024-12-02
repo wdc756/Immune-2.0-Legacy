@@ -26,7 +26,7 @@ public class CellMovement : MonoBehaviour
     public Vector3 momentum;
     public bool isSlowingDown = false;
     //The target position the cell is trying to reach
-    private Vector3 targetPosition;
+    public Vector3 targetPosition;
     //The direction of the target from where the cell currently is
     private Vector3 targetDirection;
 

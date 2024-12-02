@@ -227,7 +227,7 @@ public class CellManager : MonoBehaviour
     //Checks if there are any active bacteria
     public bool AnyBacteriaLeft()
     {
-        if (!bacteriaPool.AreAnyObjectsActive())
+        if (bacteriaPool.AreAnyObjectsActive())
         {
             return true;
         }
@@ -237,24 +237,14 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        //int randomNum = (int)Random.Range(-1f * sceneScale, 1f * sceneScale);
-        int randomNum = 0;
-        //Debug.Log(randomNum);
-
-        targetBacteria = Mathf.Clamp((int)(mBacteria * infection) + randomNum, 0, mBacteria);
+        targetBacteria = Mathf.Clamp((int)(mBacteria * infection), 0, mBacteria);
         if (mBacteria == 0)
         {
             targetBacteria = 0;
         }
 
-        //Debug.Log("target: " + targetBacteria + " mB: " + mBacteria + " " + ((float)targetBacteria / (float)mBacteria));
-        targetCivilians = (int)Mathf.Clamp(mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria)) + randomNum, 0, mCivilians);
-
-        //if the immune response is high enough, start killing civilians from the response
-        if (response > 0.5f)
-        {
-            targetCivilians -= (int)Mathf.Clamp(mCivilians - (mCivilians * (response * immuneDamageMultiplier)), 0, mCivilians);
-        }
+        targetCivilians = (int)Mathf.Clamp(mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria)), 0, mCivilians);
+        targetCivilians -= (int)Mathf.Clamp(mCivilians * (response * immuneDamageMultiplier), 0, mCivilians);
         if (mCivilians == 0)
         {
             targetCivilians = 0;
@@ -263,12 +253,12 @@ public class CellManager : MonoBehaviour
         //Set macrophages as 60% of response and neutrophiles as 40%, if response is low, when high swap
         if (response > 0.3f)
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f) + randomNum, 2, mMacrophages);
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f), 2, mMacrophages);
             if (mMacrophages == 0)
             {
                 targetMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f) + randomNum, 1, mNeutrophiles);
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f), 1, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
                 targetNeutrophiles = 0;
@@ -276,12 +266,12 @@ public class CellManager : MonoBehaviour
         }
         else
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f) + randomNum, 1, mMacrophages);
+            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f), 1, mMacrophages);
             if (mMacrophages == 0)
             {
                 targetMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f) + randomNum, 2, mNeutrophiles);
+            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f), 2, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
                 targetNeutrophiles = 0;

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class Cell : MonoBehaviour
 {
@@ -79,6 +81,12 @@ public class Cell : MonoBehaviour
     //used to hold what spot a civilian cell is using
     public int cellSpot;
 
+    [Header("Sprite Rotation Variables")]
+    public float rotationSpeed;
+    public float rotationOffset;
+
+
+
     void Start()
     {
         cellSmallMovement = gameObject.GetComponent<CellSmallMovement>();
@@ -111,6 +119,8 @@ public class Cell : MonoBehaviour
 
         if (canMove) { StopMoving(); }
         if (cellSmallMovement != null) { cellSmallMovement.ResetMovement(); }
+
+        SetRandomRotation();
 
         ResetPersist();
     }
@@ -205,6 +215,11 @@ public class Cell : MonoBehaviour
         }
 
         HandleTasks();
+
+        if (type != 1 && cellMovement != null)
+        {
+            HandleRotation();
+        }
 
         persistTimeLeft -= Time.deltaTime;
         if (persistTimeLeft < 0)
@@ -319,6 +334,7 @@ public class Cell : MonoBehaviour
             {
                 followChangeTimer = 0.001f;
                 followChangeTime = Random.Range(followChangeMaxTime / 3, followChangeMaxTime);
+
                 SetMove(GetAdjustedPosition(followChangeDistance));
             }
         }
@@ -369,6 +385,7 @@ public class Cell : MonoBehaviour
                 {
                     followChangeTimer = 0.001f;
                     followChangeTime = Random.Range(followChangeMaxTime / 3, followChangeMaxTime);
+
                     SetMove(GetAdjustedPosition(followChangeDistance));
                 }
             }
@@ -499,5 +516,29 @@ public class Cell : MonoBehaviour
                 SetMove(GetAdjustedPosition(followChangeDistance));
             }
         }
+    }
+
+
+
+    private void HandleRotation()
+    {
+        //Get the spot the cell is moving towards
+        Vector3 targetPosition = cellMovement.targetPosition;
+
+        // Calculate the difference in position
+        Vector3 direction = targetPosition - transform.position;
+
+        // Calculate the angle in radians and convert to degrees
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Apply the rotation to the Z-axis only
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle + rotationOffset);
+
+        // Interpolate to the new rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+    }
+    private void SetRandomRotation()
+    {
+        transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
     }
 }
