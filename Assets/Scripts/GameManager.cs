@@ -103,6 +103,10 @@ public class GameManager : MonoBehaviour
         Button exitButton = pauseMenu.transform.GetChild(2).gameObject.GetComponent<Button>();
         exitButton.onClick.AddListener(() => Exit());
 
+        GameObject instructions = pauseMenu.transform.GetChild(4).gameObject;
+        Button backButton = instructions.transform.GetChild(1).gameObject.GetComponent<Button>();
+        backButton.onClick.AddListener(() => Resume());
+
         pauseMenu.SetActive(false);
 
 
@@ -123,6 +127,7 @@ public class GameManager : MonoBehaviour
 
 
         canPause = true;
+        Pause();
     }
     
     //temp, called by exit button
@@ -172,14 +177,22 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
-        tryingToClose = true;
-        cellManager = FindObjectOfType<CellManager>();
+        if (!gameOverMenu.activeInHierarchy)
+        {
+            tryingToClose = true;
+            cellManager = FindObjectOfType<CellManager>();
+
+            //remove all bacteria
+        }
     }
     public void Lose()
     {
-        gameOverMenu.SetActive(true);
-        Resume();
-        canPause = false;
+        if (!gameWinMenu.activeInHierarchy)
+        {
+            gameOverMenu.SetActive(true);
+            Resume();
+            canPause = false;
+        }
     }
     public void Exit()
     {
