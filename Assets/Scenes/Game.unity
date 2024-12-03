@@ -7091,14 +7091,15 @@ MonoBehaviour:
   maxDendritic: 3
   bacteriaPool: {fileID: 2137244942}
   bacteria: []
+  cellDeltaAmount: 1.2
   civilianCellPositions: []
   isCivilianSpotUsed: 
   maxCivilians: 1000
   targetCivilians: 0
+  tCivilians: 0
   maxMacrophages: 250
   maxNeutrophiles: 150
   maxBacteria: 500
-  targetBacteria: 0
   immuneResilienceAmount: 1.5
   immuneDamageMultiplier: 0.7
   sceneScale: 1

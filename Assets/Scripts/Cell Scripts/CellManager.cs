@@ -45,6 +45,8 @@ public class CellManager : MonoBehaviour
     public List<Cell> bacteria;
 
     [Header("Cell variables")]
+    [Tooltip("How fast the cell numbers change")]
+    public float cellDeltaAmount;
     //List of civilian cell positions to spawn new cells in, retrieved from the active VisualScene
     public List<Vector3> civilianCellPositions;
     //List of bools that keep track of which positions are occupied
@@ -54,20 +56,24 @@ public class CellManager : MonoBehaviour
     //This is the actual max, set by the Visual Scene
     private int mCivilians;
     public int targetCivilians;
+    public int tCivilians;
 
     public int maxMacrophages;
     private int mMacrophages;
     private int targetMacrophages;
+    private int tMacrophages;
     public int maxNeutrophiles;
     private int mNeutrophiles;
     private int targetNeutrophiles;
+    private int tNeutrophiles;
     //public int maxTCells = 15;
     //public int targetTCells;
     //public int maxBCells = 10;
     //public int targetBCells;
     public int maxBacteria;
     private int mBacteria;
-    public int targetBacteria;
+    private int targetBacteria;
+    private int tBacteria;
     [Tooltip("The amount the visual sim cells will fight back")]
     public float immuneResilienceAmount;
     private float immuneResilience;
@@ -237,44 +243,44 @@ public class CellManager : MonoBehaviour
     //Recieve new simulation numbers, to affect the visuals, scene dependant
     public void NewSimulationNumbers(float response, float infection, int responseType)
     {
-        targetBacteria = Mathf.Clamp((int)(mBacteria * infection), 0, mBacteria);
+        tBacteria = Mathf.Clamp((int)(mBacteria * infection), 0, mBacteria);
         if (mBacteria == 0)
         {
-            targetBacteria = 0;
+            tBacteria = 0;
         }
 
-        targetCivilians = (int)Mathf.Clamp(mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria)), 0, mCivilians);
-        targetCivilians -= (int)Mathf.Clamp(mCivilians * (response * immuneDamageMultiplier), 0, mCivilians);
+        tCivilians = (int)Mathf.Clamp(mCivilians - (mCivilians * ((float)targetBacteria / (float)mBacteria)), 0, mCivilians);
+        tCivilians -= (int)Mathf.Clamp(mCivilians * (response * immuneDamageMultiplier), 0, mCivilians);
         if (mCivilians == 0)
         {
-            targetCivilians = 0;
+            tCivilians = 0;
         }
 
         //Set macrophages as 60% of response and neutrophiles as 40%, if response is low, when high swap
         if (response > 0.3f)
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f), 2, mMacrophages);
+            tMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.4f), 2, mMacrophages);
             if (mMacrophages == 0)
             {
-                targetMacrophages = 0;
+                tMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f), 1, mNeutrophiles);
+            tNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.6f), 1, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
-                targetNeutrophiles = 0;
+                tNeutrophiles = 0;
             }
         }
         else
         {
-            targetMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f), 1, mMacrophages);
+            tMacrophages = (int)Mathf.Clamp(mMacrophages * (response * 0.6f), 1, mMacrophages);
             if (mMacrophages == 0)
             {
-                targetMacrophages = 0;
+                tMacrophages = 0;
             }
-            targetNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f), 2, mNeutrophiles);
+            tNeutrophiles = (int)Mathf.Clamp(mNeutrophiles * (response * 0.4f), 2, mNeutrophiles);
             if (mNeutrophiles == 0)
             {
-                targetNeutrophiles = 0;
+                tNeutrophiles = 0;
             }
         }
 
@@ -341,6 +347,15 @@ public class CellManager : MonoBehaviour
     {
         if (canUpdate)
         {
+            //Debug.Log(Mathf.Lerp(targetCivilians, tCivilians, cellDeltaAmount * Time.deltaTime));
+            targetCivilians = Mathf.RoundToInt(Mathf.Lerp(targetCivilians, tCivilians, cellDeltaAmount * Time.deltaTime));
+            //targetMacrophages = (int)Mathf.Lerp(targetMacrophages, tMacrophages, cellDeltaAmount * Time.deltaTime);
+            //targetNeutrophiles = (int)Mathf.Lerp(targetNeutrophiles, tNeutrophiles, cellDeltaAmount * Time.deltaTime);
+            //targetBacteria = (int)Mathf.Lerp(targetBacteria, tBacteria, cellDeltaAmount * Time.deltaTime);
+            targetMacrophages = tMacrophages;
+            targetNeutrophiles = tNeutrophiles;
+            targetBacteria = tBacteria;
+
             UpdateCivilians();
             UpdateMacrophages();
             UpdateNeutrophiles();
@@ -829,6 +844,12 @@ public class CellManager : MonoBehaviour
     //Simply activates new cells and places them in the scene during loading
     public void SetCellNumbers()
     {
+        targetCivilians = tCivilians;
+        targetMacrophages = tMacrophages;
+        targetNeutrophiles = tNeutrophiles;
+        targetBacteria = tBacteria;
+
+
         //Set a maximum processing tick, which will put a limit on how many times the loop can run
         int maxTick = mCivilians * 100;
         //Keep track of how many times the loop runs
