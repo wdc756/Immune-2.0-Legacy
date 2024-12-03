@@ -3689,6 +3689,8 @@ MonoBehaviour:
     Yellow-Orange:
     Immune System
 
+    Blue: Intelligence Cells
+
 
     Green: Bacteria'
   m_isRightToLeft: 0
@@ -7097,7 +7099,7 @@ MonoBehaviour:
   maxNeutrophiles: 150
   maxBacteria: 500
   targetBacteria: 0
-  immuneResilienceAmount: 1.1
+  immuneResilienceAmount: 1.5
   immuneDamageMultiplier: 0.7
   sceneScale: 1
   verticalMax: 5
@@ -8314,7 +8316,7 @@ PrefabInstance:
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: poolObject
       value: 
-      objectReference: {fileID: 934541465807140342, guid: bac4e913c090969449822234194ded29, type: 3}
+      objectReference: {fileID: 4470568107016237533, guid: 235d3dc79f42f644c80980142e1caa55, type: 3}
     - target: {fileID: 8310614398607225956, guid: eb0d6d03ed1d5724c963cea5d6f875e6, type: 3}
       propertyPath: WarnOnOverflow
       value: 0

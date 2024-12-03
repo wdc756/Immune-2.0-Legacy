@@ -774,7 +774,7 @@ public class CellManager : MonoBehaviour
     }
     void UpdateImmuneResilience()
     {
-        int delta = (int)Mathf.Clamp(immuneResilience * Mathf.Sqrt(Random.Range(0f, 0.2f)), 0f, immuneResilience);
+        int delta = (int)Mathf.Clamp(immuneResilience * Mathf.Sqrt(Random.Range(0f, 0.2f)), 0f, immuneResilience * 2f);
 
         int newTargetB = targetBacteria - delta;
         //Debug.Log("New targetB: " + newTargetB + " Delta: " + delta + " Resilience: " + immuneResilience);

@@ -201,7 +201,7 @@ public class VisualManager : MonoBehaviour
             visualSceneList[2],
             visualSceneList[3]
         };
-        visualSceneList[1].SetUp(1, 3.0f, setUpScenes, 10, 300, 100, 75, 150);
+        visualSceneList[1].SetUp(1, 3.0f, setUpScenes, 10, 275, 100, 75, 150);
         visualSceneList[1].gameObject.SetActive(false);
 
         setUpScenes = new List<VisualScene>
@@ -209,7 +209,7 @@ public class VisualManager : MonoBehaviour
             visualSceneList[0],
             visualSceneList[1]
         };
-        visualSceneList[2].SetUp(2, 5.0f, setUpScenes, 12, 850, 200, 125, 400);
+        visualSceneList[2].SetUp(2, 5.0f, setUpScenes, 12, 825, 200, 125, 400);
         visualSceneList[2].gameObject.SetActive(false);
 
         setUpScenes = new List<VisualScene>
@@ -217,14 +217,14 @@ public class VisualManager : MonoBehaviour
             visualSceneList[1],
             visualSceneList[4]
         };
-        visualSceneList[3].SetUp(3, 2.5f, setUpScenes, 7, 250, 75, 100, 125);
+        visualSceneList[3].SetUp(3, 2.5f, setUpScenes, 7, 225, 75, 100, 125);
         visualSceneList[3].gameObject.SetActive(false);
 
         setUpScenes = new List<VisualScene>
         {
             visualSceneList[3]
         };
-        visualSceneList[4].SetUp(4, 3f, setUpScenes, 8, 300, 100, 125, 150);
+        visualSceneList[4].SetUp(4, 3f, setUpScenes, 8, 275, 100, 125, 150);
         visualSceneList[4].gameObject.SetActive(false);
     }
     

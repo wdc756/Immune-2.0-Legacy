@@ -30,7 +30,7 @@ public class VisualScene : MonoBehaviour
     //The actual number used
     private float cAnchorMultiplier;
     [Tooltip("The minimum distance a cell can be away from any other cell when generating")]
-    public float cellMinDistance = 1.0f;
+    public float cellMinDistance = 1.2f;
 
     [Tooltip("The maximum number of civilian cells this VisualScene can hold")]
     public int maxCivilians;

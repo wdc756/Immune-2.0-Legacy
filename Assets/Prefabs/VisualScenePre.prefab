@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneIndex: 0
   cellAnchorMultiplier: 1
-  cellMinDistance: 1
+  cellMinDistance: 1.35
   maxCivilians: 0
   maxMacrophages: 0
   maxNeutrophiles: 0
@@ -110,4 +110,3 @@ MonoBehaviour:
   hueShiftSaturation: 0.3
   stressedHue: {r: 0.9098039, g: 0.27058825, b: 0.2627451, a: 1}
   infectedHue: {r: 0, g: 0.53333336, b: 0.3019608, a: 1}
-  pathPre: {fileID: 1239773531498944231, guid: fe73b6586f9ed994ea3003b71287e878, type: 3}
