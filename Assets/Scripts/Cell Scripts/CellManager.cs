@@ -349,9 +349,9 @@ public class CellManager : MonoBehaviour
         {
             //Debug.Log(Mathf.Lerp(targetCivilians, tCivilians, cellDeltaAmount * Time.deltaTime));
             targetCivilians = Mathf.RoundToInt(Mathf.Lerp(targetCivilians, tCivilians, cellDeltaAmount * Time.deltaTime));
-            //targetMacrophages = (int)Mathf.Lerp(targetMacrophages, tMacrophages, cellDeltaAmount * Time.deltaTime);
-            //targetNeutrophiles = (int)Mathf.Lerp(targetNeutrophiles, tNeutrophiles, cellDeltaAmount * Time.deltaTime);
-            //targetBacteria = (int)Mathf.Lerp(targetBacteria, tBacteria, cellDeltaAmount * Time.deltaTime);
+            //targetMacrophages = Mathf.RoundToInt(Mathf.Lerp(targetMacrophages, tMacrophages, cellDeltaAmount * Time.deltaTime * cellMultiplier));
+            //targetNeutrophiles = Mathf.RoundToInt(Mathf.Lerp(targetNeutrophiles, tNeutrophiles, cellDeltaAmount * Time.deltaTime * cellMultiplier));
+            //targetBacteria = Mathf.RoundToInt(Mathf.Lerp(targetBacteria, tBacteria, cellDeltaAmount * Time.deltaTime * cellMultiplier));
             targetMacrophages = tMacrophages;
             targetNeutrophiles = tNeutrophiles;
             targetBacteria = tBacteria;
