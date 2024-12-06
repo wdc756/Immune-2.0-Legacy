@@ -284,7 +284,7 @@ public class CellManager : MonoBehaviour
             }
         }
 
-        if ((bacteria.Count > immuneResilience / 2f && Random.Range(0f, 10f) > 5f) || bacteria.Count > immuneResilience)
+        if ((bacteria.Count > immuneResilience && Random.Range(0f, 10f) > 5f))
         {
             UpdateImmuneResilience();
         }
@@ -789,7 +789,8 @@ public class CellManager : MonoBehaviour
     }
     void UpdateImmuneResilience()
     {
-        int delta = (int)Mathf.Clamp(immuneResilience * Mathf.Sqrt(Random.Range(0f, 0.2f)), 0f, immuneResilience * 2f);
+        int delta = (int)Mathf.Clamp(immuneResilience * Mathf.Log(Random.Range(1f, 4f)), 0f, immuneResilience * 2f);
+        //Debug.Log(delta);
 
         int newTargetB = targetBacteria - delta;
         //Debug.Log("New targetB: " + newTargetB + " Delta: " + delta + " Resilience: " + immuneResilience);
