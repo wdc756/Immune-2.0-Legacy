@@ -176,11 +176,11 @@ public class VisualManager : MonoBehaviour
 
         newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
-        newSceneObject.name = "Generic1";
+        newSceneObject.name = "Gut";
 
         newSceneObject = Instantiate(visualScenePrefab, visualSceneParent.transform);
         visualSceneList.Add(newSceneObject.GetComponent<VisualScene>());
-        newSceneObject.name = "Generic2";
+        newSceneObject.name = "Liver";
 
 
 
