@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     private bool tryingToClose = false;
 
+    public Slider gameWinDeathBar;
 
     void Start()
     {
@@ -55,6 +56,12 @@ public class GameManager : MonoBehaviour
             if (!cellManager.AnyBacteriaLeft())
             {
                 gameWinMenu.SetActive(true);
+
+                gameWinDeathBar = gameWinMenu.transform.GetChild(1).transform.GetChild(0).gameObject.GetComponent<Slider>();
+
+                gameWinDeathBar.maxValue = maxCivilianDeathCount;
+                gameWinDeathBar.value = simulationManager.gameObject.GetComponent<BodySimulation>().CivilianDeathCount;
+
                 Resume();
                 canPause = false;
             }
