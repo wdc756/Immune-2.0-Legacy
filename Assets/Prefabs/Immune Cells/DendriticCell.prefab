@@ -130,9 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a83ee04f93d39041b2e12c7bb6ad5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 1.7
+  accelerationForce: 2.25
   mass: 0.3
-  frictionForce: 2
+  frictionForce: 2.5
   maxSpeed: 5
   tolerance: 0.1
   momentum: {x: 0, y: 0, z: 0}
