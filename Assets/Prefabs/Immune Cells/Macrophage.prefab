@@ -112,7 +112,7 @@ MonoBehaviour:
   interactRadius: 1.5
   randomWalkDirectionChangeChance: 0.05
   randomWalkChangeDistance: 7
-  followChangeChance: 0.01
+  followChangeChance: 0.0025
   followChangeDistance: 10
   followChangeMaxTime: 3
   cellSpot: 0

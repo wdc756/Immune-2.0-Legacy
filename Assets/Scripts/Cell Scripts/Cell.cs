@@ -39,6 +39,11 @@ public class Cell : MonoBehaviour
     6: Alert (alarm signal)
     10: Deactivate (aptosis animation)
     11: Deactivate (setActive(false))
+
+    tutorial numbers, don't use in gameplay
+    12: Destroy self
+    14: Destroy gameobject on arrive
+    15: Destroy gameobject on swallow
      */
     [Header("Task Variables")]
     [SerializeField, Tooltip("List of tasks to be executed")]
@@ -265,7 +270,7 @@ public class Cell : MonoBehaviour
             }
         }
 
-        if (currentTask == 2 || currentTask == 3 || currentTask == 4 || currentTask == 5)
+        if (currentTask == 2 || currentTask == 3 || currentTask == 4 || currentTask == 5 || currentTask == 14 || currentTask == 15)
         {
             HandleFollowMovement();
         }
@@ -298,6 +303,10 @@ public class Cell : MonoBehaviour
             else if (currentTask == 10 || currentTask == 11)
             {
                 DeactivateCell();
+            }
+            else if (currentTask == 12)
+            {
+                Destroy(gameObject);
             }
             else if (currentTask < 0)
             {
@@ -405,9 +414,13 @@ public class Cell : MonoBehaviour
             {
                 KillEnemyCell();
             }
+            if ((currentTask == 14 || currentTask == 15) && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < interactRadius)
+            {
+                DestroyEnemyCell();
+            }
 
             //if in follow stop mode, then when the target is reached, reset task
-            if (currentTask == 2 && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < interactRadius)
+            if (currentTask == 2 && Vector3.Distance(gameObject.transform.position, followObjects[0].transform.position) < interactRadius / 2f)
             {
                 if (isMoving)
                 {
@@ -441,6 +454,31 @@ public class Cell : MonoBehaviour
             }
             //kill
             cell.NewTask(10);
+        }
+        //tell this cell to move to the target, to make swallowing easier
+        currentTask = 2;
+    }
+    private void DestroyEnemyCell()
+    {
+        //get the current kill target
+        Cell cell = followObjects[0].GetComponent<Cell>();
+        if (cell != null)
+        {
+            //clear tasks and tell it to either kill immediately or to be swallowed
+            cell.ClearTasks();
+            //if in swallow mode, tell enemy to be swallowed
+            if (currentTask == 15)
+            {
+                if (cell.canMove)
+                {
+                    cell.NewTask(2, gameObject);
+                    //CellMovement enemyMovement = cell.GetComponent<CellMovement>();
+                    //enemyMovement.tolerance = 0.7f;
+                    cell.followChangeChance = 0f;
+                }
+            }
+            //kill
+            cell.NewTask(12);
         }
         //tell this cell to move to the target, to make swallowing easier
         currentTask = 2;

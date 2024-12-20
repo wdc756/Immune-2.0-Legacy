@@ -69,6 +69,26 @@ public class GameManager : MonoBehaviour
     }
 
 
+    //called by the tutorial button in the main menu
+    public void StartTutorial()
+    {
+        StartCoroutine(StartTutorialAsync());
+    }
+    private IEnumerator StartTutorialAsync()
+    {
+        //starts the loading process
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        FindObjectOfType<TutorialManager>().StartTutorial(this);
+
+        Button exitButton = GameObject.Find("ExitButton").GetComponent<Button>();
+        exitButton.onClick.AddListener(() => Exit());
+    }
 
     //called by the Start Game button in the main menu
     public void StartGame()
@@ -79,7 +99,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator StartGameAsync()
     {
         //starts the loading process
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(2);
 
         // Wait until the scene is fully loaded
         while (!asyncLoad.isDone)
